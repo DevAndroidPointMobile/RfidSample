@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="activity"
+            type="device.apps.rfidsamplev2.main.MainActivity" />
+
+        <variable
+            name="isConnected"
+            type="Boolean" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#673AB7"
+            android:title="RFID Sample V2"
+            android:titleTextColor="#FFFFFF" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <Button
+                android:onClick="@{activity::routeBluetoothConnection}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Bluetooth connection" />
+
+            <Button
+                android:onClick="@{activity::routeWireConnection}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Wire connection" />
+
+            <Button
+                android:onClick="@{activity::routeTapToPair}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Tap to pair connection" />
+
+            <Button
+                android:onClick="@{activity::routeInventory}"
+                android:enabled="@{isConnected}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Inventory" />
+
+            <Button
+                android:onClick="@{activity::routeBarcodeScan}"
+                android:enabled="@{isConnected}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Barcode scan" />
+
+            <Button
+                android:enabled="@{isConnected}"
+                android:onClick="@{activity::routeConfiguration}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Configuration" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

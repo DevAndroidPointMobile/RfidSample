@@ -1,0 +1,25 @@
+package device.apps.rfidsamplev2.data;
+
+public enum Configuration {
+    START_Q,
+    MIN_Q,
+    MAX_Q,
+    TARGET,
+    ACTION,
+    BANK,
+    POINTER,
+    ACCESS_PASSWORD,
+    VOLUME,
+    SUSPEND_TIME,
+    KEY_MAP,
+    PACKET,
+    INCREMENT_Q,
+    DECREMENT_Q,
+    FIXED_Q,
+    CONTINUOUS,
+    VIBRATE,
+    POWER,
+    SESSION,
+    SEARCH_MODE,
+    LINK_PROFILE,
+}
