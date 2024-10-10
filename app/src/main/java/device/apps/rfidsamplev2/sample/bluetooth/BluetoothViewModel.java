@@ -48,7 +48,7 @@ public class BluetoothViewModel extends ViewModel {
     /**
      * Unregister the registered BroadcastReceiver
      *
-     * @param context
+     * @param context : application context
      */
     public void dispose(Context context) {
         context.unregisterReceiver(_receiver);

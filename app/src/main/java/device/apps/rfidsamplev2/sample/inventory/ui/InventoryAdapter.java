@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import device.apps.rfidsamplev2.databinding.ItemInventoryBinding;
-import device.sdk.rfid.model.InventoryResponse;
+import device.sdk.rfid.model.InventoryResult;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InventoryViewHolder> {
 
-    private final List<InventoryResponse> inventoryList;
+    private final List<InventoryResult> inventoryList;
 
-    public InventoryAdapter(List<InventoryResponse> inventoryList) {
+    public InventoryAdapter(List<InventoryResult> inventoryList) {
         this.inventoryList = inventoryList;
     }
 
@@ -29,7 +29,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Inve
 
     @Override
     public void onBindViewHolder(@NonNull InventoryViewHolder holder, int position) {
-        final InventoryResponse data = inventoryList.get(position);
+        final InventoryResult data = inventoryList.get(position);
         holder.bind(data);
     }
 
@@ -55,7 +55,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Inve
             this._binding = binding;
         }
 
-        public void bind(InventoryResponse data) {
+        public void bind(InventoryResult data) {
             _binding.setEpc(data.getReadLine());
             _binding.setCount(String.valueOf(data.getReadCount()));
         }
