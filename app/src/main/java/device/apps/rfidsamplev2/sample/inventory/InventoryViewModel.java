@@ -14,8 +14,8 @@ import device.sdk.rfid.consts.RFIDConst;
 import device.sdk.rfid.data.enums.value.TriggerEvent;
 import device.sdk.rfid.data.listener.OnInventoryResultChangedListener;
 import device.sdk.rfid.data.listener.OnTriggerEventChangedListener;
-import device.sdk.rfid.model.InventoryResult;
-import device.sdk.rfid.model.OperationResult;
+import device.sdk.rfid.model.InventoryResponse;
+import device.sdk.rfid.model.OperationData;
 
 public class InventoryViewModel extends ViewModel implements OnTriggerEventChangedListener, OnInventoryResultChangedListener {
 
@@ -23,7 +23,7 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     private final MutableLiveData<Integer> _changedIndex = new MutableLiveData<>(-1);
 
     public LiveData<Integer> changedIndex = _changedIndex;
-    public List<InventoryResult> readHistory = new ArrayList<>();
+    public List<InventoryResponse> readHistory = new ArrayList<>();
 
     public void launch() {
         readHistory = new ArrayList<>();
@@ -47,8 +47,8 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     }
 
     @Override
-    public void onInventoryResult(@NonNull InventoryResult result) {
-        inventoryProcess(result);
+    public void onInventoryResultChanged(@NonNull InventoryResponse inventoryResponse) {
+        inventoryProcess(inventoryResponse);
     }
 
     /**
@@ -56,9 +56,9 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      *
      * @param response target inventory response
      */
-    public void read(InventoryResult response) {
+    public void read(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final OperationResult result = _controller.readTag(RFIDConst.RESERVED, "0", "2", selectMask);
+        final OperationData result = _controller.readTag(RFIDConst.RESERVED, "0", "2", selectMask);
     }
 
     /**
@@ -66,11 +66,11 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      *
      * @param response target inventory response
      */
-    public void write(InventoryResult response) {
+    public void write(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String writeData = "11112222333344445555";
         final String pc = RFIDUtils.calculatePC(writeData, true, false, false, "00");
-        final OperationResult result = _controller.writeTag(RFIDConst.EPC, "1", pc + writeData, selectMask);
+        final OperationData result = _controller.writeTag(RFIDConst.EPC, "1", pc + writeData, selectMask);
     }
 
     /**
@@ -78,9 +78,9 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      *
      * @param response target inventory response
      */
-    public void lock(InventoryResult response) {
+    public void lock(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final OperationResult result = _controller.lockTag("00300", "00200", selectMask);
+        final OperationData result = _controller.lockTag("00300", "00200", selectMask);
     }
 
     /**
@@ -88,10 +88,10 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      *
      * @param response target inventory response
      */
-    public void kill(InventoryResult response) {
+    public void kill(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String killPassword = "11110000";              // 2 word, 00h ~ 1Fh
-        final OperationResult result = _controller.killTag(killPassword, selectMask);
+        final OperationData result = _controller.killTag(killPassword, selectMask);
     }
 
     /**
@@ -99,10 +99,10 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      *
      * @param result receive model class from SDK
      */
-    private void inventoryProcess(InventoryResult result) {
+    private void inventoryProcess(InventoryResponse result) {
         boolean found = false;
         for (int i = 0; i < readHistory.size(); i++) {
-            final InventoryResult existingResponse = readHistory.get(i);
+            final InventoryResponse existingResponse = readHistory.get(i);
             // Find the same EPC Data in the list and update it.
             if (existingResponse.getReadLine().equals(result.getReadLine())) {
                 existingResponse.setReadCount(existingResponse.getReadCount() + 1);

@@ -13,7 +13,7 @@ import device.apps.rfidsamplev2.databinding.ActivityInventoryBinding;
 import device.apps.rfidsamplev2.databinding.DialogMandatoryBinding;
 import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
 import device.apps.rfidsamplev2.sample.inventory.ui.InventoryAdapter;
-import device.sdk.rfid.model.InventoryResult;
+import device.sdk.rfid.model.InventoryResponse;
 
 public class InventoryActivity extends AppCompatActivity implements OnInventoryClickListener {
 
@@ -29,7 +29,7 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
     }
 
     @Override
-    public void onInventoryClicked(InventoryResult item) {
+    public void onInventoryClicked(InventoryResponse item) {
         showMandatoryDialog(item);
     }
 
@@ -76,7 +76,7 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      *
      * @param response target inventory resposne
      */
-    private void showMandatoryDialog(InventoryResult response) {
+    private void showMandatoryDialog(InventoryResponse response) {
         final DialogMandatoryBinding binding = DialogMandatoryBinding.inflate(getLayoutInflater());
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setView(binding.getRoot());
