@@ -48,7 +48,7 @@ public class WiredActivity extends AppCompatActivity {
     public void onConnection(View view) {
         if (_baseViewModel.connectState.getValue() != ConnectState.CONNECTED) {
             // TODO, Manual connection action for PM90.
-             _viewModel.connect();
+//             _viewModel.connect();
         } else {
             _viewModel.disconnect();
         }
@@ -60,7 +60,7 @@ public class WiredActivity extends AppCompatActivity {
     private void initializationViewModel() {
         _baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         _viewModel = new ViewModelProvider(this).get(WireViewModel.class);
-        _viewModel.launch(WiredActivity.this);
+        _viewModel.launch(WiredActivity.this, _baseViewModel.connectState.getValue() == ConnectState.CONNECTED);
     }
 
     /**

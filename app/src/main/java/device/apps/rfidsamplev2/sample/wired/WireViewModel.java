@@ -29,7 +29,7 @@ public class WireViewModel extends ViewModel {
     private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
     private final DetectReceiver _receiver = new DetectReceiver();
     private final Control _control = Control.getInstance();
-    private final RFIDController _controllre = RFIDController.getInstance();
+    private final RFIDController _controller = RFIDController.getInstance();
 
     /**
      * Detect the connection between RF88 and the device, and if connected, attempt to connect.
@@ -37,10 +37,11 @@ public class WireViewModel extends ViewModel {
      *
      * @param context Application context
      */
-    public void launch(Context context) {
+    public void launch(Context context, boolean isConnected) {
         ContextCompat.registerReceiver(context, _receiver, getIntentFilter(), ContextCompat.RECEIVER_EXPORTED);
+
         try {
-            if (Build.MODEL.contains("PM90"))
+            if (Build.MODEL.contains("PM90") || isConnected)
                 return;
 
             final String detected = _control.getExpansionAccDetGpio();
@@ -48,7 +49,7 @@ public class WireViewModel extends ViewModel {
                 return;
 
             if (detected.equals(DeviceConst.ENABLE))
-                _controllre.connect();
+                connect();
 
         } catch (RemoteException exception) {
             //
@@ -68,14 +69,14 @@ public class WireViewModel extends ViewModel {
      * Attempt to connect to the currently attached device
      */
     public void connect() {
-        _executorService.execute(_controllre::connect);
+        _executorService.execute(_controller::connect);
     }
 
     /**
      * Disconnect from the currently attached device
      */
     public void disconnect() {
-        _executorService.execute(_controllre::disconnect);
+        _executorService.execute(_controller::disconnect);
     }
 
     /**
@@ -96,10 +97,10 @@ public class WireViewModel extends ViewModel {
             if (intent.getAction() != null || intent.getAction().equals(ACTION_DEVICE_CHANGED)) {
                 final String detected = intent.getStringExtra(EXTRA_CONNECT_STATE);
                 if (Objects.equals(detected, DETACH))
-                    _controllre.disconnect();
+                    _controller.disconnect();
 
                 if (Objects.equals(detected, ATTACH))
-                    _controllre.connect();
+                    _controller.connect();
             }
         }
     }
