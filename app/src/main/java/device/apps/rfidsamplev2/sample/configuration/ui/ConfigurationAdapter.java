@@ -8,6 +8,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.recyclerview.widget.RecyclerView;
 
+import device.apps.rfidsamplev2.data.ConfigData;
 import device.apps.rfidsamplev2.data.Configuration;
 import device.apps.rfidsamplev2.databinding.ItemSwitchBinding;
 import device.apps.rfidsamplev2.databinding.ItemTileBinding;
@@ -40,7 +41,7 @@ public class ConfigurationAdapter extends RecyclerView.Adapter<RecyclerView.View
             case TARGET:
             case ACTION:
             case BANK:
-            case PACKET:
+            case INVENTORY_RESPONSE:
             case VOLUME:
             case KEY_MAP:
             case START_Q:
@@ -111,7 +112,55 @@ public class ConfigurationAdapter extends RecyclerView.Adapter<RecyclerView.View
 
         void bind(Configuration configuration, LiveData<String> data) {
             _binding.setName(configuration.name());
-            data.observe(_lifecycleOwner, _binding::setValue);
+
+            data.observe(_lifecycleOwner, value -> {
+                ConfigData configData;
+                switch (configuration) {
+                    case SESSION:
+                        configData = ConfigData.findByValue(ConfigData.session(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case SEARCH_MODE:
+                        configData = ConfigData.findByValue(ConfigData.searchMode(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case LINK_PROFILE:
+                        configData = ConfigData.findByValue(ConfigData.linkProfile(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case TARGET:
+                        configData = ConfigData.findByValue(ConfigData.target(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case ACTION:
+                        configData = ConfigData.findByValue(ConfigData.action(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case BANK:
+                        configData = ConfigData.findByValue(ConfigData.banks(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case INVENTORY_RESPONSE:
+                        configData = ConfigData.findByValue(ConfigData.inventoryResponse(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case VOLUME:
+                        configData = ConfigData.findByValue(ConfigData.volume(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case KEY_MAP:
+                        configData = ConfigData.findByValue(ConfigData.keymap(), value);
+                        _binding.setValue(configData != null ? configData.name : "unknown");
+                        break;
+                    case SUSPEND_TIME:
+                        _binding.setValue(String.format("%s min", value));
+                        break;
+                    default:
+                        _binding.setValue(value);
+                        break;
+                }
+            });
+
             _binding.getRoot().setOnClickListener(v -> _listener.onClickedConfiguration(configuration));
         }
     }

@@ -48,7 +48,7 @@ public class WiredActivity extends AppCompatActivity {
     public void onConnection(View view) {
         if (_baseViewModel.connectState.getValue() != ConnectState.CONNECTED) {
             // TODO, Manual connection action for PM90.
-            // _viewModel.connect();
+             _viewModel.connect();
         } else {
             _viewModel.disconnect();
         }

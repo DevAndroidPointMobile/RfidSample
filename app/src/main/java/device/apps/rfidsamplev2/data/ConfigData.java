@@ -64,7 +64,7 @@ public class ConfigData {
         return result;
     }
 
-    public static List<ConfigData> inventoryFlag() {
+    public static List<ConfigData> searchMode() {
         final List<ConfigData> result = new ArrayList<>();
         result.add(new ConfigData("AB", "0"));
         result.add(new ConfigData("A", "1"));
@@ -117,7 +117,7 @@ public class ConfigData {
         return result;
     }
 
-    public static List<ConfigData> packetOptions() {
+    public static List<ConfigData> inventoryResponse() {
         final List<ConfigData> result = new ArrayList<>();
         result.add(new ConfigData("PC EPC", "0"));
         result.add(new ConfigData("EPC ONLY", "32"));
@@ -126,5 +126,12 @@ public class ConfigData {
         result.add(new ConfigData("PC EPC FREQUENCY", "8"));
         result.add(new ConfigData("SHOW ALL", "11"));
         return result;
+    }
+
+    public static ConfigData findByValue(List<ConfigData> list, String value) {
+        return list.stream()
+                .filter(configData -> configData.value.equals(value))
+                .findFirst()
+                .orElse(null);
     }
 }

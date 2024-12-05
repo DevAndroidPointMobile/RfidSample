@@ -12,7 +12,7 @@ public enum Configuration {
     VOLUME,
     SUSPEND_TIME,
     KEY_MAP,
-    PACKET,
+    INVENTORY_RESPONSE,
     INCREMENT_Q,
     DECREMENT_Q,
     FIXED_Q,

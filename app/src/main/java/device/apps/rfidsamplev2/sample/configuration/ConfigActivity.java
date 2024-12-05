@@ -5,27 +5,20 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import device.apps.rfidsamplev2.RFIDSampleV2;
 import device.apps.rfidsamplev2.data.ConfigData;
 import device.apps.rfidsamplev2.data.Configuration;
-import device.apps.rfidsamplev2.databinding.ActivityBluetoothBinding;
 import device.apps.rfidsamplev2.databinding.ActivityConfigBinding;
 import device.apps.rfidsamplev2.databinding.DialogInputBinding;
 import device.apps.rfidsamplev2.databinding.DialogRadioBinding;
 import device.apps.rfidsamplev2.databinding.DialogSeekbarBinding;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothViewModel;
-import device.apps.rfidsamplev2.sample.bluetooth.ui.DevicesAdapter;
 import device.apps.rfidsamplev2.sample.configuration.callback.OnTileClickListener;
 import device.apps.rfidsamplev2.sample.configuration.ui.ConfigurationAdapter;
 
@@ -69,14 +62,14 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
             case KEY_MAP:
                 showRadioDialog(configuration, ConfigData.keymap());
                 break;
-            case PACKET:
-                showRadioDialog(configuration, ConfigData.packetOptions());
+            case INVENTORY_RESPONSE:
+                showRadioDialog(configuration, ConfigData.inventoryResponse());
                 break;
             case SESSION:
                 showRadioDialog(configuration, ConfigData.session());
                 break;
             case SEARCH_MODE:
-                showRadioDialog(configuration, ConfigData.inventoryFlag());
+                showRadioDialog(configuration, ConfigData.searchMode());
                 break;
             case LINK_PROFILE:
                 showRadioDialog(configuration, ConfigData.linkProfile());

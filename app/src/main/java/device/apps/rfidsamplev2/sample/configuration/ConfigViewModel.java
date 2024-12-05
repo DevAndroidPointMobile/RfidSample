@@ -117,7 +117,7 @@ public class ConfigViewModel extends ViewModel {
                 return controller.getIntoSleepModeTime();
             case KEY_MAP:
                 return controller.getTriggerKeymap();
-            case PACKET:
+            case INVENTORY_RESPONSE:
                 return controller.getPacketOption();
             case INCREMENT_Q:
                 return controller.getIncrementQ();
@@ -173,7 +173,7 @@ public class ConfigViewModel extends ViewModel {
                 return controller.setIntoSleepModeTime(newValue);
             case KEY_MAP:
                 return controller.setTriggerKeymap(newValue);
-            case PACKET:
+            case INVENTORY_RESPONSE:
                 return controller.setPacketOption(newValue);
             case INCREMENT_Q:
                 return controller.setIncrementQ(newValue);

@@ -28,7 +28,6 @@ public class BarcodeViewModel extends ViewModel implements OnTriggerEventChanged
                 _scanManager.aDecodeSetTriggerOn(CLOSE);
                 break;
         }
-
     }
 
     /**
