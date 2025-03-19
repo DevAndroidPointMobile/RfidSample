@@ -1,5 +1,8 @@
 package device.apps.rfidsamplev2.sample.inventory;
 
+import android.media.AudioManager;
+import android.media.ToneGenerator;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -25,6 +28,9 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     public LiveData<Integer> changedIndex = _changedIndex;
     public List<InventoryResponse> readHistory = new ArrayList<>();
 
+    // launch android beep
+    // private ToneGenerator _toneGenerator;
+
     public void launch() {
         readHistory = new ArrayList<>();
         _changedIndex.setValue(-1);
@@ -36,10 +42,10 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     public void onTriggerEventChanged(@NonNull TriggerEvent triggerEvent) {
         switch (triggerEvent) {
             case RFID_PRESS:
-                _controller.inventory();
+                inventoryStart();
                 break;
             case RFID_RELEASE:
-                _controller.stop();
+                inventoryStop();
                 break;
             default:
                 break;
@@ -48,7 +54,23 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
 
     @Override
     public void onInventoryResultChanged(@NonNull InventoryResponse inventoryResponse) {
+        // launch android beep.
+//        if (_toneGenerator != null)
+//            _toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 200);
         inventoryProcess(inventoryResponse);
+    }
+
+    private void inventoryStart() {
+        // launch android beep
+        // _toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
+        _controller.inventory();
+    }
+
+    private void inventoryStop() {
+        _controller.stop();
+        // launch android beep
+//        if (_toneGenerator != null)
+//            _toneGenerator.release();
     }
 
     /**
