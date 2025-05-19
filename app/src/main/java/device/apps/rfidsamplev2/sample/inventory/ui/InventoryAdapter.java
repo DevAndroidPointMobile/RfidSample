@@ -10,14 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import device.apps.rfidsamplev2.databinding.ItemInventoryBinding;
+import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
 import device.sdk.rfid.model.InventoryResponse;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InventoryViewHolder> {
 
     private final List<InventoryResponse> inventoryList;
+    private final OnInventoryClickListener clickListener;
 
-    public InventoryAdapter(List<InventoryResponse> inventoryList) {
+    public InventoryAdapter(List<InventoryResponse> inventoryList, OnInventoryClickListener clickListener) {
         this.inventoryList = inventoryList;
+        this.clickListener = clickListener;
     }
 
     @NonNull
@@ -30,7 +33,7 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Inve
     @Override
     public void onBindViewHolder(@NonNull InventoryViewHolder holder, int position) {
         final InventoryResponse data = inventoryList.get(position);
-        holder.bind(data);
+        holder.bind(data, clickListener);
     }
 
     @Override
@@ -55,9 +58,14 @@ public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.Inve
             this._binding = binding;
         }
 
-        public void bind(InventoryResponse data) {
+        public void bind(InventoryResponse data, OnInventoryClickListener clickListener) {
             _binding.setEpc(data.getReadLine());
             _binding.setCount(String.valueOf(data.getReadCount()));
+            _binding.inventoryTile.setOnClickListener(v -> {
+                if (clickListener != null) {
+                    clickListener.onInventoryClicked(data);
+                }
+            });
         }
     }
 }

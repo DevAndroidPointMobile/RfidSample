@@ -57,7 +57,7 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      * Initialize the views used on the activity
      */
     private void initializationContentView() {
-        _adapter = new InventoryAdapter(_viewModel.readHistory);
+        _adapter = new InventoryAdapter(_viewModel.readHistory, this);
         final ActivityInventoryBinding binding = ActivityInventoryBinding.inflate(getLayoutInflater());
         binding.setActivity(InventoryActivity.this);
         binding.recyclerView.setAdapter(_adapter);
