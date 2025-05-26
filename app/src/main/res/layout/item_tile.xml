@@ -21,8 +21,6 @@
         android:layout_margin="4dp"
         app:cardCornerRadius="8dp">
 
-        <!--            android:onClick="@{() -> listener.onItemClick(device)}"-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
