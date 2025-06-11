@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"device.sdk.rfid"},{"l":"device.sdk.rfid.consts"},{"l":"device.sdk.rfid.data.listener"},{"l":"device.sdk.rfid.model"}];updateSearchResults();
