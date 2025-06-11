@@ -25,20 +25,47 @@ Please make sure your development environment meets the following specifications
 
 ## ✅ How to Build
 
-1. Open the project in **Android Studio 2024.1.1 Koala or higher**
-2. Wait for Gradle sync to complete  
-   > If the sync fails, verify your JDK version is set to **17**
-3. Clean and rebuild the project:
-  - Build > Clean Project
-  - Build > Rebuild Project
+1. **Launch Android Studio 2024.1.1 Koala or higher**
+2. Open the project directory (`RfidSample`)
+3. Wait for Gradle sync to complete
+4. If build fails, check the following settings:
+
+---
+
+### ⚙️ Set JDK Location
+
+1. Go to **`File > Project Structure (Ctrl+Alt+Shift+S)`**
+2. In the **SDK Location** tab:
+   - Set **JDK Location** to a valid JDK 17 path  
+     Example:  
+     ```
+     C:\Program Files\Android\JDK\jdk-17
+     ```
+   - Or, use the embedded JDK if it supports Java 17
+---
+
+### ⚙️ Set Android SDK Location
+
+1. Still in **`Project Structure > SDK Location`**:
+   - Make sure **Android SDK Location** is set properly  
+     Example:
+     ```
+     C:\Users\YourName\AppData\Local\Android\Sdk
+     ```
+
+2. If SDK path is missing or broken:
+   - Go to **`File > Settings > Appearance & Behavior > System Settings > Android SDK`**
+   - Download and install **SDK Platform 34**
+   - Apply and sync again
+
 ---
 
 ## 🧭 Project Overview
 
 - Written entirely in Java
 - Uses ViewBinding to connect UI and logic
-- DataBinding used for layout and interaction simplicity
-- Designed for Android devices with RFID capability
+- Uses **ViewBinding** for UI control
+- **DataBinding** is used for simplified interaction between layout and code
 
 ---
 
