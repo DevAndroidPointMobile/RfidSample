@@ -1,7 +1,7 @@
 # RfidSample
 
-This is a sample application provided to demonstrate integration with RFID hardware using `ParamConfigManager`.  
-Please ensure that your development environment meets the requirements below to avoid build issues and runtime errors.
+This is a sample application demonstrating basic RFID feature integration on Android.  
+Please make sure your development environment meets the following specifications to ensure successful build and execution.
 
 ---
 
