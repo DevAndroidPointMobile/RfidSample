@@ -54,21 +54,21 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
 
     @Override
     public void onInventoryResultChanged(@NonNull InventoryResponse inventoryResponse) {
-        // launch android beep.
+        // todo, launch android beep.
 //        if (_toneGenerator != null)
 //            _toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 200);
         inventoryProcess(inventoryResponse);
     }
 
     private void inventoryStart() {
-        // launch android beep
+        // todo, launch android beep
         // _toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
         _controller.inventory();
     }
 
     private void inventoryStop() {
         _controller.stop();
-        // launch android beep
+        // todo, launch android beep
 //        if (_toneGenerator != null)
 //            _toneGenerator.release();
     }
