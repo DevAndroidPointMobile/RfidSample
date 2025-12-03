@@ -11,7 +11,7 @@ import java.util.List;
 
 import device.apps.rfidsamplev2.databinding.ItemInventoryBinding;
 import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
-import device.sdk.rfid.model.InventoryResponse;
+import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
 
 public class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InventoryViewHolder> {
 

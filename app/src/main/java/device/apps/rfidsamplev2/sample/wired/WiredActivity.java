@@ -7,17 +7,10 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import java.util.ArrayList;
-
 import device.apps.rfidsamplev2.BaseViewModel;
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.databinding.ActivityBluetoothBinding;
 import device.apps.rfidsamplev2.databinding.ActivityWiredBinding;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothViewModel;
-import device.apps.rfidsamplev2.sample.bluetooth.ui.DevicesAdapter;
-import device.sdk.rfid.RFIDController;
-import device.sdk.rfid.data.enums.state.ConnectState;
+import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class WiredActivity extends AppCompatActivity {
 
@@ -46,9 +39,9 @@ public class WiredActivity extends AppCompatActivity {
      * @param view Button view
      */
     public void onConnection(View view) {
-        if (_baseViewModel.connectState.getValue() != ConnectState.CONNECTED) {
+        if (_baseViewModel.connectState.getValue() != DeviceConnectionState.CONNECTED) {
             // TODO, Manual connection action for PM90.
-//             _viewModel.connect();
+             _viewModel.connect();
         } else {
             _viewModel.disconnect();
         }
@@ -60,7 +53,7 @@ public class WiredActivity extends AppCompatActivity {
     private void initializationViewModel() {
         _baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         _viewModel = new ViewModelProvider(this).get(WireViewModel.class);
-        _viewModel.launch(WiredActivity.this, _baseViewModel.connectState.getValue() == ConnectState.CONNECTED);
+        _viewModel.launch(WiredActivity.this, _baseViewModel.connectState.getValue() == DeviceConnectionState.CONNECTED);
     }
 
     /**
@@ -79,7 +72,7 @@ public class WiredActivity extends AppCompatActivity {
         _baseViewModel.connectState.observe(this, state -> {
             Log.d("TAG", "onCreate: " + state.name());
             _binding.setState(state.toString());
-            _binding.setIsConnected(state == ConnectState.CONNECTED);
+            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 }

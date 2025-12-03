@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
@@ -20,12 +19,13 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import device.sdk.rfid.RFIDController;
+import ex.dev.sdk.rf88.Rf88Manager;
+
 
 public class BluetoothViewModel extends ViewModel {
 
     private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
-    private final RFIDController _controller = RFIDController.getInstance();
+    private final Rf88Manager _controller = Rf88Manager.getInstance();
     private final MutableLiveData<Boolean> _discoveryState = new MutableLiveData<>(false);
     private final MutableLiveData<List<BluetoothDevice>> _devicesState = new MutableLiveData<>(new ArrayList<>());
     private final BroadcastReceiver _receiver = new DiscoveryReceiver();
@@ -77,7 +77,7 @@ public class BluetoothViewModel extends ViewModel {
      * @param device Target blueooth device
      */
     public void connect(BluetoothDevice device) {
-        _executorService.execute(() -> _controller.connect(device));
+        _executorService.execute(() -> _controller.connect(device.getAddress()));
     }
 
     /**

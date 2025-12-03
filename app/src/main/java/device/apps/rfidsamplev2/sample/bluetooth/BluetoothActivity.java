@@ -20,7 +20,7 @@ import device.apps.rfidsamplev2.RFIDSampleV2;
 import device.apps.rfidsamplev2.sample.bluetooth.callback.OnDeviceClickListener;
 import device.apps.rfidsamplev2.sample.bluetooth.ui.DevicesAdapter;
 import device.apps.rfidsamplev2.databinding.ActivityBluetoothBinding;
-import device.sdk.rfid.data.enums.state.ConnectState;
+import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class BluetoothActivity extends AppCompatActivity implements OnDeviceClickListener {
 
@@ -123,7 +123,7 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
         _viewModel.discoveryState.observe(this, isDiscovery -> _binding.setIsDiscovery(isDiscovery));
         _baseViewModel.connectState.observe(this, state -> {
             _binding.setState(state.toString());
-            _binding.setIsConnected(state == ConnectState.CONNECTED);
+            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 

@@ -12,8 +12,8 @@ import device.apps.rfidsamplev2.RFIDSampleV2;
 import device.apps.rfidsamplev2.databinding.ActivityInventoryBinding;
 import device.apps.rfidsamplev2.databinding.DialogMandatoryBinding;
 import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
+import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
 import device.apps.rfidsamplev2.sample.inventory.ui.InventoryAdapter;
-import device.sdk.rfid.model.InventoryResponse;
 
 public class InventoryActivity extends AppCompatActivity implements OnInventoryClickListener {
 

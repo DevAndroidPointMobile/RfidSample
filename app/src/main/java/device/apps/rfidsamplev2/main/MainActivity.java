@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import device.apps.rfidsamplev2.BaseViewModel;
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.data.Configuration;
 import device.apps.rfidsamplev2.sample.barcode.BarcodeActivity;
 import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
 import device.apps.rfidsamplev2.databinding.ActivityMainBinding;
@@ -16,7 +15,7 @@ import device.apps.rfidsamplev2.sample.configuration.ConfigActivity;
 import device.apps.rfidsamplev2.sample.inventory.InventoryActivity;
 import device.apps.rfidsamplev2.sample.nfc.NfcActivity;
 import device.apps.rfidsamplev2.sample.wired.WiredActivity;
-import device.sdk.rfid.data.enums.state.ConnectState;
+import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(_binding.getRoot());
         _viewModel.connectState.observe(this, state -> {
-            _binding.setIsConnected(state == ConnectState.CONNECTED);
+            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 

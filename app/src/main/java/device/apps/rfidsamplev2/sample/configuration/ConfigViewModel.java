@@ -10,13 +10,13 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import device.apps.rfidsamplev2.data.Configuration;
-import device.sdk.rfid.RFIDController;
+import ex.dev.sdk.rf88.Rf88Manager;
 
 public class ConfigViewModel extends ViewModel {
 
     private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
 
-    private RFIDController controller = RFIDController.getInstance();
+    private Rf88Manager controller = Rf88Manager.getInstance();
 
     public Map<Configuration, MutableLiveData<String>> configurations = new HashMap<>();
 
@@ -82,7 +82,7 @@ public class ConfigViewModel extends ViewModel {
      */
     public void factoryDefault() {
         _executorService.execute(() -> {
-            controller.defaultAll();
+            controller.factoryDefaults();
             load();
         });
     }
@@ -108,15 +108,15 @@ public class ConfigViewModel extends ViewModel {
             case ACCESS_PASSWORD:
                 return controller.getAccessPassword();
             case BANK:
-                return controller.getBank();
+                return controller.getMemoryBank();
             case POINTER:
                 return controller.getPointer();
             case VOLUME:
                 return controller.getBuzzerVolume();
             case SUSPEND_TIME:
-                return controller.getIntoSleepModeTime();
+                return controller.getSuspendTimeout();
             case KEY_MAP:
-                return controller.getTriggerKeymap();
+                return controller.getDualTriggerFunctionCode();
             case INVENTORY_RESPONSE:
                 return controller.getPacketOption();
             case INCREMENT_Q:
@@ -128,7 +128,7 @@ public class ConfigViewModel extends ViewModel {
             case CONTINUOUS:
                 return controller.getContinuousMode();
             case VIBRATE:
-                return controller.getVibrate();
+                return controller.getVibratorMode();
             case LINK_PROFILE:
                 return controller.getLinkProfile();
             case POWER:
@@ -149,7 +149,7 @@ public class ConfigViewModel extends ViewModel {
      * @param newValue      new value for RF88 configuration
      * @return result code
      */
-    private int applyConfiguration(Configuration configuration, String newValue) {
+    private String applyConfiguration(Configuration configuration, String newValue) {
         switch (configuration) {
             case START_Q:
                 return controller.setStartQ(newValue);
@@ -162,7 +162,7 @@ public class ConfigViewModel extends ViewModel {
             case ACTION:
                 return controller.setAction(newValue);
             case BANK:
-                return controller.setBank(newValue);
+                return controller.setMemoryBank(newValue);
             case POINTER:
                 return controller.setPointer(newValue);
             case ACCESS_PASSWORD:
@@ -170,9 +170,9 @@ public class ConfigViewModel extends ViewModel {
             case VOLUME:
                 return controller.setBuzzerVolume(newValue);
             case SUSPEND_TIME:
-                return controller.setIntoSleepModeTime(newValue);
+                return controller.setSuspendTimeout(newValue);
             case KEY_MAP:
-                return controller.setTriggerKeymap(newValue);
+                return controller.setDualTriggerFunctionCode(newValue);
             case INVENTORY_RESPONSE:
                 return controller.setPacketOption(newValue);
             case INCREMENT_Q:
@@ -184,7 +184,7 @@ public class ConfigViewModel extends ViewModel {
             case CONTINUOUS:
                 return controller.setContinuousMode(newValue);
             case VIBRATE:
-                return controller.setVibrate(newValue);
+                return controller.setVibratorMode(newValue);
             case LINK_PROFILE:
                 return controller.setLinkProfile(newValue);
             case POWER:
