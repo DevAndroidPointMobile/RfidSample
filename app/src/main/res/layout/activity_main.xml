@@ -34,42 +34,49 @@
             android:padding="8dp">
 
             <Button
-                android:onClick="@{activity::routeBluetoothConnection}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="@{activity::routeBluetoothConnection}"
                 android:text="Bluetooth connection" />
 
             <Button
-                android:onClick="@{activity::routeWireConnection}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="@{activity::routeWireConnection}"
                 android:text="Wire connection" />
 
             <Button
-                android:onClick="@{activity::routeTapToPair}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="@{activity::routeTapToPair}"
                 android:text="Tap to pair connection" />
 
             <Button
-                android:onClick="@{activity::routeInventory}"
-                android:enabled="@{isConnected}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="@{isConnected}"
+                android:onClick="@{activity::routeInventory}"
                 android:text="Inventory" />
 
             <Button
-                android:onClick="@{activity::routeBarcodeScan}"
-                android:enabled="@{isConnected}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="@{isConnected}"
+                android:onClick="@{activity::routeInventoryNread}"
+                android:text="Inventory N Read" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="@{isConnected}"
+                android:onClick="@{activity::routeBarcodeScan}"
                 android:text="Barcode scan" />
 
             <Button
-                android:enabled="@{isConnected}"
-                android:onClick="@{activity::routeConfiguration}"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:enabled="@{isConnected}"
+                android:onClick="@{activity::routeConfiguration}"
                 android:text="Configuration" />
 
         </LinearLayout>

@@ -10,15 +10,25 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import device.apps.rfidsamplev2.data.Configuration;
-import device.sdk.rfid.RFIDController;
+import ex.dev.sdk.rf88.Rf88Manager;
 
 public class ConfigViewModel extends ViewModel {
 
     private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
-
-    private RFIDController controller = RFIDController.getInstance();
+    private Rf88Manager controller = Rf88Manager.getInstance();
 
     public Map<Configuration, MutableLiveData<String>> configurations = new HashMap<>();
+
+    // 새로 추가: 작업 중 상태를 나타내는 LiveData
+    private final MutableLiveData<Boolean> busy = new MutableLiveData<>(false);
+
+    public LiveData<Boolean> getBusy() {
+        return busy;
+    }
+
+    public void setBusy(boolean value) {
+        busy.postValue(value);
+    }
 
     /**
      * Initialize the configuration LiveData and fetch the configuration values from RF88
@@ -55,12 +65,15 @@ public class ConfigViewModel extends ViewModel {
      * Fetch all the values declared in the enum class Configuration from RF88
      */
     public void load() {
+        // 옵션: load 동작도 busy 표시하도록 변경 가능
         _executorService.execute(() -> {
+            setBusy(true);
             for (Configuration value : Configuration.values()) {
                 final String currentValue = loadConfiguration(value);
                 setConfiguration(value, currentValue);
                 waits(200L);
             }
+            setBusy(false);
         });
     }
 
@@ -69,11 +82,13 @@ public class ConfigViewModel extends ViewModel {
      */
     public void apply() {
         _executorService.execute(() -> {
+            setBusy(true);
             for (Configuration value : Configuration.values()) {
                 final LiveData<String> target = getConfiguration(value);
                 applyConfiguration(value, target.getValue());
                 waits(200L);
             }
+            setBusy(false);
         });
     }
 
@@ -82,17 +97,16 @@ public class ConfigViewModel extends ViewModel {
      */
     public void factoryDefault() {
         _executorService.execute(() -> {
-            controller.defaultAll();
+            setBusy(true);
+            controller.factoryDefaults();
+            // 재로딩까지 하면 사용자에게 진행상태를 보여줌
             load();
+            setBusy(false); // load() 내부에서도 setBusy를 조절하므로 중복 가능. 안전을 위해 남겨둠.
         });
     }
 
-    /**
-     * Call the API corresponding to the provided Configuration argument and return the result
-     *
-     * @param configuration target configuration
-     * @return current value
-     */
+    // ... loadConfiguration, applyConfiguration, waits 메서드는 기존과 동일 (생략하지 말고 유지)
+    // (기존 코드 붙여넣기)
     private String loadConfiguration(Configuration configuration) {
         switch (configuration) {
             case START_Q:
@@ -108,15 +122,15 @@ public class ConfigViewModel extends ViewModel {
             case ACCESS_PASSWORD:
                 return controller.getAccessPassword();
             case BANK:
-                return controller.getBank();
+                return controller.getMemoryBank();
             case POINTER:
                 return controller.getPointer();
             case VOLUME:
                 return controller.getBuzzerVolume();
             case SUSPEND_TIME:
-                return controller.getIntoSleepModeTime();
+                return controller.getSuspendTimeout();
             case KEY_MAP:
-                return controller.getTriggerKeymap();
+                return controller.getDualTriggerFunctionCode();
             case INVENTORY_RESPONSE:
                 return controller.getPacketOption();
             case INCREMENT_Q:
@@ -128,7 +142,7 @@ public class ConfigViewModel extends ViewModel {
             case CONTINUOUS:
                 return controller.getContinuousMode();
             case VIBRATE:
-                return controller.getVibrate();
+                return controller.getVibratorMode();
             case LINK_PROFILE:
                 return controller.getLinkProfile();
             case POWER:
@@ -142,14 +156,7 @@ public class ConfigViewModel extends ViewModel {
         }
     }
 
-    /**
-     * Call the API corresponding to the provided Configuration argument and set the second argument, `newValue`, in that API
-     *
-     * @param configuration target configuration
-     * @param newValue      new value for RF88 configuration
-     * @return result code
-     */
-    private int applyConfiguration(Configuration configuration, String newValue) {
+    private String applyConfiguration(Configuration configuration, String newValue) {
         switch (configuration) {
             case START_Q:
                 return controller.setStartQ(newValue);
@@ -162,7 +169,7 @@ public class ConfigViewModel extends ViewModel {
             case ACTION:
                 return controller.setAction(newValue);
             case BANK:
-                return controller.setBank(newValue);
+                return controller.setMemoryBank(newValue);
             case POINTER:
                 return controller.setPointer(newValue);
             case ACCESS_PASSWORD:
@@ -170,9 +177,9 @@ public class ConfigViewModel extends ViewModel {
             case VOLUME:
                 return controller.setBuzzerVolume(newValue);
             case SUSPEND_TIME:
-                return controller.setIntoSleepModeTime(newValue);
+                return controller.setSuspendTimeout(newValue);
             case KEY_MAP:
-                return controller.setTriggerKeymap(newValue);
+                return controller.setDualTriggerFunctionCode(newValue);
             case INVENTORY_RESPONSE:
                 return controller.setPacketOption(newValue);
             case INCREMENT_Q:
@@ -184,7 +191,7 @@ public class ConfigViewModel extends ViewModel {
             case CONTINUOUS:
                 return controller.setContinuousMode(newValue);
             case VIBRATE:
-                return controller.setVibrate(newValue);
+                return controller.setVibratorMode(newValue);
             case LINK_PROFILE:
                 return controller.setLinkProfile(newValue);
             case POWER:
@@ -198,18 +205,11 @@ public class ConfigViewModel extends ViewModel {
         }
     }
 
-    /**
-     * Put the thread into a sleep state for the duration specified by the passed value
-     *
-     * @param millis wait millis
-     */
     private void waits(long millis) {
         try {
             Thread.sleep(millis);
-
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
-
 }

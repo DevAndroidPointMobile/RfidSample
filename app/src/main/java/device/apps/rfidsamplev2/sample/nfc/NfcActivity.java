@@ -23,17 +23,13 @@ import java.util.List;
 
 import device.apps.rfidsamplev2.BaseViewModel;
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.databinding.ActivityBluetoothBinding;
 import device.apps.rfidsamplev2.databinding.ActivityNfcBinding;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothViewModel;
-import device.apps.rfidsamplev2.sample.bluetooth.ui.DevicesAdapter;
-import device.sdk.rfid.RFIDController;
-import device.sdk.rfid.data.enums.state.ConnectState;
+import ex.dev.sdk.rf88.Rf88Manager;
+import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class NfcActivity extends AppCompatActivity {
 
-    private final RFIDController _controller = RFIDController.getInstance();
+    private final Rf88Manager _controller = Rf88Manager.getInstance();
 
     private BaseViewModel _viewModel;
     private BluetoothManager _manager;
@@ -98,7 +94,7 @@ public class NfcActivity extends AppCompatActivity {
     private void observeData() {
         _viewModel.connectState.observe(this, state -> {
             _binding.setState(state.name());
-            _binding.setIsConnected(state == ConnectState.CONNECTED);
+            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 
@@ -136,7 +132,7 @@ public class NfcActivity extends AppCompatActivity {
                     try {
                         final String address = parseMacAddressToNFC(record.getPayload());
                         final BluetoothDevice device = _manager.getAdapter().getRemoteDevice(address);
-                        _controller.connect(device);
+                        _controller.connect(device.getAddress());
 
                     } catch (Exception e) {
                         e.printStackTrace();

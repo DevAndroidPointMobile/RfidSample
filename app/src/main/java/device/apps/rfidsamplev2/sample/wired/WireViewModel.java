@@ -15,8 +15,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import device.sdk.Control;
-import device.sdk.rfid.RFIDController;
-import device.sdk.rfid.consts.DeviceConst;
+import ex.dev.sdk.rf88.Rf88Manager;
 
 public class WireViewModel extends ViewModel {
 
@@ -29,7 +28,7 @@ public class WireViewModel extends ViewModel {
     private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
     private final DetectReceiver _receiver = new DetectReceiver();
     private final Control _control = Control.getInstance();
-    private final RFIDController _controller = RFIDController.getInstance();
+    private final Rf88Manager _controller = Rf88Manager.getInstance();
 
     /**
      * Detect the connection between RF88 and the device, and if connected, attempt to connect.
@@ -48,7 +47,7 @@ public class WireViewModel extends ViewModel {
             if (detected == null)
                 return;
 
-            if (detected.equals(DeviceConst.ENABLE))
+            if (detected.equals("1"))
                 connect();
 
         } catch (RemoteException exception) {

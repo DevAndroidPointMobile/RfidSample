@@ -1,8 +1,5 @@
 package device.apps.rfidsamplev2.sample.inventory;
 
-import android.media.AudioManager;
-import android.media.ToneGenerator;
-
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -11,18 +8,17 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import device.sdk.rfid.RFIDController;
-import device.sdk.rfid.RFIDUtils;
-import device.sdk.rfid.consts.RFIDConst;
-import device.sdk.rfid.data.enums.value.TriggerEvent;
-import device.sdk.rfid.data.listener.OnInventoryResultChangedListener;
-import device.sdk.rfid.data.listener.OnTriggerEventChangedListener;
-import device.sdk.rfid.model.InventoryResponse;
-import device.sdk.rfid.model.OperationData;
+import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
+import ex.dev.sdk.rf88.Rf88Manager;
+import ex.dev.sdk.rf88.domain.contract.Configuration;
+import ex.dev.sdk.rf88.domain.contract.Contract;
+import ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener;
+import ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener;
+import ex.dev.sdk.rf88.utils.RfidUtils;
 
-public class InventoryViewModel extends ViewModel implements OnTriggerEventChangedListener, OnInventoryResultChangedListener {
+public class InventoryViewModel extends ViewModel implements OnHardwareKeyListener, OnInventoryResultListener {
 
-    private final RFIDController _controller = RFIDController.getInstance();
+    private final Rf88Manager _controller = Rf88Manager.getInstance();
     private final MutableLiveData<Integer> _changedIndex = new MutableLiveData<>(-1);
 
     public LiveData<Integer> changedIndex = _changedIndex;
@@ -34,30 +30,24 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     public void launch() {
         readHistory = new ArrayList<>();
         _changedIndex.setValue(-1);
-        _controller.setOnInventoryResultChangedListener(this);
-        _controller.setOnTriggerEventChangedListener(this);
+        _controller.setOnHardwareKeyListener(this);
+        _controller.setOnInventoryResultListener(this);
     }
 
     @Override
-    public void onTriggerEventChanged(@NonNull TriggerEvent triggerEvent) {
-        switch (triggerEvent) {
-            case RFID_PRESS:
-                inventoryStart();
-                break;
-            case RFID_RELEASE:
-                inventoryStop();
-                break;
-            default:
-                break;
-        }
+    public void onInventoryKeyPressed() {
+        inventoryStart();
     }
 
     @Override
-    public void onInventoryResultChanged(@NonNull InventoryResponse inventoryResponse) {
-        // todo, launch android beep.
-//        if (_toneGenerator != null)
-//            _toneGenerator.startTone(ToneGenerator.TONE_PROP_BEEP, 200);
-        inventoryProcess(inventoryResponse);
+    public void onInventoryKeyReleased() {
+        inventoryStop();
+    }
+
+    @Override
+    public void onInventoryDiscovered(@NonNull String data, @NonNull String ascii, @NonNull String rssi, @NonNull String frequency, @NonNull String checksum) {
+        InventoryResponse response = new InventoryResponse(data, ascii, rssi, frequency, checksum, 0);
+        inventoryProcess(response);
     }
 
     private void inventoryStart() {
@@ -80,7 +70,12 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      */
     public void read(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final OperationData result = _controller.readTag(RFIDConst.RESERVED, "0", "2", selectMask);
+        final String result = _controller.read(Configuration.MemoryBank.RESERVED, "0", "2", selectMask);
+        if (result.equals(Contract.ResultCodes.OTHER_ERROR)) {
+            // TODO, fail
+        } else {
+            // TODO, success read packet
+        }
     }
 
     /**
@@ -91,8 +86,13 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     public void write(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String writeData = "11112222333344445555";
-        final String pc = RFIDUtils.calculatePC(writeData, true, false, false, "00");
-        final OperationData result = _controller.writeTag(RFIDConst.EPC, "1", pc + writeData, selectMask);
+        final String pc = RfidUtils.calculatePC(writeData, true, false, false, "00");
+        final String result = _controller.write(Configuration.MemoryBank.EPC, "1", pc + writeData, selectMask);
+        if (result.equals(Contract.ResultCodes.SUCCESS)) {
+            // TODO, success
+        } else {
+            // TODO, fail
+        }
     }
 
     /**
@@ -102,7 +102,12 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
      */
     public void lock(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final OperationData result = _controller.lockTag("00300", "00200", selectMask);
+        final String result = _controller.lock("00300", "00200", selectMask);
+        if (result.equals(Contract.ResultCodes.SUCCESS)) {
+            // TODO, success
+        } else {
+            // TODO, fail
+        }
     }
 
     /**
@@ -113,7 +118,12 @@ public class InventoryViewModel extends ViewModel implements OnTriggerEventChang
     public void kill(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String killPassword = "11110000";              // 2 word, 00h ~ 1Fh
-        final OperationData result = _controller.killTag(killPassword, selectMask);
+        final String result = _controller.kill(killPassword, selectMask);
+        if (result.equals(Contract.ResultCodes.SUCCESS)) {
+            // TODO, success
+        } else {
+            // TODO, fail
+        }
     }
 
     /**

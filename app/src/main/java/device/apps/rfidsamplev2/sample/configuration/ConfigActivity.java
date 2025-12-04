@@ -21,6 +21,7 @@ import device.apps.rfidsamplev2.databinding.DialogRadioBinding;
 import device.apps.rfidsamplev2.databinding.DialogSeekbarBinding;
 import device.apps.rfidsamplev2.sample.configuration.callback.OnTileClickListener;
 import device.apps.rfidsamplev2.sample.configuration.ui.ConfigurationAdapter;
+import ex.dev.sdk.rf88.Rf88Manager;
 
 public class ConfigActivity extends AppCompatActivity implements OnTileClickListener {
 
@@ -113,6 +114,8 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     /**
      * Initialize the views used on the activity
      */
+    private AlertDialog progressDialog; // 필드에 추가
+
     private void initializationContentView() {
         final ActivityConfigBinding binding = ActivityConfigBinding.inflate(getLayoutInflater());
         binding.setActivity(this);
@@ -120,6 +123,52 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
 
         final ConfigurationAdapter adapter = new ConfigurationAdapter(_viewModel, this, this);
         binding.recyclerView.setAdapter(adapter);
+
+        // ViewModel의 busy 상태 관찰
+        _viewModel.getBusy().observe(this, busy -> {
+            if (busy != null && busy) {
+                showProgressDialog();
+            } else {
+                hideProgressDialog();
+            }
+        });
+    }
+
+    /**
+     * 모달 인디케이터 다이얼로그 생성 및 표시
+     */
+    private void showProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) return;
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false); // 작업 중 취소 불가(옵션)
+        // ProgressBar를 포함한 간단한 바인딩-less 레이아웃 생성
+        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
+        layout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
+        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        layout.setPadding(padding, padding, padding, padding);
+        android.widget.ProgressBar progressBar = new android.widget.ProgressBar(this);
+        progressBar.setIndeterminate(true);
+        android.widget.TextView tv = new android.widget.TextView(this);
+        tv.setText("Processing...");
+        tv.setTextSize(16);
+        tv.setPadding(padding / 2, 0, 0, 0);
+        layout.addView(progressBar);
+        layout.addView(tv);
+
+        builder.setView(layout);
+        progressDialog = builder.create();
+        progressDialog.show();
+    }
+
+    /**
+     * 프로그레스 다이얼로그 숨기기
+     */
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
     }
 
     /**

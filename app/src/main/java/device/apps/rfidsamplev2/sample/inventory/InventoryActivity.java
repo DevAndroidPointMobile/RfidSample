@@ -12,13 +12,13 @@ import device.apps.rfidsamplev2.RFIDSampleV2;
 import device.apps.rfidsamplev2.databinding.ActivityInventoryBinding;
 import device.apps.rfidsamplev2.databinding.DialogMandatoryBinding;
 import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
+import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
 import device.apps.rfidsamplev2.sample.inventory.ui.InventoryAdapter;
-import device.sdk.rfid.model.InventoryResponse;
 
 public class InventoryActivity extends AppCompatActivity implements OnInventoryClickListener {
 
-    private InventoryViewModel _viewModel;
-    private InventoryAdapter _adapter;
+    private InventoryViewModel viewModel;
+    private InventoryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,8 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      * @param view Button view
      */
     public void onClear(View view) {
-        _viewModel.readHistory.clear();
-        _adapter.updateData(-1);
+        viewModel.readHistory.clear();
+        adapter.updateData(-1);
     }
 
     /**
@@ -48,8 +48,8 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      */
     private void initializationViewModel() {
         final BaseViewModel baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
-        _viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
-        _viewModel.launch();
+        viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
+        viewModel.launch();
     }
 
 
@@ -57,10 +57,10 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      * Initialize the views used on the activity
      */
     private void initializationContentView() {
-        _adapter = new InventoryAdapter(_viewModel.readHistory, this);
+        adapter = new InventoryAdapter(viewModel.readHistory, this);
         final ActivityInventoryBinding binding = ActivityInventoryBinding.inflate(getLayoutInflater());
         binding.setActivity(InventoryActivity.this);
-        binding.recyclerView.setAdapter(_adapter);
+        binding.recyclerView.setAdapter(adapter);
         setContentView(binding.getRoot());
     }
 
@@ -68,7 +68,7 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      * Obseve the data used on the screen and provide it to the view using data binding
      */
     private void observeLiveData() {
-        _viewModel.changedIndex.observe(this, index -> _adapter.updateData(index));
+        viewModel.changedIndex.observe(this, index -> adapter.updateData(index));
     }
 
     /**
@@ -82,10 +82,10 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
         builder.setView(binding.getRoot());
         final AlertDialog dialog = builder.create();
         binding.cancel.setOnClickListener(view -> dialog.dismiss());
-        binding.read.setOnClickListener(view -> _viewModel.read(response));
-        binding.write.setOnClickListener(view -> _viewModel.write(response));
-        binding.lock.setOnClickListener(view -> _viewModel.lock(response));
-        binding.kill.setOnClickListener(view -> _viewModel.kill(response));
+        binding.read.setOnClickListener(view -> viewModel.read(response));
+        binding.write.setOnClickListener(view -> viewModel.write(response));
+        binding.lock.setOnClickListener(view -> viewModel.lock(response));
+        binding.kill.setOnClickListener(view -> viewModel.kill(response));
         dialog.show();
     }
 }

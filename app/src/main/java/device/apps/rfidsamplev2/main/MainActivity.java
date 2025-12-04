@@ -8,33 +8,36 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import device.apps.rfidsamplev2.BaseViewModel;
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.data.Configuration;
 import device.apps.rfidsamplev2.sample.barcode.BarcodeActivity;
 import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
 import device.apps.rfidsamplev2.databinding.ActivityMainBinding;
 import device.apps.rfidsamplev2.sample.configuration.ConfigActivity;
 import device.apps.rfidsamplev2.sample.inventory.InventoryActivity;
 import device.apps.rfidsamplev2.sample.nfc.NfcActivity;
+import device.apps.rfidsamplev2.sample.nread.InventoryNreadActivity;
 import device.apps.rfidsamplev2.sample.wired.WiredActivity;
-import device.sdk.rfid.data.enums.state.ConnectState;
+import ex.dev.sdk.rf88.Rf88Manager;
+import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ActivityMainBinding _binding;
-    private BaseViewModel _viewModel;
+    private ActivityMainBinding binding;
+    private BaseViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        _viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
-        _viewModel.launch();
+        Rf88Manager.setDebugMode(true);
 
-        _binding = ActivityMainBinding.inflate(getLayoutInflater());
-        _binding.setActivity(MainActivity.this);
+        viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
+        viewModel.launch();
 
-        setContentView(_binding.getRoot());
-        _viewModel.connectState.observe(this, state -> {
-            _binding.setIsConnected(state == ConnectState.CONNECTED);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding.setActivity(MainActivity.this);
+
+        setContentView(binding.getRoot());
+        viewModel.connectState.observe(this, state -> {
+            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 
@@ -60,6 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void routeInventory(View view) {
         final Intent intent = new Intent(MainActivity.this, InventoryActivity.class);
+        startActivity(intent);
+    }
+
+    public void routeInventoryNread(View view) {
+        final Intent intent = new Intent(MainActivity.this, InventoryNreadActivity.class);
         startActivity(intent);
     }
 
