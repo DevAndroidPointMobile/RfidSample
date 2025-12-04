@@ -1,4 +1,2 @@
-device.sdk.rfid
-device.sdk.rfid.consts
-device.sdk.rfid.data.listener
-device.sdk.rfid.model
+ex.dev.sdk.rf88
+ex.dev.sdk.rf88.utils
