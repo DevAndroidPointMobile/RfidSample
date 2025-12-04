@@ -1,5 +1,7 @@
 package device.apps.rfidsamplev2.sample.inventory;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -23,9 +25,6 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
 
     public LiveData<Integer> changedIndex = _changedIndex;
     public List<InventoryResponse> readHistory = new ArrayList<>();
-
-    // launch android beep
-    // private ToneGenerator _toneGenerator;
 
     public void launch() {
         readHistory = new ArrayList<>();
@@ -51,16 +50,11 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     }
 
     private void inventoryStart() {
-        // todo, launch android beep
-        // _toneGenerator = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
         _controller.inventory();
     }
 
     private void inventoryStop() {
         _controller.stop();
-        // todo, launch android beep
-//        if (_toneGenerator != null)
-//            _toneGenerator.release();
     }
 
     /**
@@ -71,6 +65,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     public void read(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String result = _controller.read(Configuration.MemoryBank.RESERVED, "0", "2", selectMask);
+        Log.d("TAG", "read: result " + result);
         if (result.equals(Contract.ResultCodes.OTHER_ERROR)) {
             // TODO, fail
         } else {
@@ -88,6 +83,8 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
         final String writeData = "11112222333344445555";
         final String pc = RfidUtils.calculatePC(writeData, true, false, false, "00");
         final String result = _controller.write(Configuration.MemoryBank.EPC, "1", pc + writeData, selectMask);
+
+        Log.d("TAG", "write: result " + result);
         if (result.equals(Contract.ResultCodes.SUCCESS)) {
             // TODO, success
         } else {
@@ -103,6 +100,8 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     public void lock(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String result = _controller.lock("00300", "00200", selectMask);
+
+        Log.d("TAG", "lock: result " + result);
         if (result.equals(Contract.ResultCodes.SUCCESS)) {
             // TODO, success
         } else {
@@ -119,6 +118,8 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String killPassword = "11110000";              // 2 word, 00h ~ 1Fh
         final String result = _controller.kill(killPassword, selectMask);
+
+        Log.d("TAG", "kill: result " + result);
         if (result.equals(Contract.ResultCodes.SUCCESS)) {
             // TODO, success
         } else {
