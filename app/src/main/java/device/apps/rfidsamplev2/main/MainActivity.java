@@ -2,15 +2,13 @@ package device.apps.rfidsamplev2.main;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.button.MaterialButton;
 
-import device.apps.rfidsamplev2.BaseViewModel;
-import device.apps.rfidsamplev2.RFIDSampleV2;
+import device.apps.rfidsamplev2.BaseActivity;
+import device.apps.rfidsamplev2.R;
+import device.apps.rfidsamplev2.bluetooth.BluetoothConnectActivity;
 import device.apps.rfidsamplev2.sample.barcode.BarcodeActivity;
-import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
-import device.apps.rfidsamplev2.databinding.ActivityMainBinding;
 import device.apps.rfidsamplev2.sample.configuration.ConfigActivity;
 import device.apps.rfidsamplev2.sample.inventory.InventoryActivity;
 import device.apps.rfidsamplev2.sample.nfc.NfcActivity;
@@ -19,60 +17,77 @@ import device.apps.rfidsamplev2.sample.wired.WiredActivity;
 import ex.dev.sdk.rf88.Rf88Manager;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
-    private ActivityMainBinding binding;
-    private BaseViewModel viewModel;
+    private MaterialButton btnInventory;
+    private MaterialButton btnInventoryNRead;
+    private MaterialButton btnBarcode;
+    private MaterialButton btnConfiguration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Rf88Manager.setDebugMode(true);
 
-        viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
-        viewModel.launch();
+        setContentView(R.layout.activity_main);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        binding.setActivity(MainActivity.this);
-
-        setContentView(binding.getRoot());
-        viewModel.connectState.observe(this, state -> {
-            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
-        });
+        initViews();
+        initClickListeners();
+        updateMenuState(false);
     }
 
-    public void routeBluetoothConnection(View view) {
-        final Intent intent = new Intent(MainActivity.this, BluetoothActivity.class);
-        startActivity(intent);
+    /**
+     * Initialize view references.
+     */
+    private void initViews() {
+        btnInventory = findViewById(R.id.btnInventory);
+        btnInventoryNRead = findViewById(R.id.btnInventoryNRead);
+        btnBarcode = findViewById(R.id.btnBarcode);
+        btnConfiguration = findViewById(R.id.btnConfiguration);
     }
 
-    public void routeWireConnection(View view) {
-        final Intent intent = new Intent(MainActivity.this, WiredActivity.class);
-        startActivity(intent);
+    /**
+     * Initialize button click listeners.
+     */
+    private void initClickListeners() {
+        findViewById(R.id.btnBluetooth).setOnClickListener(
+                v -> startActivity(new Intent(this, BluetoothConnectActivity.class)));
+
+        findViewById(R.id.btnWired).setOnClickListener(
+                v -> startActivity(new Intent(this, WiredActivity.class)));
+
+        findViewById(R.id.btnTapToPair).setOnClickListener(
+                v -> startActivity(new Intent(this, NfcActivity.class)));
+
+        btnInventory.setOnClickListener(
+                v -> startActivity(new Intent(this, InventoryActivity.class)));
+
+        btnInventoryNRead.setOnClickListener(
+                v -> startActivity(new Intent(this, InventoryNreadActivity.class)));
+
+        btnBarcode.setOnClickListener(
+                v -> startActivity(new Intent(this, BarcodeActivity.class)));
+
+        btnConfiguration.setOnClickListener(
+                v -> startActivity(new Intent(this, ConfigActivity.class)));
     }
 
-    public void routeConfiguration(View view) {
-        final Intent intent = new Intent(MainActivity.this, ConfigActivity.class);
-        startActivity(intent);
+    /**
+     * Enable or disable menus that require device connection.
+     */
+    private void updateMenuState(boolean enabled) {
+        btnInventory.setEnabled(enabled);
+        btnInventoryNRead.setEnabled(enabled);
+        btnBarcode.setEnabled(enabled);
+        btnConfiguration.setEnabled(enabled);
     }
 
-    public void routeTapToPair(View view) {
-        final Intent intent = new Intent(MainActivity.this, NfcActivity.class);
-        startActivity(intent);
-    }
-
-    public void routeInventory(View view) {
-        final Intent intent = new Intent(MainActivity.this, InventoryActivity.class);
-        startActivity(intent);
-    }
-
-    public void routeInventoryNread(View view) {
-        final Intent intent = new Intent(MainActivity.this, InventoryNreadActivity.class);
-        startActivity(intent);
-    }
-
-    public void routeBarcodeScan(View view) {
-        final Intent intent = new Intent(MainActivity.this, BarcodeActivity.class);
-        startActivity(intent);
+    /**
+     * Called from BaseActivity when connection state changes.
+     */
+    @Override
+    protected void onConnectionStateChanged(DeviceConnectionState state) {
+        boolean connected = state == DeviceConnectionState.CONNECTED;
+        updateMenuState(connected);
     }
 }

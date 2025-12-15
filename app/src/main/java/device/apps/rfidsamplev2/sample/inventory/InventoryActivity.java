@@ -47,7 +47,6 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
      * Initialize the View model
      */
     private void initializationViewModel() {
-        final BaseViewModel baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         viewModel = new ViewModelProvider(this).get(InventoryViewModel.class);
         viewModel.launch();
     }

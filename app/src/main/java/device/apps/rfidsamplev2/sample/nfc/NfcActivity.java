@@ -76,7 +76,6 @@ public class NfcActivity extends AppCompatActivity {
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
     }
 
     /**

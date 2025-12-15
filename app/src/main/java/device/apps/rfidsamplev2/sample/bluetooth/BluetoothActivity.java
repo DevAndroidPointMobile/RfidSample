@@ -83,7 +83,6 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         _viewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
         _viewModel.launch(BluetoothActivity.this);
     }

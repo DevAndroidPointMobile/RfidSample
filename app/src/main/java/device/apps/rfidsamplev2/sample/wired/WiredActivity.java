@@ -51,7 +51,6 @@ public class WiredActivity extends AppCompatActivity {
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         _viewModel = new ViewModelProvider(this).get(WireViewModel.class);
         _viewModel.launch(WiredActivity.this, _baseViewModel.connectState.getValue() == DeviceConnectionState.CONNECTED);
     }

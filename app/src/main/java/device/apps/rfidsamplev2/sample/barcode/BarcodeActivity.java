@@ -31,7 +31,6 @@ public class BarcodeActivity extends AppCompatActivity {
      * initialization view model
      */
     private void initializationViewModel() {
-        final BaseViewModel baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         final BarcodeViewModel viewModel = new ViewModelProvider(this).get(BarcodeViewModel.class);
         viewModel.launch();
     }

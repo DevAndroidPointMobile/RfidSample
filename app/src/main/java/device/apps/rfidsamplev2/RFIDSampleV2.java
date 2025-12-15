@@ -4,22 +4,13 @@ import android.app.Application;
 
 import androidx.lifecycle.ViewModelProvider;
 
-public class RFIDSampleV2 extends Application {
+import device.apps.rfidsamplev2.dispatcher.ConnectionDispatcher;
 
-    private BaseViewModel _viewModel;
+public class RFIDSampleV2 extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        _viewModel = new ViewModelProvider.AndroidViewModelFactory(this).create(BaseViewModel.class);
-    }
-
-    /**
-     * Return the base view model
-     *
-     * @return base view model
-     */
-    public BaseViewModel getBaseViewModel() {
-        return _viewModel;
+        ConnectionDispatcher.initialize(this);
     }
 }

@@ -6,4 +6,5 @@
     </style>
 
     <style name="Theme.RFIDSampleV2" parent="Base.Theme.RFIDSampleV2" />
+
 </resources>
