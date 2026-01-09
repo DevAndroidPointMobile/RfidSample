@@ -51,7 +51,7 @@
             android:onClick="@{activity::onConnection}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:connectState="@{isConnected}"
+            app:connectionState="@{isConnected}"
             tools:text="CONNECT" />
 
     </LinearLayout>

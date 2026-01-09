@@ -12,74 +12,318 @@
         <variable
             name="isConnected"
             type="Boolean" />
-
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F5F5F5"
         android:orientation="vertical">
 
-        <Toolbar
+        <!-- Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/gradient_toolbar"
+            android:elevation="4dp"
+            app:title="RFID Sample V2"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:titleTextColor="@android:color/white" />
+
+        <!-- Status Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#673AB7"
-            android:title="RFID Sample V2"
-            android:titleTextColor="#FFFFFF" />
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-        <LinearLayout
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="Device Icon"
+                    android:src="@drawable/ic_rfid"
+                    android:tint="#5E35B1" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Device Status"
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@{isConnected ? `Connected` : `Not Connected`}"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="Connected" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/circle_indicator"
+                    app:connectionState="@{isConnected}" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
 
-            <Button
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{activity::routeBluetoothConnection}"
-                android:text="Bluetooth connection" />
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingBottom="16dp">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="@{activity::routeWireConnection}"
-                android:text="Wire connection" />
+                <!-- Connection Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Connection"
+                    android:textColor="#212121"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:onClick="@{activity::routeTapToPair}"
-                android:text="Tap to pair connection" />
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="@{isConnected}"
-                android:onClick="@{activity::routeInventory}"
-                android:text="Inventory" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="4dp">
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="@{isConnected}"
-                android:onClick="@{activity::routeInventoryNread}"
-                android:text="Inventory N Read" />
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeBluetoothConnection}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Bluetooth Connection"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_bluetooth"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="@{isConnected}"
-                android:onClick="@{activity::routeBarcodeScan}"
-                android:text="Barcode scan" />
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:background="#F0F0F0" />
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:enabled="@{isConnected}"
-                android:onClick="@{activity::routeConfiguration}"
-                android:text="Configuration" />
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeWireConnection}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Wire Connection"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_cable"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
 
-        </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:background="#F0F0F0" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeTapToPair}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Tap to Pair Connection"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_nfc"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Features Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Features"
+                    android:textColor="#212121"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="4dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:enabled="@{isConnected}"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeInventory}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Inventory"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_inventory"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:background="#F0F0F0" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:enabled="@{isConnected}"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeInventoryNread}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Inventory N Read"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_n_read"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:background="#F0F0F0" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:enabled="@{isConnected}"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeBarcodeScan}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Barcode Scan"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_barcode"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginHorizontal="16dp"
+                            android:background="#F0F0F0" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:enabled="@{isConnected}"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="start|center_vertical"
+                            android:onClick="@{activity::routeConfiguration}"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:text="Configuration"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_settings"
+                            app:iconGravity="start"
+                            app:iconPadding="16dp"
+                            app:iconTint="#5E35B1"
+                            app:rippleColor="#E8E0F5" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </ScrollView>
 
     </LinearLayout>
 
