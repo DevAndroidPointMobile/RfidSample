@@ -1,7 +1,5 @@
 package device.apps.rfidsamplev2.sample.inventory.data;
 
-import androidx.annotation.NonNull;
-
 public class InventoryResponse {
     String readLine;
     String ascii;

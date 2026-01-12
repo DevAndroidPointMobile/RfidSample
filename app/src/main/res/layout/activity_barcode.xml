@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -9,15 +9,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".sample.bluetooth.BluetoothActivity">
+        android:background="#F5F5F5"
+        android:orientation="vertical">
 
-        <Toolbar
+        <!-- Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#673AB7"
-            android:title="Barcode scan"
-            android:titleTextColor="#FFFFFF" />
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/gradient_toolbar"
+            android:elevation="4dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Barcode Scan"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:titleTextColor="@android:color/white" />
 
     </LinearLayout>
 

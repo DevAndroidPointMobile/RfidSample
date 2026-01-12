@@ -26,11 +26,11 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
 
     private static final int BLUETOOTH_PERMISSION_REQUEST_CODE = 1001;
 
-    private DevicesAdapter _adapter;
-    private ActivityBluetoothBinding _binding;
-    private BaseViewModel _baseViewModel;
-    private BluetoothViewModel _viewModel;
-    private String[] _permissions;
+    private DevicesAdapter adapter;
+    private ActivityBluetoothBinding binding;
+    private BaseViewModel baseViewModel;
+    private BluetoothViewModel viewModel;
+    private String[] permissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +44,8 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        _viewModel.dispose(this);
-        _baseViewModel.connectState.removeObservers(this);
+        viewModel.dispose(this);
+        baseViewModel.connectState.removeObservers(this);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
 
     @Override
     public void onDeviceClicked(BluetoothDevice item) {
-        _viewModel.connect(item);
+        viewModel.connect(item);
     }
 
     /**
@@ -66,7 +66,7 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      * @param view Button view
      */
     public void disconnect(View view) {
-        _viewModel.disconnect();
+        viewModel.disconnect();
     }
 
     /**
@@ -83,20 +83,21 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
-        _viewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
-        _viewModel.launch(BluetoothActivity.this);
+        baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
+        viewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
+        viewModel.launch(BluetoothActivity.this);
     }
 
     /**
      * Initialize the views used on the activity
      */
     private void initializationContentView() {
-        _adapter = new DevicesAdapter(new ArrayList<>(), BluetoothActivity.this);
-        _binding = ActivityBluetoothBinding.inflate(getLayoutInflater());
-        _binding.setActivity(BluetoothActivity.this);
-        _binding.recyclerView.setAdapter(_adapter);
-        setContentView(_binding.getRoot());
+        adapter = new DevicesAdapter(new ArrayList<>(), BluetoothActivity.this);
+        binding = ActivityBluetoothBinding.inflate(getLayoutInflater());
+        binding.setActivity(BluetoothActivity.this);
+        binding.recyclerView.setAdapter(adapter);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
+        setContentView(binding.getRoot());
     }
 
     /**
@@ -104,14 +105,14 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      */
     private void setBluetoothPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            _permissions = new String[]{
+            permissions = new String[]{
                     Manifest.permission.BLUETOOTH_SCAN,
                     Manifest.permission.BLUETOOTH_CONNECT,
                     Manifest.permission.BLUETOOTH_ADVERTISE,
                     Manifest.permission.ACCESS_FINE_LOCATION,
             };
         } else {
-            _permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,};
+            permissions = new String[]{Manifest.permission.ACCESS_FINE_LOCATION,};
         }
     }
 
@@ -119,11 +120,11 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      * Obseve the data used on the screen and provide it to the view using data binding
      */
     private void observeData() {
-        _viewModel.devicesState.observe(this, _adapter::updateItems);
-        _viewModel.discoveryState.observe(this, isDiscovery -> _binding.setIsDiscovery(isDiscovery));
-        _baseViewModel.connectState.observe(this, state -> {
-            _binding.setState(state.toString());
-            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
+        viewModel.devicesState.observe(this, adapter::updateItems);
+        viewModel.discoveryState.observe(this, isDiscovery -> binding.setIsDiscovery(isDiscovery));
+        baseViewModel.connectState.observe(this, state -> {
+            binding.setState(state.toString());
+            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 
@@ -131,10 +132,10 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      * Cancel or start discovery based on the currently running discovery state
      */
     private void startDiscovery() {
-        if (Boolean.TRUE.equals(_viewModel.discoveryState.getValue()))
-            _viewModel.stopDiscovery();
+        if (Boolean.TRUE.equals(viewModel.discoveryState.getValue()))
+            viewModel.stopDiscovery();
         else
-            _viewModel.startDiscovery();
+            viewModel.startDiscovery();
     }
 
     /**
@@ -143,9 +144,9 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
      * @return bluetooth permissions is granted
      */
     private boolean arePermissionsGranted() {
-        for (String permission : _permissions) {
+        for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(BluetoothActivity.this, _permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(BluetoothActivity.this, permissions, BLUETOOTH_PERMISSION_REQUEST_CODE);
                 return false;
             }
         }

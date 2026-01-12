@@ -61,6 +61,7 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
         final ActivityInventoryBinding binding = ActivityInventoryBinding.inflate(getLayoutInflater());
         binding.setActivity(InventoryActivity.this);
         binding.recyclerView.setAdapter(adapter);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
     }
 

@@ -25,6 +25,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
             android:elevation="4dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
             app:title="Inventory"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />

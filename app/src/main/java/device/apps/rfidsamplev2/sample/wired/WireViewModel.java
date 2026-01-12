@@ -47,7 +47,7 @@ public class WireViewModel extends ViewModel {
             if (detected == null)
                 return;
 
-            if (detected.equals("0"))
+            if (detected.equals("1"))
                 connect();
 
         } catch (RemoteException exception) {

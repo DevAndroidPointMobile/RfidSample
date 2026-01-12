@@ -12,36 +12,76 @@
         <variable
             name="value"
             type="String" />
-
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="8dp">
+        android:layout_marginVertical="6dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="16dp">
 
-            <TextView
-                android:text="@{name}"
-                android:layout_width="match_parent"
+            <!-- Icon -->
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/circle_icon_background">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="Config Icon"
+                    android:src="@drawable/ic_tune"
+                    android:tint="#5E35B1" />
+            </FrameLayout>
+
+            <!-- Name and Value -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                tools:text="MAX Q" />
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@{value}"
-                tools:text="15" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@{name}"
+                    android:textColor="#212121"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    tools:text="MAX Q" />
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@{value}"
+                    android:textColor="#757575"
+                    android:textSize="14sp"
+                    tools:text="15" />
+            </LinearLayout>
+
+            <!-- Arrow Icon -->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="Edit"
+                android:src="@drawable/ic_arrow_forward"
+                android:tint="#BDBDBD" />
         </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
+    </com.google.android.material.card.MaterialCardView>
 </layout>

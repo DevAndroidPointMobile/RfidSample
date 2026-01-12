@@ -1,15 +1,19 @@
 package device.apps.rfidsamplev2.sample.configuration;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.SeekBar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.radiobutton.MaterialRadioButton;
+import com.google.android.material.slider.Slider;
 
 import java.util.List;
 
@@ -21,17 +25,19 @@ import device.apps.rfidsamplev2.databinding.DialogRadioBinding;
 import device.apps.rfidsamplev2.databinding.DialogSeekbarBinding;
 import device.apps.rfidsamplev2.sample.configuration.callback.OnTileClickListener;
 import device.apps.rfidsamplev2.sample.configuration.ui.ConfigurationAdapter;
-import ex.dev.sdk.rf88.Rf88Manager;
 
 public class ConfigActivity extends AppCompatActivity implements OnTileClickListener {
 
     private ConfigViewModel _viewModel;
+    private AlertDialog _progressDialog;
+    private ActivityConfigBinding _binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializationViewModel();
         initializationContentView();
+        setupToolbar();
     }
 
     @Override
@@ -102,9 +108,15 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         _viewModel.apply();
     }
 
+    /**
+     * Setup toolbar with back navigation
+     */
+    private void setupToolbar() {
+        _binding.toolbar.setNavigationOnClickListener(v -> finish());
+    }
 
     /**
-     * Initialize the View mode
+     * Initialize the View model
      */
     private void initializationViewModel() {
         _viewModel = new ViewModelProvider(this).get(ConfigViewModel.class);
@@ -114,15 +126,13 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     /**
      * Initialize the views used on the activity
      */
-    private AlertDialog progressDialog; // 필드에 추가
-
     private void initializationContentView() {
-        final ActivityConfigBinding binding = ActivityConfigBinding.inflate(getLayoutInflater());
-        binding.setActivity(this);
-        setContentView(binding.getRoot());
+        _binding = ActivityConfigBinding.inflate(getLayoutInflater());
+        _binding.setActivity(this);
+        setContentView(_binding.getRoot());
 
         final ConfigurationAdapter adapter = new ConfigurationAdapter(_viewModel, this, this);
-        binding.recyclerView.setAdapter(adapter);
+        _binding.recyclerView.setAdapter(adapter);
 
         // ViewModel의 busy 상태 관찰
         _viewModel.getBusy().observe(this, busy -> {
@@ -135,47 +145,53 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     }
 
     /**
-     * 모달 인디케이터 다이얼로그 생성 및 표시
+     * Show modal progress dialog
      */
     private void showProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) return;
+        if (_progressDialog != null && _progressDialog.isShowing()) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false); // 작업 중 취소 불가(옵션)
-        // ProgressBar를 포함한 간단한 바인딩-less 레이아웃 생성
+        builder.setCancelable(false);
+
         android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
         layout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
-        int padding = (int) (16 * getResources().getDisplayMetrics().density);
+        int padding = (int) (24 * getResources().getDisplayMetrics().density);
         layout.setPadding(padding, padding, padding, padding);
+        layout.setGravity(android.view.Gravity.CENTER);
+
         android.widget.ProgressBar progressBar = new android.widget.ProgressBar(this);
         progressBar.setIndeterminate(true);
+        progressBar.setIndeterminateTintList(ColorStateList.valueOf(Color.parseColor("#5E35B1")));
+
         android.widget.TextView tv = new android.widget.TextView(this);
         tv.setText("Processing...");
         tv.setTextSize(16);
-        tv.setPadding(padding / 2, 0, 0, 0);
+        tv.setTextColor(Color.parseColor("#212121"));
+        tv.setPadding(padding, 0, 0, 0);
+
         layout.addView(progressBar);
         layout.addView(tv);
 
         builder.setView(layout);
-        progressDialog = builder.create();
-        progressDialog.show();
+        _progressDialog = builder.create();
+        _progressDialog.show();
     }
 
     /**
-     * 프로그레스 다이얼로그 숨기기
+     * Hide progress dialog
      */
     private void hideProgressDialog() {
-        if (progressDialog != null && progressDialog.isShowing()) {
-            progressDialog.dismiss();
-            progressDialog = null;
+        if (_progressDialog != null && _progressDialog.isShowing()) {
+            _progressDialog.dismiss();
+            _progressDialog = null;
         }
     }
 
     /**
-     * Create a seek bar dialog on the screen for setting configuration values
+     * Create a slider dialog on the screen for setting configuration values
      *
-     * @param configuration target configration
-     * @param maxValue      seek bar max value
+     * @param configuration target configuration
+     * @param maxValue      slider max value
      */
     private void showSeekbarDialog(Configuration configuration, int maxValue) {
         final DialogSeekbarBinding binding = DialogSeekbarBinding.inflate(getLayoutInflater());
@@ -190,29 +206,17 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         builder.setView(binding.getRoot());
 
         final AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        binding.seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                binding.setProgress(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // Not used
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // Not used
-            }
+        // Slider 이벤트 리스너
+        binding.slider.addOnChangeListener((slider, value, fromUser) -> {
+            binding.setProgress((int) value);
         });
 
         binding.cancel.setOnClickListener(view -> dialog.dismiss());
         binding.apply.setOnClickListener(view -> {
             dialog.dismiss();
-            final int current = binding.seekbar.getProgress();
+            final int current = (int) binding.slider.getValue();
             _viewModel.setConfiguration(configuration, String.valueOf(current));
         });
 
@@ -234,6 +238,8 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         builder.setView(binding.getRoot());
 
         final AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         final RadioGroup radioGroup = binding.radioGroup;
 
         binding.setTitle(configuration.name());
@@ -246,12 +252,17 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
             _viewModel.setConfiguration(configuration, target.value);
         });
 
+        // MaterialRadioButton 사용
         for (int i = 0; i < configData.size(); i++) {
             final ConfigData target = configData.get(i);
-            final RadioButton radioButton = new RadioButton(this);
+            final MaterialRadioButton radioButton = new MaterialRadioButton(this);
             radioButton.setText(target.name);
             radioButton.setTag(target.value);
             radioButton.setId(i);
+            radioButton.setTextColor(Color.parseColor("#212121"));
+            radioButton.setTextSize(16);
+            radioButton.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#5E35B1")));
+            radioButton.setPadding(16, 16, 16, 16);
             radioGroup.addView(radioButton);
 
             if (target.value.equals(currentValue))
@@ -275,6 +286,8 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         builder.setView(binding.getRoot());
 
         final AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         binding.setTitle(configuration.name());
         binding.editText.setText(currentValue);
         binding.cancel.setOnClickListener(view -> dialog.dismiss());

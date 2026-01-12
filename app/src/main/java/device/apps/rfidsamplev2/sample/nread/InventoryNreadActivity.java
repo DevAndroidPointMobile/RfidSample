@@ -55,6 +55,7 @@ public class InventoryNreadActivity extends AppCompatActivity implements OnInven
         final ActivityInventoryNreadBinding binding = ActivityInventoryNreadBinding.inflate(getLayoutInflater());
         binding.setActivity(InventoryNreadActivity.this);
         binding.recyclerView.setAdapter(adapter);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
     }
 

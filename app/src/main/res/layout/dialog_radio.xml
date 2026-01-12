@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
@@ -7,58 +8,84 @@
         <variable
             name="title"
             type="String" />
-
     </data>
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{title}"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            tools:text="TARGET" />
-
-        <RadioGroup
-            android:id="@+id/radio_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp" />
+        android:layout_margin="24dp"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <Button
-                android:id="@+id/cancel"
-                android:layout_width="0dp"
+            <!-- Title -->
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#999999"
-                android:text="CANCEL" />
+                android:layout_marginBottom="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="@{title}"
+                android:textAlignment="center"
+                android:textColor="#212121"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:text="TARGET" />
 
-            <View
-                android:layout_width="8dp"
-                android:layout_height="0dp" />
-
-            <Button
-                android:id="@+id/apply"
-                android:layout_width="0dp"
+            <!-- RadioGroup Container -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:backgroundTint="#F44336"
-                android:text="APPLY" />
+                android:layout_marginBottom="24dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="#E0E0E0"
+                app:strokeWidth="1dp">
 
+                <RadioGroup
+                    android:id="@+id/radio_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/cancel"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Cancel"
+                    android:textAllCaps="false"
+                    android:textColor="#757575"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/apply"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Apply"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    app:backgroundTint="#5E35B1"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
-
+    </com.google.android.material.card.MaterialCardView>
 </layout>

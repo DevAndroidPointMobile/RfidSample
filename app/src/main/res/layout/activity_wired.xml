@@ -22,38 +22,202 @@
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F5F5F5"
         android:orientation="vertical"
         tools:context=".sample.wired.WiredActivity">
 
-        <Toolbar
+        <!-- Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/gradient_toolbar"
+            android:elevation="4dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Wire Connection"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:titleTextColor="@android:color/white" />
+
+        <!-- Connection Status Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#673AB7"
-            android:title="Wire connection"
-            android:titleTextColor="#FFFFFF" />
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-        <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="Cable Icon"
+                    android:src="@drawable/ic_cable"
+                    app:tint="#5E35B1" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Connection Status"
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@{state}"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="DISCONNECTED" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/status_indicator"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/circle_indicator"
+                    app:connectionState="@{isConnected}" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Instructions Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="@{state}"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="ConnectState.DISCONNECTED" />
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-        <View
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Info"
+                        android:src="@drawable/ic_info"
+                        app:tint="#5E35B1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Connection Guide"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="1. Attach the device to the RF88 RFID sled"
+                    android:textColor="#616161"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="2. Tap the Connect button below"
+                    android:textColor="#616161"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Device Illustration -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
 
-        <Button
-            android:onClick="@{activity::onConnection}"
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:contentDescription="Cable Connection"
+                android:src="@drawable/ic_cable"
+                app:tint="#BDBDBD" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="@{isConnected ? `Device Connected` : `Ready to Connect`}"
+                android:textColor="#757575"
+                android:textSize="18sp"
+                tools:text="Ready to Connect" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@{isConnected ? `You can now use RFID features` : `Connect your device via USB cable`}"
+                android:textColor="#9E9E9E"
+                android:textSize="14sp"
+                tools:text="Connect your device via USB cable" />
+        </LinearLayout>
+
+        <!-- Connect Button -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:connectionState="@{isConnected}"
-            tools:text="CONNECT" />
+            android:background="@android:color/white"
+            android:elevation="8dp"
+            android:padding="16dp">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_connection"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{activity::onConnection}"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:connectState="@{isConnected}"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_cable"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                tools:text="Connect" />
+        </LinearLayout>
     </LinearLayout>
-
 </layout>

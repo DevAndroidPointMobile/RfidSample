@@ -41,6 +41,7 @@ public class BarcodeActivity extends AppCompatActivity {
      */
     private void initializationContentView() {
         final ActivityBarcodeBinding binding = ActivityBarcodeBinding.inflate(getLayoutInflater());
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
     }
 }

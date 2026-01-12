@@ -14,9 +14,9 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class WiredActivity extends AppCompatActivity {
 
-    private BaseViewModel _baseViewModel;
-    private WireViewModel _viewModel;
-    private ActivityWiredBinding _binding;
+    private BaseViewModel baseViewModel;
+    private WireViewModel viewModel;
+    private ActivityWiredBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,8 +29,8 @@ public class WiredActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        _viewModel.dispose(WiredActivity.this);
-        _baseViewModel.connectState.removeObservers(this);
+        viewModel.dispose(WiredActivity.this);
+        baseViewModel.connectState.removeObservers(this);
     }
 
     /**
@@ -39,11 +39,10 @@ public class WiredActivity extends AppCompatActivity {
      * @param view Button view
      */
     public void onConnection(View view) {
-        if (_baseViewModel.connectState.getValue() != DeviceConnectionState.CONNECTED) {
-            // TODO, Manual connection action for PM90.
-             _viewModel.connect();
+        if (baseViewModel.connectState.getValue() != DeviceConnectionState.CONNECTED) {
+            viewModel.connect();
         } else {
-            _viewModel.disconnect();
+            viewModel.disconnect();
         }
     }
 
@@ -51,28 +50,29 @@ public class WiredActivity extends AppCompatActivity {
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
-        _viewModel = new ViewModelProvider(this).get(WireViewModel.class);
-        _viewModel.launch(WiredActivity.this, _baseViewModel.connectState.getValue() == DeviceConnectionState.CONNECTED);
+        baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
+        viewModel = new ViewModelProvider(this).get(WireViewModel.class);
+        viewModel.launch(WiredActivity.this, baseViewModel.connectState.getValue() == DeviceConnectionState.CONNECTED);
     }
 
     /**
      * Initialize the views used on the activity
      */
     private void initializationContentView() {
-        _binding = ActivityWiredBinding.inflate(getLayoutInflater());
-        _binding.setActivity(WiredActivity.this);
-        setContentView(_binding.getRoot());
+        binding = ActivityWiredBinding.inflate(getLayoutInflater());
+        binding.setActivity(WiredActivity.this);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
+        setContentView(binding.getRoot());
     }
 
     /**
      * Obseve the data used on the screen and provide it to the view using data binding
      */
     private void observeData() {
-        _baseViewModel.connectState.observe(this, state -> {
+        baseViewModel.connectState.observe(this, state -> {
             Log.d("TAG", "onCreate: " + state.name());
-            _binding.setState(state.toString());
-            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
+            binding.setState(state.toString());
+            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 }
