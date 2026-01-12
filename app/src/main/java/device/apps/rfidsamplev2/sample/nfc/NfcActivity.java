@@ -11,15 +11,18 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModelProvider;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import device.apps.rfidsamplev2.BaseViewModel;
 import device.apps.rfidsamplev2.RFIDSampleV2;
@@ -29,13 +32,15 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 public class NfcActivity extends AppCompatActivity {
 
-    private final Rf88Manager _controller = Rf88Manager.getInstance();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
 
-    private BaseViewModel _viewModel;
-    private BluetoothManager _manager;
-    private NfcAdapter _adapter;
-    private PendingIntent _pendingIntent;
-    private ActivityNfcBinding _binding;
+    private BaseViewModel viewModel;
+    private BluetoothManager manager;
+    private NfcAdapter nfcAdapter;
+    private PendingIntent pendingIntent;
+
+    private ActivityNfcBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,18 +49,25 @@ public class NfcActivity extends AppCompatActivity {
         initializationContentView();
         initializationNfcFunction();
         observeData();
+        setupToolbar();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        _adapter.enableForegroundDispatch(this, _pendingIntent, null, null);
+        // NFC 어댑터 null 체크
+        if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+            nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        _adapter.disableForegroundDispatch(this);
+        // NFC 어댑터 null 체크
+        if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+            nfcAdapter.disableForegroundDispatch(this);
+        }
     }
 
     @Override
@@ -68,46 +80,83 @@ public class NfcActivity extends AppCompatActivity {
             analyzerNdefMessage(intent);
     }
 
+    /**
+     * Disconnect from the Bluetooth device
+     *
+     * @param view Button view
+     */
     public void disconnect(View view) {
-        _controller.disconnect();
+        rf88Manager.disconnect();
+    }
+
+    /**
+     * Setup toolbar with back navigation
+     */
+    private void setupToolbar() {
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     /**
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
+        viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
     }
 
     /**
      * Initialize the views used on the activity
      */
     private void initializationContentView() {
-        _binding = ActivityNfcBinding.inflate(getLayoutInflater());
-        _binding.setActivity(this);
-        setContentView(_binding.getRoot());
+        binding = ActivityNfcBinding.inflate(getLayoutInflater());
+        binding.setActivity(this);
+        setContentView(binding.getRoot());
     }
 
     /**
-     * Obseve the data used on the screen and provide it to the view using data binding
+     * Observe the data used on the screen and provide it to the view using data binding
      */
     private void observeData() {
-        _viewModel.connectState.observe(this, state -> {
-            _binding.setState(state.name());
-            _binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
+        viewModel.connectState.observe(this, state -> {
+            binding.setState(state.name());
+            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
         });
     }
 
     /**
-     *
+     * Initialize NFC functionality and check NFC support
      */
     private void initializationNfcFunction() {
-        _manager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        _adapter = NfcAdapter.getDefaultAdapter(this);
+        manager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
+        // NFC 지원 여부 확인
+        if (nfcAdapter == null) {
+            showNfcNotSupportedDialog();
+            return;
+        }
+
+        // NFC 활성화 여부 확인
+        if (!nfcAdapter.isEnabled()) {
+            Toast.makeText(this, "Please enable NFC in your device settings", Toast.LENGTH_LONG).show();
+        }
+
+        // PendingIntent 설정
         final Intent intent = new Intent(this, getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        _pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+        pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
+    }
+
+    /**
+     * Show dialog when NFC is not supported
+     */
+    private void showNfcNotSupportedDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("NFC Not Supported")
+                .setMessage("This device does not support NFC.\n\nPlease use Bluetooth or Wire connection instead.")
+                .setPositiveButton("OK", (dialog, which) -> finish())
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
     }
 
     /**
@@ -131,11 +180,14 @@ public class NfcActivity extends AppCompatActivity {
                 if (mimeType != null && mimeType.contains("application/vnd.bluetooth.ep.oob")) {
                     try {
                         final String address = parseMacAddressToNFC(record.getPayload());
-                        final BluetoothDevice device = _manager.getAdapter().getRemoteDevice(address);
-                        _controller.connect(device.getAddress());
+                        final BluetoothDevice device = manager.getAdapter().getRemoteDevice(address);
+                        executorService.execute(() -> rf88Manager.connect(device.getAddress()));
+
+                        Toast.makeText(this, "Connecting to: " + address, Toast.LENGTH_SHORT).show();
 
                     } catch (Exception e) {
                         e.printStackTrace();
+                        Toast.makeText(this, "Failed to connect: " + e.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -145,8 +197,8 @@ public class NfcActivity extends AppCompatActivity {
     /**
      * Convert the byte array passed as an argument to a usable hexadecimal format and return it
      *
-     * @param data mac adress byte array
-     * @return Strings mac adress
+     * @param data mac address byte array
+     * @return Strings mac address
      */
     private String parseMacAddressToNFC(byte[] data) {
         ByteBuffer buffer = ByteBuffer.wrap(data);
@@ -168,7 +220,7 @@ public class NfcActivity extends AppCompatActivity {
      * Reverse the byte array passed as an argument
      *
      * @param array target byte array
-     * @return revesed byte array
+     * @return reversed byte array
      */
     private byte[] reverseArray(byte[] array) {
         byte[] reversedArray = new byte[array.length];

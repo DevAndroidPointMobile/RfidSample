@@ -10,8 +10,7 @@ import ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener;
 // TODO, If you want to develop scanner control, refer to tScanner folder in Emkit SDK.
 public class BarcodeViewModel extends ViewModel implements OnHardwareKeyListener {
 
-    private Rf88Manager manager = Rf88Manager.getInstance();
-
+    private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
 
     private static final int OPEN = 1;
     private static final int CLOSE = 0;
@@ -32,6 +31,6 @@ public class BarcodeViewModel extends ViewModel implements OnHardwareKeyListener
      * Set up a callback to receive the trigger event
      */
     public void launch() {
-        manager.setOnHardwareKeyListener(this);
+        rf88Manager.setOnHardwareKeyListener(this);
     }
 }

@@ -16,47 +16,228 @@
         <variable
             name="isConnected"
             type="Boolean" />
-
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#F5F5F5"
         android:orientation="vertical"
-        tools:context=".sample.bluetooth.BluetoothActivity">
+        tools:context=".sample.nfc.NfcActivity">
 
-        <Toolbar
+        <!-- Toolbar -->
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@drawable/gradient_toolbar"
+            android:elevation="4dp"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Tap to Pair"
+            app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:titleTextColor="@android:color/white" />
+
+        <!-- Connection Status Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#673AB7"
-            android:title="Tap to pair connection"
-            android:titleTextColor="#FFFFFF" />
+            android:layout_margin="16dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-        <TextView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:contentDescription="NFC Icon"
+                    android:src="@drawable/ic_nfc"
+                    android:tint="#5E35B1" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="Connection Status"
+                        android:textColor="#757575"
+                        android:textSize="12sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="@{state}"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="DISCONNECTED" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/status_indicator"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:background="@drawable/circle_indicator"
+                    app:connectionState="@{isConnected}" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Instructions Card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:text="@{state}"
-            android:textAlignment="center"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            tools:text="ConnectState.DISCONNECTED" />
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-        <ImageView
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:contentDescription="Info"
+                        android:src="@drawable/ic_info"
+                        android:tint="#5E35B1" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="How to Connect"
+                        android:textColor="#212121"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="1. Ensure NFC is enabled on your device"
+                    android:textColor="#616161"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:lineSpacingExtra="4dp"
+                    android:text="2. Hold your device close to the NFC tag"
+                    android:textColor="#616161"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="4dp"
+                    android:text="3. Wait for the connection to be established automatically"
+                    android:textColor="#616161"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- NFC Illustration -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="24dp"
-            android:src="@drawable/ttp" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="32dp">
 
-        <Button
+            <!-- NFC Animation Placeholder -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                app:cardBackgroundColor="#F3E5F5"
+                app:cardCornerRadius="100dp"
+                app:cardElevation="4dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="Tap to Pair Illustration"
+                    android:padding="40dp"
+                    android:src="@drawable/ic_nfc"
+                    android:tint="#5E35B1" />
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif-medium"
+                android:gravity="center"
+                android:text="@{isConnected ? `Device Connected` : `Tap your device on the NFC tag`}"
+                android:textColor="#757575"
+                android:textSize="18sp"
+                tools:text="Tap your device on the NFC tag" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@{isConnected ? `You can now use RFID features` : `Connection will be established automatically`}"
+                android:textColor="#9E9E9E"
+                android:textSize="14sp"
+                tools:text="Connection will be established automatically" />
+        </LinearLayout>
+
+        <!-- Disconnect Button -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:enabled="@{isConnected}"
-            android:onClick="@{activity::disconnect}"
-            android:text="Disconnect"
-            tools:textColor="#FFFFFF" />
+            android:background="@android:color/white"
+            android:elevation="8dp"
+            android:padding="16dp">
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_disconnect"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:enabled="@{isConnected}"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{activity::disconnect}"
+                android:text="Disconnect"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                app:backgroundTint="@android:color/white"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_bluetooth_disabled"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:strokeColor="#5E35B1"
+                app:strokeWidth="2dp" />
+        </LinearLayout>
     </LinearLayout>
-
 </layout>

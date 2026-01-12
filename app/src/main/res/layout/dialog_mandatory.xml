@@ -1,54 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp"
+        app:strokeWidth="0dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mandatory command"
-            android:textAlignment="center"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:padding="24dp">
 
-        <Button
-            android:id="@+id/read"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="READ" />
+            <!-- Title -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/write"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="WRITE" />
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:contentDescription="RFID Icon"
+                    android:src="@drawable/ic_rfid"
+                    android:tint="#5E35B1" />
 
-        <Button
-            android:id="@+id/lock"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="LOCK" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Mandatory Command"
+                    android:textColor="#212121"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/kill"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="KILL" />
+            <!-- Command Buttons Grid -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/cancel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#999999"
-            android:text="CANCEL" />
+                <!-- READ Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#5E35B1"
+                    app:strokeWidth="2dp">
 
-    </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/read"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
 
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="Read"
+                            android:src="@drawable/ic_read"
+                            android:tint="#5E35B1" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="READ"
+                            android:textColor="#5E35B1"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="Execute"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:tint="#5E35B1" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- WRITE Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#5E35B1"
+                    app:strokeWidth="2dp">
+
+                    <LinearLayout
+                        android:id="@+id/write"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="Write"
+                            android:src="@drawable/ic_write"
+                            android:tint="#5E35B1" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="WRITE"
+                            android:textColor="#5E35B1"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="Execute"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:tint="#5E35B1" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- LOCK Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#FF9800"
+                    app:strokeWidth="2dp">
+
+                    <LinearLayout
+                        android:id="@+id/lock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="Lock"
+                            android:src="@drawable/ic_lock"
+                            android:tint="#FF9800" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="LOCK"
+                            android:textColor="#FF9800"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="Execute"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:tint="#FF9800" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- KILL Button -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#F44336"
+                    app:strokeWidth="2dp">
+
+                    <LinearLayout
+                        android:id="@+id/kill"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:contentDescription="Kill"
+                            android:src="@drawable/ic_kill"
+                            android:tint="#F44336" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:layout_weight="1"
+                            android:fontFamily="sans-serif-medium"
+                            android:text="KILL"
+                            android:textColor="#F44336"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="Execute"
+                            android:src="@drawable/ic_arrow_forward"
+                            android:tint="#F44336" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+            </LinearLayout>
+
+            <!-- Cancel Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cancel"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:fontFamily="sans-serif-medium"
+                android:text="Cancel"
+                android:textAllCaps="false"
+                android:textColor="#757575"
+                android:textSize="16sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </layout>

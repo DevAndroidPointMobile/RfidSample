@@ -4,7 +4,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AlertDialog;
@@ -13,7 +12,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.radiobutton.MaterialRadioButton;
-import com.google.android.material.slider.Slider;
 
 import java.util.List;
 
@@ -28,9 +26,9 @@ import device.apps.rfidsamplev2.sample.configuration.ui.ConfigurationAdapter;
 
 public class ConfigActivity extends AppCompatActivity implements OnTileClickListener {
 
-    private ConfigViewModel _viewModel;
-    private AlertDialog _progressDialog;
-    private ActivityConfigBinding _binding;
+    private ConfigViewModel viewModel;
+    private AlertDialog progressDialog;
+    private ActivityConfigBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +94,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
      * @param view Button view
      */
     public void onFactoryDefault(View view) {
-        _viewModel.factoryDefault();
+        viewModel.factoryDefault();
     }
 
     /**
@@ -105,37 +103,37 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
      * @param view Button view
      */
     public void onApply(View view) {
-        _viewModel.apply();
+        viewModel.apply();
     }
 
     /**
      * Setup toolbar with back navigation
      */
     private void setupToolbar() {
-        _binding.toolbar.setNavigationOnClickListener(v -> finish());
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     /**
      * Initialize the View model
      */
     private void initializationViewModel() {
-        _viewModel = new ViewModelProvider(this).get(ConfigViewModel.class);
-        _viewModel.launch();
+        viewModel = new ViewModelProvider(this).get(ConfigViewModel.class);
+        viewModel.launch();
     }
 
     /**
      * Initialize the views used on the activity
      */
     private void initializationContentView() {
-        _binding = ActivityConfigBinding.inflate(getLayoutInflater());
-        _binding.setActivity(this);
-        setContentView(_binding.getRoot());
+        binding = ActivityConfigBinding.inflate(getLayoutInflater());
+        binding.setActivity(this);
+        setContentView(binding.getRoot());
 
-        final ConfigurationAdapter adapter = new ConfigurationAdapter(_viewModel, this, this);
-        _binding.recyclerView.setAdapter(adapter);
+        final ConfigurationAdapter adapter = new ConfigurationAdapter(viewModel, this, this);
+        binding.recyclerView.setAdapter(adapter);
 
         // ViewModel의 busy 상태 관찰
-        _viewModel.getBusy().observe(this, busy -> {
+        viewModel.getBusy().observe(this, busy -> {
             if (busy != null && busy) {
                 showProgressDialog();
             } else {
@@ -148,7 +146,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
      * Show modal progress dialog
      */
     private void showProgressDialog() {
-        if (_progressDialog != null && _progressDialog.isShowing()) return;
+        if (progressDialog != null && progressDialog.isShowing()) return;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
@@ -173,17 +171,17 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         layout.addView(tv);
 
         builder.setView(layout);
-        _progressDialog = builder.create();
-        _progressDialog.show();
+        progressDialog = builder.create();
+        progressDialog.show();
     }
 
     /**
      * Hide progress dialog
      */
     private void hideProgressDialog() {
-        if (_progressDialog != null && _progressDialog.isShowing()) {
-            _progressDialog.dismiss();
-            _progressDialog = null;
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
         }
     }
 
@@ -195,7 +193,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
      */
     private void showSeekbarDialog(Configuration configuration, int maxValue) {
         final DialogSeekbarBinding binding = DialogSeekbarBinding.inflate(getLayoutInflater());
-        final LiveData<String> liveData = _viewModel.getConfiguration(configuration);
+        final LiveData<String> liveData = viewModel.getConfiguration(configuration);
         final int progress = Integer.parseInt(liveData.getValue());
 
         binding.setTitle(configuration.name());
@@ -217,7 +215,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         binding.apply.setOnClickListener(view -> {
             dialog.dismiss();
             final int current = (int) binding.slider.getValue();
-            _viewModel.setConfiguration(configuration, String.valueOf(current));
+            viewModel.setConfiguration(configuration, String.valueOf(current));
         });
 
         dialog.show();
@@ -230,7 +228,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
      * @param configData    configuration values
      */
     private void showRadioDialog(Configuration configuration, List<ConfigData> configData) {
-        final LiveData<String> liveData = _viewModel.getConfiguration(configuration);
+        final LiveData<String> liveData = viewModel.getConfiguration(configuration);
         final String currentValue = liveData.getValue();
 
         final DialogRadioBinding binding = DialogRadioBinding.inflate(getLayoutInflater());
@@ -249,7 +247,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
             dialog.dismiss();
             final int selectedId = radioGroup.getCheckedRadioButtonId();
             final ConfigData target = configData.get(selectedId);
-            _viewModel.setConfiguration(configuration, target.value);
+            viewModel.setConfiguration(configuration, target.value);
         });
 
         // MaterialRadioButton 사용
@@ -278,7 +276,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
      * @param configuration target configuration
      */
     private void showInputDialog(Configuration configuration) {
-        final LiveData<String> liveData = _viewModel.getConfiguration(configuration);
+        final LiveData<String> liveData = viewModel.getConfiguration(configuration);
         final String currentValue = liveData.getValue();
 
         final DialogInputBinding binding = DialogInputBinding.inflate(getLayoutInflater());
@@ -294,7 +292,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         binding.apply.setOnClickListener(view -> {
             dialog.dismiss();
             final String result = binding.editText.getText().toString();
-            _viewModel.setConfiguration(configuration, result);
+            viewModel.setConfiguration(configuration, result);
         });
 
         dialog.show();

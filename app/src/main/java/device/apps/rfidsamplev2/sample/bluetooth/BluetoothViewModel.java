@@ -24,15 +24,15 @@ import ex.dev.sdk.rf88.Rf88Manager;
 
 public class BluetoothViewModel extends ViewModel {
 
-    private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
-    private final Rf88Manager _controller = Rf88Manager.getInstance();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
+    private final BroadcastReceiver receiver = new DiscoveryReceiver();
+    private BluetoothManager bluetoothManager;
+
     private final MutableLiveData<Boolean> _discoveryState = new MutableLiveData<>(false);
-    private final MutableLiveData<List<BluetoothDevice>> _devicesState = new MutableLiveData<>(new ArrayList<>());
-    private final BroadcastReceiver _receiver = new DiscoveryReceiver();
-
-    private BluetoothManager _manager;
-
     public LiveData<Boolean> discoveryState = _discoveryState;
+
+    private final MutableLiveData<List<BluetoothDevice>> _devicesState = new MutableLiveData<>(new ArrayList<>());
     public LiveData<List<BluetoothDevice>> devicesState = _devicesState;
 
     /**
@@ -41,8 +41,8 @@ public class BluetoothViewModel extends ViewModel {
      * @param context Application context
      */
     public void launch(Context context) {
-        ContextCompat.registerReceiver(context, _receiver, getIntentFilter(), ContextCompat.RECEIVER_EXPORTED);
-        _manager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
+        ContextCompat.registerReceiver(context, receiver, getIntentFilter(), ContextCompat.RECEIVER_EXPORTED);
+        bluetoothManager = (BluetoothManager) context.getSystemService(Context.BLUETOOTH_SERVICE);
     }
 
     /**
@@ -51,7 +51,7 @@ public class BluetoothViewModel extends ViewModel {
      * @param context : application context
      */
     public void dispose(Context context) {
-        context.unregisterReceiver(_receiver);
+        context.unregisterReceiver(receiver);
     }
 
     /**
@@ -60,7 +60,7 @@ public class BluetoothViewModel extends ViewModel {
     @SuppressLint("MissingPermission")
     public void startDiscovery() {
         _devicesState.setValue(new ArrayList<>());
-        _manager.getAdapter().startDiscovery();
+        bluetoothManager.getAdapter().startDiscovery();
     }
 
     /**
@@ -68,7 +68,7 @@ public class BluetoothViewModel extends ViewModel {
      */
     @SuppressLint("MissingPermission")
     public void stopDiscovery() {
-        _manager.getAdapter().cancelDiscovery();
+        bluetoothManager.getAdapter().cancelDiscovery();
     }
 
     /**
@@ -77,14 +77,14 @@ public class BluetoothViewModel extends ViewModel {
      * @param device Target blueooth device
      */
     public void connect(BluetoothDevice device) {
-        _executorService.execute(() -> _controller.connect(device.getAddress()));
+        executorService.execute(() -> rf88Manager.connect(device.getAddress()));
     }
 
     /**
      * Disconnect from the Bluetooth device
      */
     public void disconnect() {
-        _executorService.execute(_controller::disconnect);
+        executorService.execute(rf88Manager::disconnect);
     }
 
     /**
@@ -137,7 +137,7 @@ public class BluetoothViewModel extends ViewModel {
                     foundDevice(intent);
                     break;
                 case BluetoothDevice.ACTION_ACL_DISCONNECTED:
-                    _controller.disconnect();
+                    rf88Manager.disconnect();
                     break;
                 case BluetoothAdapter.ACTION_DISCOVERY_STARTED:
                     _discoveryState.setValue(true);

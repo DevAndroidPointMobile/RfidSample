@@ -14,8 +14,8 @@ import ex.dev.sdk.rf88.Rf88Manager;
 
 public class ConfigViewModel extends ViewModel {
 
-    private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
-    private Rf88Manager controller = Rf88Manager.getInstance();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
 
     public Map<Configuration, MutableLiveData<String>> configurations = new HashMap<>();
 
@@ -66,7 +66,7 @@ public class ConfigViewModel extends ViewModel {
      */
     public void load() {
         // 옵션: load 동작도 busy 표시하도록 변경 가능
-        _executorService.execute(() -> {
+        executorService.execute(() -> {
             setBusy(true);
             for (Configuration value : Configuration.values()) {
                 final String currentValue = loadConfiguration(value);
@@ -81,7 +81,7 @@ public class ConfigViewModel extends ViewModel {
      * Set the values currently held by the LiveData to RF88
      */
     public void apply() {
-        _executorService.execute(() -> {
+        executorService.execute(() -> {
             setBusy(true);
             for (Configuration value : Configuration.values()) {
                 final LiveData<String> target = getConfiguration(value);
@@ -96,9 +96,9 @@ public class ConfigViewModel extends ViewModel {
      * Perform a factory default reset.
      */
     public void factoryDefault() {
-        _executorService.execute(() -> {
+        executorService.execute(() -> {
             setBusy(true);
-            controller.factoryDefaults();
+            rf88Manager.factoryDefaults();
             // 재로딩까지 하면 사용자에게 진행상태를 보여줌
             load();
             setBusy(false); // load() 내부에서도 setBusy를 조절하므로 중복 가능. 안전을 위해 남겨둠.
@@ -110,47 +110,47 @@ public class ConfigViewModel extends ViewModel {
     private String loadConfiguration(Configuration configuration) {
         switch (configuration) {
             case START_Q:
-                return controller.getStartQ();
+                return rf88Manager.getStartQ();
             case MIN_Q:
-                return controller.getMinQ();
+                return rf88Manager.getMinQ();
             case MAX_Q:
-                return controller.getMaxQ();
+                return rf88Manager.getMaxQ();
             case TARGET:
-                return controller.getTarget();
+                return rf88Manager.getTarget();
             case ACTION:
-                return controller.getAction();
+                return rf88Manager.getAction();
             case ACCESS_PASSWORD:
-                return controller.getAccessPassword();
+                return rf88Manager.getAccessPassword();
             case BANK:
-                return controller.getMemoryBank();
+                return rf88Manager.getMemoryBank();
             case POINTER:
-                return controller.getPointer();
+                return rf88Manager.getPointer();
             case VOLUME:
-                return controller.getBuzzerVolume();
+                return rf88Manager.getBuzzerVolume();
             case SUSPEND_TIME:
-                return controller.getSuspendTimeout();
+                return rf88Manager.getSuspendTimeout();
             case KEY_MAP:
-                return controller.getDualTriggerFunctionCode();
+                return rf88Manager.getDualTriggerFunctionCode();
             case INVENTORY_RESPONSE:
-                return controller.getPacketOption();
+                return rf88Manager.getPacketOption();
             case INCREMENT_Q:
-                return controller.getIncrementQ();
+                return rf88Manager.getIncrementQ();
             case DECREMENT_Q:
-                return controller.getDecrementQ();
+                return rf88Manager.getDecrementQ();
             case FIXED_Q:
-                return controller.getFixedQ();
+                return rf88Manager.getFixedQ();
             case CONTINUOUS:
-                return controller.getContinuousMode();
+                return rf88Manager.getContinuousMode();
             case VIBRATE:
-                return controller.getVibratorMode();
+                return rf88Manager.getVibratorMode();
             case LINK_PROFILE:
-                return controller.getLinkProfile();
+                return rf88Manager.getLinkProfile();
             case POWER:
-                return controller.getPower();
+                return rf88Manager.getPower();
             case SESSION:
-                return controller.getSession();
+                return rf88Manager.getSession();
             case SEARCH_MODE:
-                return controller.getSearchMode();
+                return rf88Manager.getSearchMode();
             default:
                 throw new IllegalArgumentException("Unexpected value: " + configuration);
         }
@@ -159,47 +159,47 @@ public class ConfigViewModel extends ViewModel {
     private String applyConfiguration(Configuration configuration, String newValue) {
         switch (configuration) {
             case START_Q:
-                return controller.setStartQ(newValue);
+                return rf88Manager.setStartQ(newValue);
             case MIN_Q:
-                return controller.setMinQ(newValue);
+                return rf88Manager.setMinQ(newValue);
             case MAX_Q:
-                return controller.setMaxQ(newValue);
+                return rf88Manager.setMaxQ(newValue);
             case TARGET:
-                return controller.setTarget(newValue);
+                return rf88Manager.setTarget(newValue);
             case ACTION:
-                return controller.setAction(newValue);
+                return rf88Manager.setAction(newValue);
             case BANK:
-                return controller.setMemoryBank(newValue);
+                return rf88Manager.setMemoryBank(newValue);
             case POINTER:
-                return controller.setPointer(newValue);
+                return rf88Manager.setPointer(newValue);
             case ACCESS_PASSWORD:
-                return controller.setAccessPassword(newValue);
+                return rf88Manager.setAccessPassword(newValue);
             case VOLUME:
-                return controller.setBuzzerVolume(newValue);
+                return rf88Manager.setBuzzerVolume(newValue);
             case SUSPEND_TIME:
-                return controller.setSuspendTimeout(newValue);
+                return rf88Manager.setSuspendTimeout(newValue);
             case KEY_MAP:
-                return controller.setDualTriggerFunctionCode(newValue);
+                return rf88Manager.setDualTriggerFunctionCode(newValue);
             case INVENTORY_RESPONSE:
-                return controller.setPacketOption(newValue);
+                return rf88Manager.setPacketOption(newValue);
             case INCREMENT_Q:
-                return controller.setIncrementQ(newValue);
+                return rf88Manager.setIncrementQ(newValue);
             case DECREMENT_Q:
-                return controller.setDecrementQ(newValue);
+                return rf88Manager.setDecrementQ(newValue);
             case FIXED_Q:
-                return controller.setFixedQ(newValue);
+                return rf88Manager.setFixedQ(newValue);
             case CONTINUOUS:
-                return controller.setContinuousMode(newValue);
+                return rf88Manager.setContinuousMode(newValue);
             case VIBRATE:
-                return controller.setVibratorMode(newValue);
+                return rf88Manager.setVibratorMode(newValue);
             case LINK_PROFILE:
-                return controller.setLinkProfile(newValue);
+                return rf88Manager.setLinkProfile(newValue);
             case POWER:
-                return controller.setPower(newValue);
+                return rf88Manager.setPower(newValue);
             case SESSION:
-                return controller.setSession(newValue);
+                return rf88Manager.setSession(newValue);
             case SEARCH_MODE:
-                return controller.setSearchMode(newValue);
+                return rf88Manager.setSearchMode(newValue);
             default:
                 throw new IllegalArgumentException("Unexpected value: " + configuration);
         }

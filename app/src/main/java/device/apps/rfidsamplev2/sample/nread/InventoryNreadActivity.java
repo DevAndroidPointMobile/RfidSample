@@ -3,32 +3,17 @@ package device.apps.rfidsamplev2.sample.nread;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
-import device.apps.rfidsamplev2.BaseViewModel;
-import device.apps.rfidsamplev2.R;
-import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.databinding.ActivityInventoryBinding;
 import device.apps.rfidsamplev2.databinding.ActivityInventoryNreadBinding;
-import device.apps.rfidsamplev2.sample.inventory.InventoryActivity;
-import device.apps.rfidsamplev2.sample.inventory.InventoryViewModel;
 import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
-import device.apps.rfidsamplev2.sample.inventory.ui.InventoryAdapter;
-import device.apps.rfidsamplev2.sample.nread.data.InventoryNreadResponse;
 import device.apps.rfidsamplev2.sample.nread.ui.InventoryNreadAdapter;
-import ex.dev.sdk.rf88.Rf88Manager;
-import ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener;
-import ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener;
 
 public class InventoryNreadActivity extends AppCompatActivity implements OnInventoryClickListener {
 
-    private InventoryNreadViewModel viewModel;
     private InventoryNreadAdapter adapter;
+    private InventoryNreadViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +27,6 @@ public class InventoryNreadActivity extends AppCompatActivity implements OnInven
      * Initialize the View model
      */
     private void initializationViewModel() {
-        final BaseViewModel baseViewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
         viewModel = new ViewModelProvider(this).get(InventoryNreadViewModel.class);
         viewModel.launch();
     }

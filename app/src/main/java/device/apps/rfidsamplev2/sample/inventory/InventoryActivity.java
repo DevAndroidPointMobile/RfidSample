@@ -83,10 +83,26 @@ public class InventoryActivity extends AppCompatActivity implements OnInventoryC
         builder.setView(binding.getRoot());
         final AlertDialog dialog = builder.create();
         binding.cancel.setOnClickListener(view -> dialog.dismiss());
-        binding.read.setOnClickListener(view -> viewModel.read(response));
-        binding.write.setOnClickListener(view -> viewModel.write(response));
-        binding.lock.setOnClickListener(view -> viewModel.lock(response));
-        binding.kill.setOnClickListener(view -> viewModel.kill(response));
+        // Read
+        binding.read.setOnClickListener(view -> {
+            viewModel.read(response);
+            dialog.dismiss();
+        });
+        // Write
+        binding.write.setOnClickListener(view -> {
+            viewModel.write(response);
+            dialog.dismiss();
+        });
+        // Lock
+        binding.lock.setOnClickListener(view -> {
+            viewModel.lock(response);
+            dialog.dismiss();
+        });
+        // Kill
+        binding.kill.setOnClickListener(view -> {
+            viewModel.kill(response);
+            dialog.dismiss();
+        });
         dialog.show();
     }
 }
