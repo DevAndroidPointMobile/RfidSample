@@ -14,6 +14,8 @@ import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
 import ex.dev.sdk.rf88.Rf88Manager;
 import ex.dev.sdk.rf88.domain.contract.Configuration;
 import ex.dev.sdk.rf88.domain.contract.Contract;
+import ex.dev.sdk.rf88.domain.enums.LockActionMask;
+import ex.dev.sdk.rf88.domain.enums.LockMemoryMask;
 import ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener;
 import ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener;
 import ex.dev.sdk.rf88.utils.RfidUtils;
@@ -99,7 +101,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
      */
     public void lock(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final String result = controller.lock("00300", "00200", selectMask);
+        final String result = controller.lock(LockMemoryMask.EPC, LockActionMask.LOCK, selectMask);
         if (result.contains(Contract.ResultCodes.SUCCESS)) {
             Log.i(TAG, "lock: success, @result = " + result);
         } else {
