@@ -12,8 +12,8 @@ import java.util.List;
 
 import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
 import ex.dev.sdk.rf88.Rf88Manager;
-import ex.dev.sdk.rf88.domain.contract.Configuration;
-import ex.dev.sdk.rf88.domain.contract.Contract;
+import ex.dev.sdk.rf88.domain.constants.Configuration;
+import ex.dev.sdk.rf88.domain.constants.Constants;
 import ex.dev.sdk.rf88.domain.enums.LockActionMask;
 import ex.dev.sdk.rf88.domain.enums.LockMemoryMask;
 import ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener;
@@ -70,7 +70,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     public void read(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String result = controller.read(Configuration.MemoryBank.RESERVED, "0", "2", selectMask);
-        if (result.contains(Contract.ResultCodes.SUCCESS)) {
+        if (result.contains(Constants.ResultCodes.SUCCESS)) {
             Log.i(TAG, "read: success, @result = " + result);
         } else {
             Log.e(TAG, "read: fail, @result = " + result);
@@ -87,7 +87,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
         final String writeData = "11112222333344445555";
         final String pc = RfidUtils.calculatePC(writeData, true, false, false, "00");
         final String result = controller.write(Configuration.MemoryBank.EPC, "1", pc + writeData, selectMask);
-        if (result.contains(Contract.ResultCodes.SUCCESS)) {
+        if (result.contains(Constants.ResultCodes.SUCCESS)) {
             Log.i(TAG, "write: success, @result = " + result);
         } else {
             Log.e(TAG, "write: fail, @result = " + result);
@@ -102,7 +102,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     public void lock(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String result = controller.lock(LockMemoryMask.EPC, LockActionMask.LOCK, selectMask);
-        if (result.contains(Contract.ResultCodes.SUCCESS)) {
+        if (result.contains(Constants.ResultCodes.SUCCESS)) {
             Log.i(TAG, "lock: success, @result = " + result);
         } else {
             Log.e(TAG, "lock: fail, @result = " + result);
@@ -118,7 +118,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String killPassword = "11110000";              // 2 word, 00h ~ 1Fh
         final String result = controller.kill(killPassword, selectMask);
-        if (result.contains(Contract.ResultCodes.SUCCESS)) {
+        if (result.contains(Constants.ResultCodes.SUCCESS)) {
             Log.i(TAG, "kill: success, @result = " + result);
         } else {
             Log.e(TAG, "kill: fail, @result = " + result);
