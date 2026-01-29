@@ -35,7 +35,7 @@ android {
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to "device.sdk.jar")))
-    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88.jar")))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88.aar")))
 
     implementation(libs.appcompat)
     implementation(libs.material)
