@@ -1,1 +1,1 @@
-typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"ex.dev.sdk.rf88","l":"Rf88Manager"},{"p":"ex.dev.sdk.rf88.utils","l":"Utils"}];updateSearchResults();
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"ex.dev.sdk.rf88","l":"Rf88Manager"},{"p":"ex.dev.sdk.rf88.utils","l":"RfidUtils"}];updateSearchResults();

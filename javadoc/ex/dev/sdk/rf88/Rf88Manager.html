@@ -94,7 +94,7 @@ loadScripts(document, 'script');</script>
  the internal <code>Throwable.execute</code> wrapper.</p></div>
 <dl class="notes">
 <dt>Since:</dt>
-<dd>1.0.0</dd>
+<dd>3.0.0</dd>
 </dl>
 </section>
 <section class="summary">
@@ -140,20 +140,39 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Modifier and Type</div>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect()" class="member-name-link">connect</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>private android.util.Pair&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#buildLockPayload(ex.dev.sdk.rf88.domain.enums.LockMemoryMask,ex.dev.sdk.rf88.domain.enums.LockActionMask)" class="member-name-link">buildLockPayload</a><wbr>(ex.dev.sdk.rf88.domain.enums.LockMemoryMask&nbsp;memory,
+ ex.dev.sdk.rf88.domain.enums.LockActionMask&nbsp;action)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect()" class="member-name-link">connect</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Attempts to connect to the RF88 device via UART communication.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disconnect()" class="member-name-link">disconnect</a>()</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#connect(java.lang.String)" class="member-name-link">connect</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;address)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Attempts to connect to the RF88 device via Bluetooth communication.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#defaultRfidSettings()" class="member-name-link">defaultRfidSettings</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Resets only the RFID module configurations to factory default values.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#disconnect()" class="member-name-link">disconnect</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Disconnects from the currently connected RF88 device.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeBeep()" class="member-name-link">executeBeep</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#executeBeep()" class="member-name-link">executeBeep</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Triggers a beep sound on the RF88 device.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#factoryDefaults()" class="member-name-link">factoryDefaults</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Resets all device configurations to factory default values.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAccessPassword()" class="member-name-link">getAccessPassword</a>()</code></div>
@@ -226,39 +245,39 @@ loadScripts(document, 'script');</script>
 <div class="block">Gets the device name embedded in the Bluetooth module of the RF88.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFirmwareVersion()" class="member-name-link">getFirmwareVersion</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the current firmware version of the RF88 device.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFixedQ()" class="member-name-link">getFixedQ</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the activation status of the Fixed Q algorithm in the RFID module.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHardwareRevision()" class="member-name-link">getHardwareRevision</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the hardware revision of the RF88 device.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getIncrementQ()" class="member-name-link">getIncrementQ</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the activation status of the Increment Q algorithm in the RFID module.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getInformation()" class="member-name-link">getInformation</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets comprehensive device information including both RFID and system details.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Rf88Manager.html" title="class in ex.dev.sdk.rf88">Rf88Manager</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Returns the singleton instance of the RF88 Manager.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getKeyMapping()" class="member-name-link">getKeyMapping</a>()</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getDualTriggerFunctionCode()" class="member-name-link">getDualTriggerFunctionCode</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Gets the current trigger key mapping configuration of the RF88.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFirmwareVersion()" class="member-name-link">getFirmwareVersion</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the current firmware version of the RF88 device.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getFixedQ()" class="member-name-link">getFixedQ</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the activation status of the Fixed Q algorithm in the RFID module.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getHardwareRevision()" class="member-name-link">getHardwareRevision</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the hardware revision of the RF88 device.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getIncrementQ()" class="member-name-link">getIncrementQ</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets the activation status of the Increment Q algorithm in the RFID module.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getInformation()" class="member-name-link">getInformation</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Gets comprehensive device information including both RFID and system details.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="Rf88Manager.html" title="class in ex.dev.sdk.rf88">Rf88Manager</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns the singleton instance of the RF88 Manager.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getLinkProfile()" class="member-name-link">getLinkProfile</a>()</code></div>
@@ -370,6 +389,21 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Executes an RFID inventory operation with tag filtering.</div>
 </div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#inventoryAndRead(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">inventoryAndRead</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryBank,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pointer,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;length)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Executes an RFID inventory operation and simultaneously reads data from the specified memory area.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#inventoryAndRead(java.lang.String,java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">inventoryAndRead</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryBank,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pointer,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;length,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mask)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Executes an RFID inventory and read operation with tag filtering.</div>
+</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#kill(java.lang.String)" class="member-name-link">kill</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;password)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
@@ -382,14 +416,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Permanently disables a specific RFID tag using the kill password and tag filtering.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lock(java.lang.String,java.lang.String)" class="member-name-link">lock</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryMask,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;actionMask)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lock(ex.dev.sdk.rf88.domain.enums.LockMemoryMask,ex.dev.sdk.rf88.domain.enums.LockActionMask)" class="member-name-link">lock</a><wbr>(ex.dev.sdk.rf88.domain.enums.LockMemoryMask&nbsp;memoryMask,
+ ex.dev.sdk.rf88.domain.enums.LockActionMask&nbsp;actionMask)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Locks specific memory regions of an RFID tag.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lock(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">lock</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryMask,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;actionMask,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#lock(ex.dev.sdk.rf88.domain.enums.LockMemoryMask,ex.dev.sdk.rf88.domain.enums.LockActionMask,java.lang.String)" class="member-name-link">lock</a><wbr>(ex.dev.sdk.rf88.domain.enums.LockMemoryMask&nbsp;memoryMask,
+ ex.dev.sdk.rf88.domain.enums.LockActionMask&nbsp;actionMask,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mask)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Locks specific memory regions of a specific RFID tag.</div>
@@ -408,16 +442,6 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mask)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Reads data from a specific RFID tag's memory bank using tag filtering.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetFactoryDefaults()" class="member-name-link">resetFactoryDefaults</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Resets all device configurations to factory default values.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#resetRfidSettings()" class="member-name-link">resetRfidSettings</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Resets only the RFID module configurations to factory default values.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setAccessPassword(java.lang.String)" class="member-name-link">setAccessPassword</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
@@ -455,19 +479,19 @@ loadScripts(document, 'script');</script>
 <div class="block">Sets whether the RFID module will activate the Decrement Q algorithm.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFixedQ(java.lang.String)" class="member-name-link">setFixedQ</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets whether the RFID module will activate the Fixed Q algorithm.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setIncrementQ(java.lang.String)" class="member-name-link">setIncrementQ</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Sets whether the RFID module will activate the Increment Q algorithm.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setKeyMapping(java.lang.String)" class="member-name-link">setKeyMapping</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setDualTriggerFunctionCode(java.lang.String)" class="member-name-link">setDualTriggerFunctionCode</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Sets the trigger key mapping for the RF88.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setFixedQ(java.lang.String)" class="member-name-link">setFixedQ</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets whether the RFID module will activate the Fixed Q algorithm.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setIncrementQ(java.lang.String)" class="member-name-link">setIncrementQ</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Sets whether the RFID module will activate the Increment Q algorithm.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setLinkProfile(java.lang.String)" class="member-name-link">setLinkProfile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</code></div>
@@ -682,6 +706,27 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="connect(java.lang.String)">
+<h3>connect</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">connect</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;address)</span></div>
+<div class="block">Attempts to connect to the RF88 device via Bluetooth communication.
+
+ <p>This method establishes a wired connection to the RF88 device. The connection
+ state changes will be reported through the <code>OnConnectionStateChangedListener</code>
+ if one has been registered.</p>
+
+ <p><strong>Action:</strong> <code>Bridge.Actions.BLUETOOTH_CONNECT</code></p></div>
+<dl class="notes">
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list-long">
+<li><a href="#setOnConnectionStateChangedListener(ex.dev.sdk.rf88.frameworks.listener.OnConnectionStateChangedListener)"><code>setOnConnectionStateChangedListener(OnConnectionStateChangedListener)</code></a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="connect()">
 <h3>connect</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">connect</span>()</div>
@@ -712,7 +757,7 @@ loadScripts(document, 'script');</script>
  associated resources. The disconnection event will be reported through the
  <code>OnConnectionStateChangedListener</code> if one has been registered.</p>
 
- <p><strong>Action:</strong> <code>Bridge.Actions.UART_DISCONNECT</code></p></div>
+ <p><strong>Action:</strong> <code>Bridge.Actions.DISCONNECT</code></p></div>
 <dl class="notes">
 <dt>See Also:</dt>
 <dd>
@@ -726,7 +771,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setOnInventoryResultListener(ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener)">
 <h3>setOnInventoryResultListener</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnInventoryResultListener</span><wbr><span class="parameters">(ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener&nbsp;listener)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnInventoryResultListener</span><wbr><span class="parameters">(@Nullable
+ ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener&nbsp;listener)</span></div>
 <div class="block">Sets a listener to receive RFID inventory operation results.
 
  <p>This listener will be called whenever RFID tags are discovered during
@@ -741,19 +787,20 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setOnHardwareKeyListener(ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener)">
 <h3>setOnHardwareKeyListener</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnHardwareKeyListener</span><wbr><span class="parameters">(ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener&nbsp;listener)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnHardwareKeyListener</span><wbr><span class="parameters">(@Nullable
+ ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener&nbsp;listener)</span></div>
 <div class="block">Sets a listener to receive hardware key events from the RF88 device.
 
  <p>This listener will be called when hardware buttons on the RF88 device
  are pressed or released. The key mapping can be configured using
- <a href="#setKeyMapping(java.lang.String)"><code>setKeyMapping(String)</code></a>.</p></div>
+ <a href="#setDualTriggerFunctionCode(java.lang.String)"><code>setDualTriggerFunctionCode(String)</code></a>.</p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>listener</code> - The listener to receive hardware key events, or <code>null</code> to remove</dd>
 <dt>See Also:</dt>
 <dd>
-<ul class="see-list">
-<li><a href="#setKeyMapping(java.lang.String)"><code>setKeyMapping(String)</code></a></li>
+<ul class="see-list-long">
+<li><a href="#setDualTriggerFunctionCode(java.lang.String)"><code>setDualTriggerFunctionCode(String)</code></a></li>
 </ul>
 </dd>
 </dl>
@@ -762,7 +809,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setOnConnectionStateChangedListener(ex.dev.sdk.rf88.frameworks.listener.OnConnectionStateChangedListener)">
 <h3>setOnConnectionStateChangedListener</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnConnectionStateChangedListener</span><wbr><span class="parameters">(ex.dev.sdk.rf88.frameworks.listener.OnConnectionStateChangedListener&nbsp;listener)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnConnectionStateChangedListener</span><wbr><span class="parameters">(@Nullable
+ ex.dev.sdk.rf88.frameworks.listener.OnConnectionStateChangedListener&nbsp;listener)</span></div>
 <div class="block">Sets a listener to receive connection state change events.
 
  <p>This listener will be called when the connection state between the host
@@ -776,7 +824,8 @@ loadScripts(document, 'script');</script>
 <li>
 <section class="detail" id="setOnActionExecutingListener(ex.dev.sdk.rf88.frameworks.listener.OnActionExecutingListener)">
 <h3>setOnActionExecutingListener</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnActionExecutingListener</span><wbr><span class="parameters">(ex.dev.sdk.rf88.frameworks.listener.OnActionExecutingListener&nbsp;listener)</span></div>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setOnActionExecutingListener</span><wbr><span class="parameters">(@Nullable
+ ex.dev.sdk.rf88.frameworks.listener.OnActionExecutingListener&nbsp;listener)</span></div>
 <div class="block">Sets a listener to receive notifications when actions are being executed.
 
  <p>This listener provides feedback on the current operation status,
@@ -829,6 +878,73 @@ loadScripts(document, 'script');</script>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
+<li><a href="#setMemoryBank(java.lang.String)"><code>setMemoryBank(String)</code></a></li>
+<li><a href="#setPointer(java.lang.String)"><code>setPointer(String)</code></a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="inventoryAndRead(java.lang.String,java.lang.String,java.lang.String)">
+<h3>inventoryAndRead</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">inventoryAndRead</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryBank,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pointer,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;length)</span></div>
+<div class="block">Executes an RFID inventory operation and simultaneously reads data from the specified memory area.
+
+ <p>This method starts a continuous inventory operation that discovers all RFID tags
+ within the RF88’s read range, and for each discovered tag, it immediately reads the
+ memory content defined by <code>memoryBank</code>, <code>pointer</code>, and <code>length</code>.
+ Both the inventory and read results are returned together.</p>
+
+ <p>The operation will continue until <a href="#stop()"><code>stop()</code></a> is called.</p>
+
+ <p><strong>Action:</strong> <code>Bridge.Actions.OPERATION_INVENTORY_AND_READ</code></p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>memoryBank</code> - The memory bank to read from (e.g. "EPC", "TID", "USER", "RESERVED")</dd>
+<dd><code>pointer</code> - The start address (bit offset) for reading</dd>
+<dd><code>length</code> - The number of words (1 word = 16 bits) to read</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="#stop()"><code>stop()</code></a></li>
+<li><a href="#setMemoryBank(java.lang.String)"><code>setMemoryBank(String)</code></a></li>
+<li><a href="#setPointer(java.lang.String)"><code>setPointer(String)</code></a></li>
+</ul>
+</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="inventoryAndRead(java.lang.String,java.lang.String,java.lang.String,java.lang.String)">
+<h3>inventoryAndRead</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">inventoryAndRead</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryBank,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pointer,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;length,
+ <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mask)</span></div>
+<div class="block">Executes an RFID inventory and read operation with tag filtering.
+
+ <p>This method starts a filtered inventory operation that targets only tags
+ matching the specified <code>mask</code>, and for each matching tag, reads data
+ from the specified <code>memoryBank</code>, <code>pointer</code>, and <code>length</code>.
+ The mask filtering uses the current memory bank and pointer configuration
+ set by <a href="#setMemoryBank(java.lang.String)"><code>setMemoryBank(String)</code></a> and <a href="#setPointer(java.lang.String)"><code>setPointer(String)</code></a>.</p>
+
+ <p>The operation will continue until <a href="#stop()"><code>stop()</code></a> is called.</p>
+
+ <p><strong>Action:</strong> <code>Bridge.Actions.OPERATION_INVENTORY_AND_READ</code></p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>memoryBank</code> - The memory bank to read from (e.g. "EPC", "TID", "USER", "RESERVED")</dd>
+<dd><code>pointer</code> - The start address (bit offset) for reading</dd>
+<dd><code>length</code> - The number of words (1 word = 16 bits) to read</dd>
+<dd><code>mask</code> - The mask data used for tag filtering. Only tags matching this mask will be returned.</dd>
+<dt>See Also:</dt>
+<dd>
+<ul class="see-list">
+<li><a href="#stop()"><code>stop()</code></a></li>
 <li><a href="#setMemoryBank(java.lang.String)"><code>setMemoryBank(String)</code></a></li>
 <li><a href="#setPointer(java.lang.String)"><code>setPointer(String)</code></a></li>
 </ul>
@@ -916,7 +1032,7 @@ loadScripts(document, 'script');</script>
 <dd><code>pointer</code> - The word offset within the memory bank where writing should start</dd>
 <dd><code>newValue</code> - The hex string data to write to the tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -941,7 +1057,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newValue</code> - The hex string data to write to the tag</dd>
 <dd><code>mask</code> - The tag data to use as a filter to select the target tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -960,7 +1076,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - A hex string of up to 8 characters (32 bits) representing the access password</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -978,7 +1094,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newValue</code> - A hex string of up to 8 characters (32 bits) representing the access password</dd>
 <dd><code>mask</code> - The tag data to use as a filter to select the target tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -997,7 +1113,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - A hex string of up to 8 characters (32 bits) representing the kill password</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -1021,7 +1137,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newValue</code> - A hex string of up to 8 characters (32 bits) representing the kill password</dd>
 <dd><code>mask</code> - The tag data to use as a filter to select the target tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1043,7 +1159,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>password</code> - The kill password previously set on the RFID tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -1067,16 +1183,16 @@ loadScripts(document, 'script');</script>
 <dd><code>password</code> - The kill password previously set on the RFID tag</dd>
 <dd><code>mask</code> - The tag data to use as a filter to select the target tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="lock(java.lang.String,java.lang.String)">
+<section class="detail" id="lock(ex.dev.sdk.rf88.domain.enums.LockMemoryMask,ex.dev.sdk.rf88.domain.enums.LockActionMask)">
 <h3>lock</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lock</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryMask,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;actionMask)</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lock</span><wbr><span class="parameters">(ex.dev.sdk.rf88.domain.enums.LockMemoryMask&nbsp;memoryMask,
+ ex.dev.sdk.rf88.domain.enums.LockActionMask&nbsp;actionMask)</span></div>
 <div class="block">Locks specific memory regions of an RFID tag.
 
  <p>This operation controls access permissions for different memory banks
@@ -1094,16 +1210,16 @@ loadScripts(document, 'script');</script>
                    For example, if actionMask = "00020", access password will be required
                    for future read/write operations</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="lock(java.lang.String,java.lang.String,java.lang.String)">
+<section class="detail" id="lock(ex.dev.sdk.rf88.domain.enums.LockMemoryMask,ex.dev.sdk.rf88.domain.enums.LockActionMask,java.lang.String)">
 <h3>lock</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lock</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;memoryMask,
- <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;actionMask,
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">lock</span><wbr><span class="parameters">(ex.dev.sdk.rf88.domain.enums.LockMemoryMask&nbsp;memoryMask,
+ ex.dev.sdk.rf88.domain.enums.LockActionMask&nbsp;actionMask,
  <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;mask)</span></div>
 <div class="block">Locks specific memory regions of a specific RFID tag.
 
@@ -1114,7 +1230,7 @@ loadScripts(document, 'script');</script>
 <dd><code>actionMask</code> - The action mask specifying the lock actions for the memory regions</dd>
 <dd><code>mask</code> - The tag data to use as a filter to select the target tag</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1154,7 +1270,7 @@ loadScripts(document, 'script');</script>
  <p><strong>Action:</strong> <code>Bridge.Actions.READ_POWER</code></p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>The current power value (0-30), or empty string if unavailable</dd>
+<dd>The current power value (0-300), or empty string if unavailable</dd>
 </dl>
 </section>
 </li>
@@ -1170,9 +1286,9 @@ loadScripts(document, 'script');</script>
  <p><strong>Action:</strong> <code>Bridge.Actions.WRITE_POWER</code></p></div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>newValue</code> - The new power value (0-30)</dd>
+<dd><code>newValue</code> - The new power value (0-300)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1219,7 +1335,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new link profile value</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -1258,7 +1374,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new Start Q value (0-15)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1291,7 +1407,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new Min Q value (0-15)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1324,7 +1440,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new Max Q value (0-15)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1357,7 +1473,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - "1" to enable, "0" to disable</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1390,7 +1506,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - "1" to enable, "0" to disable</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1423,7 +1539,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - "1" to enable, "0" to disable</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1463,7 +1579,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newValue</code> - The new search mode value:
                  "0" for Dual Target, "1" for Single Target A, "2" for Single Target B</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1496,7 +1612,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new session value ("0", "1", "2", or "3")</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1537,7 +1653,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new target value ("0" through "4")</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1570,7 +1686,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new action value ("0" through "5")</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1610,7 +1726,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new memory bank value ("0" through "3")</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1644,7 +1760,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new pointer value (word offset)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1679,7 +1795,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new access password (hex string up to 8 characters)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1725,7 +1841,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new packet option value</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1758,7 +1874,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new region code</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 <dt>See Also:</dt>
 <dd>
 <ul class="see-list">
@@ -1833,8 +1949,8 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>configurations</code> - A map of configuration keys and values to apply</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if all configurations were applied successfully,
- <code>Contract.Values.FAIL</code> if any configuration failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if all configurations were applied successfully,
+ <code>Constants.Values.FAIL</code> if any configuration failed</dd>
 </dl>
 </section>
 </li>
@@ -1875,7 +1991,7 @@ loadScripts(document, 'script');</script>
 <dd><code>newValue</code> - "c" to enable continuous mode (double-tap activation),
                  "p" to disable (hold trigger mode)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1907,7 +2023,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new buzzer volume setting</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -1943,15 +2059,15 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new suspend timeout value (in minutes)</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="getKeyMapping()">
-<h3>getKeyMapping</h3>
+<section class="detail" id="getDualTriggerFunctionCode()">
+<h3>getDualTriggerFunctionCode</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getKeyMapping</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getDualTriggerFunctionCode</span>()</div>
 <div class="block">Gets the current trigger key mapping configuration of the RF88.
 
  <p>Key mapping determines which operations are triggered by the top and
@@ -1965,10 +2081,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="setKeyMapping(java.lang.String)">
-<h3>setKeyMapping</h3>
+<section class="detail" id="setDualTriggerFunctionCode(java.lang.String)">
+<h3>setDualTriggerFunctionCode</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">setKeyMapping</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</span></div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">setDualTriggerFunctionCode</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newValue)</span></div>
 <div class="block">Sets the trigger key mapping for the RF88.
 
  <p><strong>Action:</strong> <code>Bridge.Actions.WRITE_KEY_MAPPING</code></p></div>
@@ -1976,7 +2092,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new key mapping configuration</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -2008,7 +2124,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new vibrator mode setting</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -2041,7 +2157,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new scanner data mode setting</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -2074,7 +2190,7 @@ loadScripts(document, 'script');</script>
 <dt>Parameters:</dt>
 <dd><code>newValue</code> - The new trigger event mode setting</dd>
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
@@ -2116,7 +2232,7 @@ loadScripts(document, 'script');</script>
  <p><strong>Action:</strong> <code>Bridge.Actions.READ_CHARGING_STATUS</code></p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd>The charging status (e.g., "CHARGING", "DISCHARGING", "FULL"), or empty string if unavailable</dd>
+<dd>The charging status (e.g., "1:CHARGING", "2:DISCHARGING", "3:FULL"), or empty string if unavailable</dd>
 </dl>
 </section>
 </li>
@@ -2259,15 +2375,15 @@ loadScripts(document, 'script');</script>
  <p><strong>Action:</strong> <code>Bridge.Actions.EXECUTE_BEEP</code></p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="resetFactoryDefaults()">
-<h3>resetFactoryDefaults</h3>
+<section class="detail" id="factoryDefaults()">
+<h3>factoryDefaults</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">resetFactoryDefaults</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">factoryDefaults</span>()</div>
 <div class="block">Resets all device configurations to factory default values.
 
  <p>This operation resets both RFID and system configurations to their
@@ -2278,15 +2394,15 @@ loadScripts(document, 'script');</script>
  <p><strong>Action:</strong> <code>Bridge.Actions.EXECUTE_FACTORY_DEFAULT</code></p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
 </section>
 </li>
 <li>
-<section class="detail" id="resetRfidSettings()">
-<h3>resetRfidSettings</h3>
+<section class="detail" id="defaultRfidSettings()">
+<h3>defaultRfidSettings</h3>
 <div class="member-signature"><span class="annotations">@NonNull
-</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">resetRfidSettings</span>()</div>
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">defaultRfidSettings</span>()</div>
 <div class="block">Resets only the RFID module configurations to factory default values.
 
  <p>This operation resets RFID-related configurations while preserving
@@ -2295,8 +2411,15 @@ loadScripts(document, 'script');</script>
  <p><strong>Action:</strong> <code>Bridge.Actions.EXECUTE_FACTORY_DEFAULT_RFID</code></p></div>
 <dl class="notes">
 <dt>Returns:</dt>
-<dd><code>Contract.Values.SUCCESS</code> if successful, <code>Contract.Values.FAIL</code> if failed</dd>
+<dd><code>Constants.Values.SUCCESS</code> if successful, <code>Constants.Values.FAIL</code> if failed</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="buildLockPayload(ex.dev.sdk.rf88.domain.enums.LockMemoryMask,ex.dev.sdk.rf88.domain.enums.LockActionMask)">
+<h3>buildLockPayload</h3>
+<div class="member-signature"><span class="modifiers">private</span>&nbsp;<span class="return-type">android.util.Pair&lt;<a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;</span>&nbsp;<span class="element-name">buildLockPayload</span><wbr><span class="parameters">(ex.dev.sdk.rf88.domain.enums.LockMemoryMask&nbsp;memory,
+ ex.dev.sdk.rf88.domain.enums.LockActionMask&nbsp;action)</span></div>
 </section>
 </li>
 </ul>
