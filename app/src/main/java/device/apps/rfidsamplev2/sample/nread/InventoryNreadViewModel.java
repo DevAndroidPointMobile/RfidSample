@@ -43,7 +43,7 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
     @Override
     public void onInventoryAndReadDiscovered(@NonNull String data, @NonNull String ascii, @NonNull String readData) {
         Log.d("TAG", "onInventoryAndReadDiscovered: @data = " + data + "  @readData = " + readData);
-        InventoryNreadResponse response = new InventoryNreadResponse(data + "\n" + readData, ascii, 0);
+        InventoryNreadResponse response = new InventoryNreadResponse(data + "\n" + readData, ascii, readData, 0);
         inventoryProcess(response);
     }
 
@@ -66,7 +66,7 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
         for (int i = 0; i < readHistory.size(); i++) {
             final InventoryNreadResponse existingResponse = readHistory.get(i);
             // Find the same EPC Data in the list and update it.
-            if (existingResponse.getReadLine().equals(result.getReadLine())) {
+            if (existingResponse.getEpcData().equals(result.getEpcData())) {
                 existingResponse.setReadCount(existingResponse.getReadCount() + 1);
                 found = true;
                 _changedIndex.postValue(i);

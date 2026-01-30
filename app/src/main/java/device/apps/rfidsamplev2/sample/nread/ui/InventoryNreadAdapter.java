@@ -59,8 +59,9 @@ public class InventoryNreadAdapter extends RecyclerView.Adapter<InventoryNreadAd
         }
 
         public void bind(InventoryNreadResponse data, OnInventoryClickListener clickListener) {
-            _binding.setEpc(data.getReadLine());
+            _binding.setEpc(data.getEpcData());
             _binding.setCount(String.valueOf(data.getReadCount()));
+            _binding.setReadValue(data.getReadValue());
             _binding.inventoryTile.setOnClickListener(v -> {
                 if (clickListener != null) {
                     clickListener.onInventoryClicked(data);

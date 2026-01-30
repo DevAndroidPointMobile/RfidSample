@@ -12,6 +12,11 @@
         <variable
             name="count"
             type="String" />
+
+        <variable
+            name="readValue"
+            type="String" />
+
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -66,12 +71,14 @@
                     tools:text="3000AAAABBBBCCCCDDDDEEEE" />
 
                 <TextView
+                    android:id="@+id/other_value"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="EPC Code"
+                    android:text="@{readValue}"
                     android:textColor="#757575"
                     android:textSize="12sp" />
+
             </LinearLayout>
 
             <!-- Count Badge -->
