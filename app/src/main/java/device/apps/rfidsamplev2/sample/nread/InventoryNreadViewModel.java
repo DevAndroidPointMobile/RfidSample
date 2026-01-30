@@ -41,6 +41,20 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
     }
 
     @Override
+    public void onScannerKeyPressed() {
+        manager.setPacketOption("32");
+        manager.setPointer("32");   //  16
+        manager.setMemoryBank("1"); // 3400 E280 1170 0000 0210 ACEA E0BE
+        // 3400E280117000000210ACEAE0BE
+        manager.inventoryAndRead("2", "0", "1", "E280117000000210ACEAE0BE");
+    }
+
+    @Override
+    public void onScannerKeyReleased() {
+        inventoryStop();
+    }
+
+    @Override
     public void onInventoryAndReadDiscovered(@NonNull String data, @NonNull String ascii, @NonNull String readData) {
         Log.d("TAG", "onInventoryAndReadDiscovered: @data = " + data + "  @readData = " + readData);
         InventoryNreadResponse response = new InventoryNreadResponse(data + "\n" + readData, ascii, 0);
@@ -48,7 +62,11 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
     }
 
     private void inventoryStart() {
-        manager.inventoryAndRead("2", "0", "4");
+        manager.setPacketOption("0");
+        manager.setPointer("16");   //  16
+        manager.setMemoryBank("1"); // 3400 E280 1170 0000 0210 ACEA E0BE
+        // 3400E280117000000210ACEAE0BE
+        manager.inventoryAndRead("2", "0", "1", "3400E280117000000210ACEAE0BE");
     }
 
     private void inventoryStop() {

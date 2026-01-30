@@ -31,99 +31,99 @@
             app:titleTextColor="@android:color/white" />
 
         <!-- Stats Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp">
+<!--        <com.google.android.material.card.MaterialCardView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="16dp"-->
+<!--            app:cardCornerRadius="16dp"-->
+<!--            app:cardElevation="2dp"-->
+<!--            app:strokeWidth="0dp">-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:padding="16dp">-->
 
-                <!-- Total Items -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+<!--                &lt;!&ndash; Total Items &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="vertical">-->
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:contentDescription="Total Items"
-                        android:src="@drawable/ic_inventory"
-                        android:tint="#5E35B1" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="32dp"-->
+<!--                        android:layout_height="32dp"-->
+<!--                        android:contentDescription="Total Items"-->
+<!--                        android:src="@drawable/ic_inventory"-->
+<!--                        android:tint="#5E35B1" />-->
 
-                    <TextView
-                        android:id="@+id/tv_total_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="0"
-                        android:textColor="#212121"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_total_count"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="8dp"-->
+<!--                        android:text="0"-->
+<!--                        android:textColor="#212121"-->
+<!--                        android:textSize="24sp"-->
+<!--                        android:textStyle="bold" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Total Items"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
-                </LinearLayout>
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="4dp"-->
+<!--                        android:text="Total Items"-->
+<!--                        android:textColor="#757575"-->
+<!--                        android:textSize="12sp" />-->
+<!--                </LinearLayout>-->
 
-                <!-- Divider -->
-                <View
-                    android:layout_width="1dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginVertical="8dp"
-                    android:background="#E0E0E0" />
+<!--                &lt;!&ndash; Divider &ndash;&gt;-->
+<!--                <View-->
+<!--                    android:layout_width="1dp"-->
+<!--                    android:layout_height="match_parent"-->
+<!--                    android:layout_marginVertical="8dp"-->
+<!--                    android:background="#E0E0E0" />-->
 
-                <!-- Unique Tags -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
+<!--                &lt;!&ndash; Unique Tags &ndash;&gt;-->
+<!--                <LinearLayout-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:gravity="center"-->
+<!--                    android:orientation="vertical">-->
 
-                    <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:contentDescription="Unique Tags"
-                        android:src="@drawable/ic_rfid"
-                        android:tint="#5E35B1" />
+<!--                    <ImageView-->
+<!--                        android:layout_width="32dp"-->
+<!--                        android:layout_height="32dp"-->
+<!--                        android:contentDescription="Unique Tags"-->
+<!--                        android:src="@drawable/ic_rfid"-->
+<!--                        android:tint="#5E35B1" />-->
 
-                    <TextView
-                        android:id="@+id/tv_unique_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="0"
-                        android:textColor="#212121"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
+<!--                    <TextView-->
+<!--                        android:id="@+id/tv_unique_count"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="8dp"-->
+<!--                        android:text="0"-->
+<!--                        android:textColor="#212121"-->
+<!--                        android:textSize="24sp"-->
+<!--                        android:textStyle="bold" />-->
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Unique Tags"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
+<!--                    <TextView-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginTop="4dp"-->
+<!--                        android:text="Unique Tags"-->
+<!--                        android:textColor="#757575"-->
+<!--                        android:textSize="12sp" />-->
 
-                </LinearLayout>
+<!--                </LinearLayout>-->
 
-            </LinearLayout>
+<!--            </LinearLayout>-->
 
-        </com.google.android.material.card.MaterialCardView>
+<!--        </com.google.android.material.card.MaterialCardView>-->
 
         <!-- List Header -->
         <LinearLayout
