@@ -23,7 +23,7 @@ public class WireViewModel extends ViewModel {
     private static final String DETACH = "0";
 
     private static final String ACTION_DEVICE_CHANGED = "pm.ex.gpio.changed";
-    private static final String EXTRA_CONNECT_STATE = "scc_det";
+    private static final String EXTRA_CONNECT_STATE = "acc_det";
 
     private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
     private final DetectReceiver _receiver = new DetectReceiver();
