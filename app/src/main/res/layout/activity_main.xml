@@ -12,6 +12,14 @@
         <variable
             name="isConnected"
             type="Boolean" />
+
+        <variable
+            name="statusTitle"
+            type="String" />
+
+        <variable
+            name="statusSubtitle"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -26,305 +34,483 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
-            android:elevation="4dp"
-            app:title="RFID Sample V2"
+            android:elevation="2dp"
+            app:title="@string/app_name"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />
-
-        <!-- Status Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="Device Icon"
-                    android:src="@drawable/ic_rfid"
-                    android:tint="#5E35B1" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Device Status"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@{isConnected ? `Connected` : `Not Connected`}"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="Connected" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:background="@drawable/circle_indicator"
-                    app:connectionState="@{isConnected}" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:fillViewport="true">
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:clipChildren="false"
+                android:clipToPadding="false"
                 android:orientation="vertical"
                 android:paddingHorizontal="16dp"
-                android:paddingBottom="16dp">
+                android:paddingTop="20dp"
+                android:paddingBottom="24dp">
 
-                <!-- Connection Section -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="12dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="Connection"
-                    android:textColor="#212121"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
-
+                <!-- Hero Status -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
-                    app:cardCornerRadius="12dp"
+                    app:cardBackgroundColor="@android:color/white"
+                    app:cardCornerRadius="20dp"
                     app:cardElevation="2dp"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:gravity="center_horizontal"
                         android:orientation="vertical"
-                        android:padding="4dp">
+                        android:paddingHorizontal="24dp"
+                        android:paddingTop="28dp"
+                        android:paddingBottom="24dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            app:cardBackgroundColor="@{safeUnbox(isConnected) ? @color/brand_surface : @color/surface_neutral}"
+                            app:cardCornerRadius="48dp"
+                            app:cardElevation="0dp">
+
+                            <ImageView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:contentDescription="Device Icon"
+                                android:padding="24dp"
+                                android:src="@drawable/ic_rfid"
+                                android:tint="@{safeUnbox(isConnected) ? @color/brand_primary : @color/icon_neutral}"
+                                tools:tint="@color/brand_primary" />
+                        </androidx.cardview.widget.CardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
                             android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeBluetoothConnection}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Bluetooth Connection"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_bluetooth"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
+                            android:gravity="center"
+                            android:text="@{statusTitle}"
+                            android:textColor="#212121"
+                            android:textSize="22sp"
+                            android:textStyle="bold"
+                            tools:text="Not Connected" />
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:background="#F0F0F0" />
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeWireConnection}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Wire Connection"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_cable"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:background="#F0F0F0" />
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeTapToPair}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Tap to Pair Connection"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_nfc"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
-
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="@{statusSubtitle}"
+                            android:textColor="#9E9E9E"
+                            android:textSize="14sp"
+                            tools:text="Choose a connection method below" />
                     </LinearLayout>
-
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- Features Section -->
+                <!-- Connect section -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="28dp"
+                    android:layout_marginBottom="12dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Connect"
+                    android:textColor="#212121"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal">
+
+                    <!-- Bluetooth tile -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="84dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{activity::routeBluetoothConnection}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:contentDescription="Bluetooth"
+                                android:src="@drawable/ic_bluetooth"
+                                android:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Bluetooth"
+                                android:textColor="#212121"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Wired tile -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="84dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{activity::routeWireConnection}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:contentDescription="Wired"
+                                android:src="@drawable/ic_cable"
+                                android:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Wired"
+                                android:textColor="#212121"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Tap-to-Pair tile -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="84dp"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:onClick="@{activity::routeTapToPair}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="12dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="26dp"
+                                android:layout_height="26dp"
+                                android:contentDescription="Tap to Pair"
+                                android:src="@drawable/ic_nfc"
+                                android:tint="@color/brand_primary" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Tap-to-Pair"
+                                android:textColor="#212121"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Features section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
                     android:layout_marginBottom="12dp"
                     android:fontFamily="sans-serif-medium"
                     android:text="Features"
                     android:textColor="#212121"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
 
-                <com.google.android.material.card.MaterialCardView
+                <!-- Row 1: Inventory + Inventory N Read -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardElevation="2dp"
-                    app:strokeWidth="0dp">
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="4dp">
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="136dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_weight="1"
+                        android:alpha="@{safeUnbox(isConnected) ? 1f : 0.45f}"
+                        android:clickable="@{safeUnbox(isConnected)}"
+                        android:focusable="@{safeUnbox(isConnected)}"
+                        android:onClick="@{activity::routeInventory}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:enabled="@{isConnected}"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeInventory}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Inventory"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_inventory"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
-                        <View
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardBackgroundColor="@color/brand_surface"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Inventory"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_inventory"
+                                    android:tint="@color/brand_primary" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="14dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Inventory"
+                                android:textColor="#212121"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Read tags"
+                                android:textColor="#9E9E9E"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="136dp"
+                        android:layout_weight="1"
+                        android:alpha="@{safeUnbox(isConnected) ? 1f : 0.45f}"
+                        android:clickable="@{safeUnbox(isConnected)}"
+                        android:focusable="@{safeUnbox(isConnected)}"
+                        android:onClick="@{activity::routeInventoryNread}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:background="#F0F0F0" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardBackgroundColor="@color/brand_surface"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Inventory N Read"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_n_read"
+                                    android:tint="@color/brand_primary" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="14dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Inventory N Read"
+                                android:textColor="#212121"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Continuous read"
+                                android:textColor="#9E9E9E"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
+                <!-- Row 2: Barcode + Configuration -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="136dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_weight="1"
+                        android:alpha="@{safeUnbox(isConnected) ? 1f : 0.45f}"
+                        android:clickable="@{safeUnbox(isConnected)}"
+                        android:focusable="@{safeUnbox(isConnected)}"
+                        android:onClick="@{activity::routeBarcodeScan}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:enabled="@{isConnected}"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeInventoryNread}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Inventory N Read"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_n_read"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
-                        <View
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardBackgroundColor="@color/brand_surface"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp">
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Barcode Scan"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_barcode"
+                                    android:tint="@color/brand_primary" />
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="14dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Barcode Scan"
+                                android:textColor="#212121"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Scan a barcode"
+                                android:textColor="#9E9E9E"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="0dp"
+                        android:layout_height="136dp"
+                        android:layout_weight="1"
+                        android:alpha="@{safeUnbox(isConnected) ? 1f : 0.45f}"
+                        android:clickable="@{safeUnbox(isConnected)}"
+                        android:focusable="@{safeUnbox(isConnected)}"
+                        android:onClick="@{activity::routeConfiguration}"
+                        app:cardBackgroundColor="@android:color/white"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:rippleColor="@color/brand_ripple"
+                        app:strokeWidth="0dp">
+
+                        <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:background="#F0F0F0" />
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:padding="16dp">
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:enabled="@{isConnected}"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeBarcodeScan}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Barcode Scan"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_barcode"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="48dp"
+                                android:layout_height="48dp"
+                                app:cardBackgroundColor="@color/brand_surface"
+                                app:cardCornerRadius="24dp"
+                                app:cardElevation="0dp">
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginHorizontal="16dp"
-                            android:background="#F0F0F0" />
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:contentDescription="Configuration"
+                                    android:padding="12dp"
+                                    android:src="@drawable/ic_settings"
+                                    android:tint="@color/brand_primary" />
+                            </androidx.cardview.widget.CardView>
 
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.MaterialComponents.Button.TextButton"
-                            android:layout_width="match_parent"
-                            android:layout_height="56dp"
-                            android:enabled="@{isConnected}"
-                            android:fontFamily="sans-serif-medium"
-                            android:gravity="start|center_vertical"
-                            android:onClick="@{activity::routeConfiguration}"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Configuration"
-                            android:textAllCaps="false"
-                            android:textSize="16sp"
-                            app:icon="@drawable/ic_settings"
-                            app:iconGravity="start"
-                            app:iconPadding="16dp"
-                            app:iconTint="#5E35B1"
-                            app:rippleColor="#E8E0F5" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="14dp"
+                                android:fontFamily="sans-serif-medium"
+                                android:text="Configuration"
+                                android:textColor="#212121"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
 
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="Adjust settings"
+                                android:textColor="#9E9E9E"
+                                android:textSize="12sp" />
+                        </LinearLayout>
+                    </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
 
             </LinearLayout>
-
         </ScrollView>
-
     </LinearLayout>
-
 </layout>

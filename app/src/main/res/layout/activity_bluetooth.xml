@@ -5,12 +5,18 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="activity"
             type="device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity" />
 
         <variable
-            name="state"
+            name="statusTitle"
+            type="String" />
+
+        <variable
+            name="statusSubtitle"
             type="String" />
 
         <variable
@@ -20,6 +26,18 @@
         <variable
             name="isDiscovery"
             type="Boolean" />
+
+        <variable
+            name="isBluetoothSupported"
+            type="Boolean" />
+
+        <variable
+            name="isBluetoothEnabled"
+            type="Boolean" />
+
+        <variable
+            name="deviceCount"
+            type="int" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -28,30 +46,31 @@
         android:background="#F5F5F5"
         tools:context=".sample.bluetooth.BluetoothActivity">
 
-        <!-- AppBar -->
+        <!-- Toolbar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
-            android:elevation="4dp"
+            android:elevation="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:title="Bluetooth Connection"
             app:navigationIcon="@drawable/ic_arrow_back"
+            app:title="Bluetooth Connection"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />
 
-        <!-- Connection Status Card -->
+        <!-- Hero status card -->
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/status_card"
+            android:id="@+id/hero_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="20dp"
             android:layout_marginEnd="16dp"
-            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="20dp"
             app:cardElevation="2dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -61,140 +80,209 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="20dp">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="Bluetooth Icon"
-                    android:src="@drawable/ic_rfid"
-                    android:tint="#5E35B1" />
+                <androidx.cardview.widget.CardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:cardBackgroundColor="@{safeUnbox(isConnected) ? @color/brand_surface : @color/surface_neutral}"
+                    app:cardCornerRadius="40dp"
+                    app:cardElevation="0dp">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Bluetooth"
+                        android:padding="20dp"
+                        android:src="@drawable/ic_bluetooth"
+                        android:tint="@{safeUnbox(isConnected) ? @color/brand_primary : @color/icon_neutral}"
+                        tools:tint="@color/icon_neutral" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:text="@{statusTitle}"
+                    android:textColor="#212121"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="Not Connected" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Connection Status"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@{state}"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="DISCONNECTED" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/status_indicator"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:background="@drawable/circle_indicator"
-                    app:connectionState="@{isConnected}" />
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="@{statusSubtitle}"
+                    android:textColor="#9E9E9E"
+                    android:textSize="13sp"
+                    tools:text="Pick a device below to connect" />
             </LinearLayout>
-
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Devices Section Header -->
-        <TextView
-            android:id="@+id/devices_header"
-            android:layout_width="wrap_content"
+        <!-- Section header -->
+        <LinearLayout
+            android:id="@+id/section_header"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="Available Devices"
-            android:textColor="#212121"
-            android:textSize="18sp"
-            android:textStyle="bold"
+            android:layout_marginEnd="20dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="@{safeUnbox(isBluetoothEnabled) &amp;&amp; !safeUnbox(isConnected) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/status_card" />
+            app:layout_constraintTop_toBottomOf="@id/hero_card">
 
-        <!-- Empty State -->
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="sans-serif-medium"
+                android:text="Available Devices"
+                android:textColor="#212121"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/badge_background"
+                android:fontFamily="sans-serif-medium"
+                android:minWidth="28dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:text="@{String.valueOf(deviceCount)}"
+                android:textAlignment="center"
+                android:textColor="@color/brand_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="3" />
+        </LinearLayout>
+
+        <!-- Scanning indicator -->
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/scan_progress"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:indeterminate="true"
+            android:visibility="@{safeUnbox(isConnected) ? View.GONE : (safeUnbox(isBluetoothEnabled) &amp;&amp; safeUnbox(isDiscovery) ? View.VISIBLE : View.INVISIBLE)}"
+            app:indicatorColor="@color/brand_primary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/section_header"
+            app:trackColor="@color/brand_surface"
+            app:trackCornerRadius="2dp"
+            tools:visibility="visible" />
+
+        <!-- Device list -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="6dp"
+            android:clipToPadding="false"
+            android:overScrollMode="never"
+            android:paddingHorizontal="16dp"
+            android:paddingBottom="12dp"
+            android:visibility="@{safeUnbox(isConnected) ? View.GONE : View.VISIBLE}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@id/action_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scan_progress"
+            tools:listitem="@layout/item_device" />
+
+        <!-- Empty state -->
         <LinearLayout
             android:id="@+id/empty_state"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone"
+            android:paddingHorizontal="32dp"
+            android:visibility="@{safeUnbox(isBluetoothEnabled) &amp;&amp; deviceCount == 0 &amp;&amp; !safeUnbox(isConnected) ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/recycler_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/recycler_view"
+            app:layout_constraintStart_toStartOf="@id/recycler_view"
             app:layout_constraintTop_toTopOf="@id/recycler_view">
 
             <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:contentDescription="No Devices"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:contentDescription="No devices"
                 android:src="@drawable/ic_bluetooth_searching"
-                android:tint="#BDBDBD" />
+                app:tint="@color/icon_neutral" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:fontFamily="sans-serif-medium"
-                android:text="No devices found"
+                android:gravity="center"
+                android:text="@{safeUnbox(isDiscovery) ? `Searching for devices...` : `No devices yet`}"
                 android:textColor="#757575"
-                android:textSize="16sp" />
+                android:textSize="15sp"
+                tools:text="No devices yet" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Tap the button below to start scanning"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:text="@{safeUnbox(isDiscovery) ? `Make sure your RF88 device is powered on` : `Tap Start Discovery to begin scanning`}"
                 android:textColor="#9E9E9E"
-                android:textSize="14sp" />
-
+                android:textSize="13sp"
+                tools:text="Tap Start Discovery to begin scanning" />
         </LinearLayout>
 
-        <!-- RecyclerView -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="12dp"
-            android:clipToPadding="false"
-            android:overScrollMode="never"
-            android:paddingHorizontal="16dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@id/button_container"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/devices_header"
-            tools:listitem="@layout/item_device" />
-
-        <!-- Button Container -->
+        <!-- Action bar (hidden when Bluetooth hardware is missing) -->
         <LinearLayout
-            android:id="@+id/button_container"
+            android:id="@+id/action_bar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:elevation="8dp"
             android:orientation="vertical"
             android:padding="16dp"
+            android:visibility="@{safeUnbox(isBluetoothSupported) ? View.VISIBLE : View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
-            <!-- Discovery Button -->
+            <!-- Shown when Bluetooth is off -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_discovery"
+                android:id="@+id/btn_enable_bluetooth"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{activity::enableBluetooth}"
+                android:text="Turn on Bluetooth"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="@{safeUnbox(isBluetoothEnabled) ? View.GONE : View.VISIBLE}"
+                app:backgroundTint="@color/brand_primary"
+                app:cornerRadius="14dp"
+                app:icon="@drawable/ic_bluetooth"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                tools:visibility="gone" />
+
+            <!-- Shown while Bluetooth is on and discovery is idle -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_start_discovery"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
@@ -202,47 +290,55 @@
                 android:onClick="@{activity::onDiscovery}"
                 android:text="Start Discovery"
                 android:textAllCaps="false"
-                android:textSize="16sp"
-                app:backgroundTint="#5E35B1"
-                app:cornerRadius="12dp"
-                app:discoveryState="@{isDiscovery}"
+                android:textSize="15sp"
+                android:visibility="@{safeUnbox(isBluetoothEnabled) &amp;&amp; !safeUnbox(isDiscovery) &amp;&amp; !safeUnbox(isConnected) ? View.VISIBLE : View.GONE}"
+                app:backgroundTint="@color/brand_primary"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_search"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp" />
 
-            <!-- Disconnect Button -->
+            <!-- Shown while discovery is running -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_stop_discovery"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{activity::onDiscovery}"
+                android:text="Stop Discovery"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="@{safeUnbox(isBluetoothEnabled) &amp;&amp; safeUnbox(isDiscovery) &amp;&amp; !safeUnbox(isConnected) ? View.VISIBLE : View.GONE}"
+                app:backgroundTint="@color/action_stop"
+                app:cornerRadius="14dp"
+                app:icon="@drawable/ic_search"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                tools:visibility="gone" />
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_disconnect"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="52dp"
                 android:layout_marginTop="8dp"
-                android:enabled="@{isConnected}"
                 android:fontFamily="sans-serif-medium"
                 android:onClick="@{activity::disconnect}"
                 android:text="Disconnect"
                 android:textAllCaps="false"
-                android:textSize="16sp"
+                android:textColor="@color/brand_primary"
+                android:textSize="15sp"
+                android:visibility="@{safeUnbox(isBluetoothEnabled) &amp;&amp; safeUnbox(isConnected) ? View.VISIBLE : View.GONE}"
                 app:backgroundTint="@android:color/white"
-                app:cornerRadius="12dp"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_bluetooth_disabled"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
-                app:strokeColor="#5E35B1"
-                app:strokeWidth="2dp" />
+                app:iconTint="@color/brand_primary"
+                app:strokeColor="@color/brand_primary"
+                app:strokeWidth="2dp"
+                tools:visibility="visible" />
         </LinearLayout>
-
-        <!-- Loading Indicator -->
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="#5E35B1"
-            android:visibility="gone"
-            app:discoveryProgress="@{isDiscovery}"
-            app:layout_constraintBottom_toBottomOf="@id/recycler_view"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/recycler_view" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

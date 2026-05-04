@@ -1,45 +1,45 @@
 package device.apps.rfidsamplev2.sample.nfc;
 
 import android.app.PendingIntent;
-import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
 import android.content.Intent;
-import android.nfc.NdefMessage;
-import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import device.apps.rfidsamplev2.BaseViewModel;
 import device.apps.rfidsamplev2.RFIDSampleV2;
+import device.apps.rfidsamplev2.Rf88ConnectionRepository;
 import device.apps.rfidsamplev2.databinding.ActivityNfcBinding;
-import ex.dev.sdk.rf88.Rf88Manager;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
+/**
+ * "Tap to Pair" — establish an RF88 Bluetooth connection by reading a Bluetooth
+ * Out-Of-Band pairing record from an NFC tag.
+ *
+ * <p>The screen handles three NFC-availability states:
+ * <ul>
+ *   <li>Hardware missing — only the hero card is shown explaining the situation.</li>
+ *   <li>Hardware present but turned off — an "Open NFC Settings" button takes the
+ *       user to the system NFC toggle.</li>
+ *   <li>Hardware present and on — NFC foreground dispatch is enabled and the screen
+ *       waits for the user to tap a tag.</li>
+ * </ul>
+ *
+ * <p>NDEF parsing and RF88 SDK calls live in {@link NfcViewModel}; this Activity owns
+ * the Android-NFC framework integration (adapter, foreground dispatch, intent
+ * handling) and pushes derived strings into the data-bound layout.
+ */
 public class NfcActivity extends AppCompatActivity {
 
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
-
-    private BaseViewModel viewModel;
-    private BluetoothManager manager;
+    private Rf88ConnectionRepository connectionRepository;
+    private NfcViewModel viewModel;
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
-
     private ActivityNfcBinding binding;
 
     @Override
@@ -49,184 +49,158 @@ public class NfcActivity extends AppCompatActivity {
         initializationContentView();
         initializationNfcFunction();
         observeData();
-        setupToolbar();
     }
 
+    /**
+     * Re-enable foreground NFC dispatch and refresh the UI in case the user toggled
+     * NFC in system settings while we were paused.
+     */
     @Override
     protected void onResume() {
         super.onResume();
-        // NFC 어댑터 null 체크
         if (nfcAdapter != null && nfcAdapter.isEnabled()) {
             nfcAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
         }
+        refreshNfcUi();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // NFC 어댑터 null 체크
         if (nfcAdapter != null && nfcAdapter.isEnabled()) {
             nfcAdapter.disableForegroundDispatch(this);
         }
     }
 
+    // No onDestroy override needed — connectState.observe(this, ...) is lifecycle-bound,
+    // so the observer is removed automatically when the Activity is destroyed.
+
+    /**
+     * NFC foreground dispatch routes tag reads here. We only act on Bluetooth handover
+     * NDEF records; everything else is ignored silently.
+     */
     @Override
     protected void onNewIntent(@NonNull Intent intent) {
         super.onNewIntent(intent);
-        if (intent.getAction() == null)
-            return;
-
-        if (intent.getAction().equals(NfcAdapter.ACTION_NDEF_DISCOVERED))
-            analyzerNdefMessage(intent);
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())) {
+            handleNdefIntent(intent);
+        }
     }
 
     /**
-     * Disconnect from the Bluetooth device
+     * Disconnect from the currently connected RF88 device. Bound from the layout.
      *
-     * @param view Button view
+     * @param view Button view passed by the data-binding click handler
      */
     public void disconnect(View view) {
-        rf88Manager.disconnect();
+        viewModel.disconnect();
     }
 
     /**
-     * Setup toolbar with back navigation
+     * Open the system NFC settings so the user can turn the NFC adapter on.
+     * Bound from the layout when NFC is supported but currently off.
+     *
+     * @param view Button view passed by the data-binding click handler
      */
-    private void setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener(v -> finish());
+    public void openNfcSettings(View view) {
+        startActivity(new Intent(Settings.ACTION_NFC_SETTINGS));
     }
 
     /**
-     * Initialize the View model
+     * Resolve the application-scoped connection repository and create the screen-scoped view model.
      */
     private void initializationViewModel() {
-        viewModel = ((RFIDSampleV2) getApplication()).getBaseViewModel();
+        connectionRepository = ((RFIDSampleV2) getApplication()).getConnectionRepository();
+        viewModel = new ViewModelProvider(this).get(NfcViewModel.class);
     }
 
     /**
-     * Initialize the views used on the activity
+     * Inflate the data-bound layout and wire up navigation.
      */
     private void initializationContentView() {
         binding = ActivityNfcBinding.inflate(getLayoutInflater());
         binding.setActivity(this);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
     }
 
     /**
-     * Observe the data used on the screen and provide it to the view using data binding
-     */
-    private void observeData() {
-        viewModel.connectState.observe(this, state -> {
-            binding.setState(state.name());
-            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
-        });
-    }
-
-    /**
-     * Initialize NFC functionality and check NFC support
+     * Resolve the NFC adapter and prepare the {@link PendingIntent} used by foreground
+     * dispatch. When the device has no NFC hardware we leave both fields {@code null};
+     * the hero card explains the situation and no further setup is required.
      */
     private void initializationNfcFunction() {
-        manager = (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter == null) return;
 
-        // NFC 지원 여부 확인
-        if (nfcAdapter == null) {
-            showNfcNotSupportedDialog();
-            return;
-        }
-
-        // NFC 활성화 여부 확인
-        if (!nfcAdapter.isEnabled()) {
-            Toast.makeText(this, "Please enable NFC in your device settings", Toast.LENGTH_LONG).show();
-        }
-
-        // PendingIntent 설정
         final Intent intent = new Intent(this, getClass());
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
     }
 
     /**
-     * Show dialog when NFC is not supported
+     * Subscribe to the connection state and refresh the hero card on every change.
      */
-    private void showNfcNotSupportedDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle("NFC Not Supported")
-                .setMessage("This device does not support NFC.\n\nPlease use Bluetooth or Wire connection instead.")
-                .setPositiveButton("OK", (dialog, which) -> finish())
-                .setCancelable(false)
-                .setIcon(android.R.drawable.ic_dialog_alert)
-                .show();
+    private void observeData() {
+        connectionRepository.connectState.observe(this, state -> refreshNfcUi());
     }
 
     /**
-     * Extract the NdefMessage object from the Intent received via ACTION_NDEF_DISCOVERED and
-     * attempt to connect to the Bluetooth device based on the information in that object
-     *
-     * @param intent Android intent
+     * Recompute every layout variable based on (1) NFC hardware availability, (2) NFC
+     * adapter on/off state and (3) the SDK connection state. Called from the connection
+     * observer and from {@link #onResume} so the UI stays accurate after the user
+     * toggles NFC in system settings.
      */
-    private void analyzerNdefMessage(Intent intent) {
-        final Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+    private void refreshNfcUi() {
+        final boolean supported = nfcAdapter != null;
+        final boolean enabled = supported && nfcAdapter.isEnabled();
+        final DeviceConnectionState state = connectionRepository.connectState.getValue();
+        final boolean connected = state == DeviceConnectionState.CONNECTED;
 
-        if (rawMessages != null) {
-            final List<NdefMessage> messages = new ArrayList<>();
-            for (Parcelable rawMessage : rawMessages)
-                if (rawMessage instanceof NdefMessage)
-                    messages.add((NdefMessage) rawMessage);
-
-            if (!messages.isEmpty()) {
-                final NdefRecord record = messages.get(0).getRecords()[0];
-                final String mimeType = record.toMimeType();
-                if (mimeType != null && mimeType.contains("application/vnd.bluetooth.ep.oob")) {
-                    try {
-                        final String address = parseMacAddressToNFC(record.getPayload());
-                        final BluetoothDevice device = manager.getAdapter().getRemoteDevice(address);
-                        executorService.execute(() -> rf88Manager.connect(device.getAddress()));
-
-                        Toast.makeText(this, "Connecting to: " + address, Toast.LENGTH_SHORT).show();
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Toast.makeText(this, "Failed to connect: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-            }
-        }
+        binding.setIsHeroActive(supported && enabled);
+        binding.setIsConnected(connected);
+        binding.setShowOpenNfcSettings(supported && !enabled);
+        binding.setShowActionBar((supported && !enabled) || connected);
+        binding.setStatusTitle(getStatusTitle(supported, enabled, state));
+        binding.setStatusSubtitle(getStatusSubtitle(supported, enabled, state));
     }
 
     /**
-     * Convert the byte array passed as an argument to a usable hexadecimal format and return it
-     *
-     * @param data mac address byte array
-     * @return Strings mac address
+     * Pick the headline shown on the hero card. NFC-level problems (unsupported, off)
+     * take priority over the SDK connection state because there is no point reporting
+     * "Disconnected" when the radio is not available.
      */
-    private String parseMacAddressToNFC(byte[] data) {
-        ByteBuffer buffer = ByteBuffer.wrap(data);
-        short oobLength = buffer.getShort();
-        byte[] macAddressBytes = Arrays.copyOfRange(data, 2, 8);
-        byte[] reversedMacAddressBytes = reverseArray(macAddressBytes);
-        StringBuilder macAddress = new StringBuilder();
-        for (int i = 0; i < reversedMacAddressBytes.length; i++) {
-            if (i > 0)
-                macAddress.append(":");
-
-            macAddress.append(String.format("%02X", reversedMacAddressBytes[i]));
-        }
-
-        return macAddress.toString();
+    private String getStatusTitle(boolean supported, boolean enabled, DeviceConnectionState state) {
+        if (!supported) return "NFC not supported";
+        if (!enabled) return "NFC is off";
+        if (state == DeviceConnectionState.CONNECTED) return "Connected";
+        if (state == DeviceConnectionState.CONNECTING) return "Connecting...";
+        return "Ready to scan";
     }
 
     /**
-     * Reverse the byte array passed as an argument
-     *
-     * @param array target byte array
-     * @return reversed byte array
+     * Pick the helper text shown under the headline.
      */
-    private byte[] reverseArray(byte[] array) {
-        byte[] reversedArray = new byte[array.length];
-        for (int i = 0; i < array.length; i++) {
-            reversedArray[i] = array[array.length - 1 - i];
+    private String getStatusSubtitle(boolean supported, boolean enabled, DeviceConnectionState state) {
+        if (!supported) return "This device cannot use NFC";
+        if (!enabled) return "Turn on NFC to pair";
+        if (state == DeviceConnectionState.CONNECTED) return "Your RF88 device is ready";
+        if (state == DeviceConnectionState.CONNECTING) return "Establishing connection";
+        return "Hold your device near an NFC tag";
+    }
+
+    /**
+     * Forward an {@code ACTION_NDEF_DISCOVERED} intent to the view model for parsing.
+     * Shows a short toast confirming the connect attempt, or letting the user know
+     * the tag did not contain a Bluetooth pairing record.
+     */
+    private void handleNdefIntent(Intent intent) {
+        final String address = viewModel.parseMacFromOobIntent(intent);
+        if (address == null) {
+            Toast.makeText(this, "This NFC tag does not contain a Bluetooth pairing record", Toast.LENGTH_SHORT).show();
+            return;
         }
-        return reversedArray;
+        Toast.makeText(this, "Connecting to: " + address, Toast.LENGTH_SHORT).show();
+        viewModel.connect(address);
     }
 }

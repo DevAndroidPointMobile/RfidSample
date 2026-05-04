@@ -9,16 +9,27 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import device.apps.rfidsamplev2.databinding.ItemInventoryBinding;
-import device.apps.rfidsamplev2.sample.inventory.callback.OnInventoryClickListener;
+import device.apps.rfidsamplev2.databinding.ItemInventoryNreadBinding;
+import device.apps.rfidsamplev2.sample.nread.callback.OnInventoryNreadClickListener;
 import device.apps.rfidsamplev2.sample.nread.data.InventoryNreadResponse;
 
+/**
+ * RecyclerView adapter for the discovered RF88 tag list on the Inventory &amp; Read
+ * sample screen. Each row is an {@code item_inventory_nread.xml} card showing the EPC,
+ * the running read count, and the bytes read from the tag's memory bank in the same
+ * air-protocol exchange.
+ *
+ * <p>The adapter holds a direct reference to the ViewModel's {@code readHistory} list
+ * — mutations there are visible here without any data copy. The Activity drives
+ * incremental updates through {@link #updateData(int)} based on the ViewModel's
+ * {@code changedIndex} signal.
+ */
 public class InventoryNreadAdapter extends RecyclerView.Adapter<InventoryNreadAdapter.InventoryNreadViewHolder> {
 
     private final List<InventoryNreadResponse> inventoryList;
-    private final OnInventoryClickListener clickListener;
+    private final OnInventoryNreadClickListener clickListener;
 
-    public InventoryNreadAdapter(List<InventoryNreadResponse> inventoryList, OnInventoryClickListener clickListener) {
+    public InventoryNreadAdapter(List<InventoryNreadResponse> inventoryList, OnInventoryNreadClickListener clickListener) {
         this.inventoryList = inventoryList;
         this.clickListener = clickListener;
     }
@@ -26,7 +37,7 @@ public class InventoryNreadAdapter extends RecyclerView.Adapter<InventoryNreadAd
     @NonNull
     @Override
     public InventoryNreadViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        ItemInventoryBinding binding = ItemInventoryBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
+        ItemInventoryNreadBinding binding = ItemInventoryNreadBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false);
         return new InventoryNreadViewHolder(binding);
     }
 
@@ -41,6 +52,14 @@ public class InventoryNreadAdapter extends RecyclerView.Adapter<InventoryNreadAd
         return inventoryList.size();
     }
 
+    /**
+     * Re-bind the row at {@code changedIndex}, or refresh the entire list when
+     * {@code changedIndex} is {@code -1} (used by {@code clearHistory()} and full
+     * resets). The {@code -1} sentinel matches the initial value of the ViewModel's
+     * {@code changedIndex} LiveData so the very first observe-time emit is harmless.
+     *
+     * @param changedIndex index of the row to refresh, or {@code -1} for a full refresh
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void updateData(int changedIndex) {
         if (changedIndex == -1)
@@ -51,20 +70,25 @@ public class InventoryNreadAdapter extends RecyclerView.Adapter<InventoryNreadAd
 
     public static class InventoryNreadViewHolder extends RecyclerView.ViewHolder {
 
-        private final ItemInventoryBinding _binding;
+        private final ItemInventoryNreadBinding binding;
 
-        public InventoryNreadViewHolder(@NonNull ItemInventoryBinding binding) {
+        public InventoryNreadViewHolder(@NonNull ItemInventoryNreadBinding binding) {
             super(binding.getRoot());
-            this._binding = binding;
+            this.binding = binding;
         }
 
-        public void bind(InventoryNreadResponse data, OnInventoryClickListener clickListener) {
-            _binding.setEpc(data.getEpcData());
-            _binding.setCount(String.valueOf(data.getReadCount()));
-            _binding.setReadValue(data.getReadValue());
-            _binding.inventoryTile.setOnClickListener(v -> {
+        /**
+         * Push the row's EPC / count / read-value strings into the data-bound layout
+         * and wire the tile's click to {@code clickListener}. A null
+         * {@code clickListener} makes the row inert.
+         */
+        public void bind(InventoryNreadResponse data, OnInventoryNreadClickListener clickListener) {
+            binding.setEpc(data.getEpcData());
+            binding.setCount(String.valueOf(data.getReadCount()));
+            binding.setReadValue(data.getReadValue());
+            binding.inventoryTile.setOnClickListener(v -> {
                 if (clickListener != null) {
-                    clickListener.onInventoryClicked(data);
+                    clickListener.onInventoryNreadClicked(data);
                 }
             });
         }

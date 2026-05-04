@@ -5,8 +5,6 @@
 
     <data>
 
-        <import type="android.view.View" />
-
         <variable
             name="epc"
             type="String" />
@@ -16,8 +14,9 @@
             type="String" />
 
         <variable
-            name="detail"
+            name="readValue"
             type="String" />
+
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -25,12 +24,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="6dp"
-        android:clickable="true"
-        android:focusable="true"
-        app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="12dp"
         app:cardElevation="2dp"
-        app:rippleColor="@color/brand_ripple"
         app:strokeWidth="0dp">
 
         <LinearLayout
@@ -38,30 +33,28 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="14dp">
+            android:padding="16dp">
 
-            <!-- RFID icon chip -->
-            <androidx.cardview.widget.CardView
+            <!-- RFID Icon -->
+            <FrameLayout
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                app:cardBackgroundColor="@color/brand_surface"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp">
+                android:background="@drawable/circle_icon_background">
 
                 <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_gravity="center"
                     android:contentDescription="RFID Tag"
-                    android:padding="10dp"
                     android:src="@drawable/ic_rfid"
-                    app:tint="@color/brand_primary" />
-            </androidx.cardview.widget.CardView>
+                    android:tint="@color/brand_primary" />
+            </FrameLayout>
 
-            <!-- EPC + optional detail line -->
+            <!-- EPC + read value -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
+                android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -73,23 +66,22 @@
                     android:maxLines="1"
                     android:text="@{epc}"
                     android:textColor="#212121"
-                    android:textSize="14sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
                     tools:text="3000AAAABBBBCCCCDDDDEEEE" />
 
-                <!-- Hidden when no detail (configuration not set yet) -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
-                    android:text="@{detail}"
-                    android:textColor="#9E9E9E"
+                    android:text="@{readValue}"
+                    android:textColor="#757575"
                     android:textSize="12sp"
-                    android:visibility="@{detail != null &amp;&amp; !detail.isEmpty() ? View.VISIBLE : View.GONE}"
-                    tools:text="RSSI -42 · 920.4 MHz" />
+                    tools:text="N-read data" />
+
             </LinearLayout>
 
-            <!-- Count badge -->
+            <!-- Count Badge -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,23 +90,23 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:paddingHorizontal="12dp"
-                android:paddingVertical="6dp">
+                android:paddingVertical="8dp">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="sans-serif-medium"
                     android:text="@{count}"
                     android:textColor="@color/brand_primary"
-                    android:textSize="16sp"
+                    android:textSize="18sp"
                     android:textStyle="bold"
-                    tools:text="12" />
+                    tools:text="30" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:text="scans"
-                    android:textColor="#9E9E9E"
+                    android:textColor="#757575"
                     android:textSize="10sp" />
             </LinearLayout>
         </LinearLayout>

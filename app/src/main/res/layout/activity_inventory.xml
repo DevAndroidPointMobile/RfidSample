@@ -5,10 +5,19 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="activity"
             type="device.apps.rfidsamplev2.sample.inventory.InventoryActivity" />
 
+        <variable
+            name="uniqueCount"
+            type="int" />
+
+        <variable
+            name="isScanning"
+            type="Boolean" />
     </data>
 
     <LinearLayout
@@ -24,115 +33,21 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
-            android:elevation="4dp"
+            android:elevation="2dp"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:title="Inventory"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />
 
-        <!-- Stats Card -->
-        <!--        <com.google.android.material.card.MaterialCardView-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="wrap_content"-->
-        <!--            android:layout_margin="16dp"-->
-        <!--            app:cardCornerRadius="16dp"-->
-        <!--            app:cardElevation="2dp"-->
-        <!--            app:strokeWidth="0dp">-->
-
-        <!--            <LinearLayout-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="wrap_content"-->
-        <!--                android:orientation="horizontal"-->
-        <!--                android:padding="16dp">-->
-
-        <!--                &lt;!&ndash; Total Items &ndash;&gt;-->
-        <!--                <LinearLayout-->
-        <!--                    android:layout_width="0dp"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:layout_weight="1"-->
-        <!--                    android:gravity="center"-->
-        <!--                    android:orientation="vertical">-->
-
-        <!--                    <ImageView-->
-        <!--                        android:layout_width="32dp"-->
-        <!--                        android:layout_height="32dp"-->
-        <!--                        android:contentDescription="Total Items"-->
-        <!--                        android:src="@drawable/ic_inventory"-->
-        <!--                        android:tint="#5E35B1" />-->
-
-        <!--                    <TextView-->
-        <!--                        android:id="@+id/tv_total_count"-->
-        <!--                        android:layout_width="wrap_content"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="8dp"-->
-        <!--                        android:text="0"-->
-        <!--                        android:textColor="#212121"-->
-        <!--                        android:textSize="24sp"-->
-        <!--                        android:textStyle="bold" />-->
-
-        <!--                    <TextView-->
-        <!--                        android:layout_width="wrap_content"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="4dp"-->
-        <!--                        android:text="Total Items"-->
-        <!--                        android:textColor="#757575"-->
-        <!--                        android:textSize="12sp" />-->
-        <!--                </LinearLayout>-->
-
-        <!--                &lt;!&ndash; Divider &ndash;&gt;-->
-        <!--                <View-->
-        <!--                    android:layout_width="1dp"-->
-        <!--                    android:layout_height="match_parent"-->
-        <!--                    android:layout_marginVertical="8dp"-->
-        <!--                    android:background="#E0E0E0" />-->
-
-        <!--                &lt;!&ndash; Unique Tags &ndash;&gt;-->
-        <!--                <LinearLayout-->
-        <!--                    android:layout_width="0dp"-->
-        <!--                    android:layout_height="wrap_content"-->
-        <!--                    android:layout_weight="1"-->
-        <!--                    android:gravity="center"-->
-        <!--                    android:orientation="vertical">-->
-
-        <!--                    <ImageView-->
-        <!--                        android:layout_width="32dp"-->
-        <!--                        android:layout_height="32dp"-->
-        <!--                        android:contentDescription="Unique Tags"-->
-        <!--                        android:src="@drawable/ic_rfid"-->
-        <!--                        android:tint="#5E35B1" />-->
-
-        <!--                    <TextView-->
-        <!--                        android:id="@+id/tv_unique_count"-->
-        <!--                        android:layout_width="wrap_content"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="8dp"-->
-        <!--                        android:text="0"-->
-        <!--                        android:textColor="#212121"-->
-        <!--                        android:textSize="24sp"-->
-        <!--                        android:textStyle="bold" />-->
-
-        <!--                    <TextView-->
-        <!--                        android:layout_width="wrap_content"-->
-        <!--                        android:layout_height="wrap_content"-->
-        <!--                        android:layout_marginTop="4dp"-->
-        <!--                        android:text="Unique Tags"-->
-        <!--                        android:textColor="#757575"-->
-        <!--                        android:textSize="12sp" />-->
-
-        <!--                </LinearLayout>-->
-
-        <!--            </LinearLayout>-->
-
-        <!--        </com.google.android.material.card.MaterialCardView>-->
-
-        <!-- List Header -->
+        <!-- List header: title + scanning dot + count chip -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp">
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -144,48 +59,91 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
+            <!-- Blink while inventory trigger is held -->
+            <View
+                android:id="@+id/scan_dot"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/circle_background"
+                android:visibility="@{safeUnbox(isScanning) ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/badge_background"
+                android:fontFamily="sans-serif-medium"
+                android:minWidth="32dp"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="3dp"
+                android:text="@{String.valueOf(uniqueCount)}"
+                android:textAlignment="center"
+                android:textColor="@color/brand_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="12" />
         </LinearLayout>
 
-        <!-- RecyclerView -->
+        <!-- Tag list -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:clipToPadding="false"
+            android:overScrollMode="never"
             android:paddingHorizontal="16dp"
+            android:paddingBottom="12dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_inventory" />
 
-        <!-- Clear Button -->
+        <!-- Sticky action bar -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:elevation="8dp"
+            android:orientation="vertical"
             android:padding="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_inventory"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:backgroundTint="@{safeUnbox(isScanning) ? @color/action_neutral : @color/brand_primary}"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{activity::onToggleInventory}"
+                android:text="@{safeUnbox(isScanning) ? `Stop Inventory` : `Start Inventory`}"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                app:cornerRadius="14dp"
+                app:icon="@drawable/ic_inventory"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:iconTint="@android:color/white"
+                tools:text="Start Inventory" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_clear"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="sans-serif-medium"
                 android:onClick="@{activity::onClear}"
                 android:text="Clear All"
                 android:textAllCaps="false"
-                android:textColor="#C62828"
-                android:textSize="16sp"
-                app:cornerRadius="12dp"
+                android:textColor="@color/action_stop"
+                android:textSize="15sp"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_clear"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
-                app:iconTint="#C62828"
-                app:strokeColor="#C62828"
+                app:iconTint="@color/action_stop"
+                app:strokeColor="@color/action_stop"
                 app:strokeWidth="2dp" />
-
         </LinearLayout>
-
     </LinearLayout>
-
 </layout>

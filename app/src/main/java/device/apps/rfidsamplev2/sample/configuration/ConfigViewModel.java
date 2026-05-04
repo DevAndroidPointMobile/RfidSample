@@ -12,21 +12,35 @@ import java.util.concurrent.Executors;
 import device.apps.rfidsamplev2.data.Configuration;
 import ex.dev.sdk.rf88.Rf88Manager;
 
+/**
+ * State holder for {@link ConfigActivity}.
+ *
+ * <p>Owns one {@link MutableLiveData} per {@link Configuration} entry plus a single
+ * {@link #busy} flag for the progress dialog. All SDK calls go through a single-thread
+ * executor so the main thread is never blocked and the order of getters / setters stays
+ * deterministic across {@link #load()}, {@link #apply()}, and {@link #factoryDefault()}.
+ *
+ * <p>The two {@code switch} dispatchers ({@link #loadConfiguration} and
+ * {@link #applyConfiguration}) are intentionally explicit — a reader can see exactly
+ * which SDK call backs each setting on the screen. Wiring this through the enum would
+ * be shorter but would force readers to chase method references to learn the same fact.
+ */
 public class ConfigViewModel extends ViewModel {
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
 
-    public Map<Configuration, MutableLiveData<String>> configurations = new HashMap<>();
+    /** Per-setting LiveData map; consumers go through {@link #getConfiguration(Configuration)} only. */
+    private final Map<Configuration, MutableLiveData<String>> configurations = new HashMap<>();
 
-    // 새로 추가: 작업 중 상태를 나타내는 LiveData
+    /** True while a load / apply / factory-default cycle is in flight; drives the modal progress dialog. */
     private final MutableLiveData<Boolean> busy = new MutableLiveData<>(false);
 
     public LiveData<Boolean> getBusy() {
         return busy;
     }
 
-    public void setBusy(boolean value) {
+    private void setBusy(boolean value) {
         busy.postValue(value);
     }
 
@@ -62,23 +76,21 @@ public class ConfigViewModel extends ViewModel {
     }
 
     /**
-     * Fetch all the values declared in the enum class Configuration from RF88
+     * Fetch every value declared in {@link Configuration} from the RF88 reader and
+     * push it into the corresponding LiveData. Runs on the background executor and
+     * holds {@link #busy} for the whole pass so the UI shows a single progress
+     * dialog from start to finish.
      */
     public void load() {
-        // 옵션: load 동작도 busy 표시하도록 변경 가능
         executorService.execute(() -> {
             setBusy(true);
-            for (Configuration value : Configuration.values()) {
-                final String currentValue = loadConfiguration(value);
-                setConfiguration(value, currentValue);
-                waits(200L);
-            }
+            loadAll();
             setBusy(false);
         });
     }
 
     /**
-     * Set the values currently held by the LiveData to RF88
+     * Push every value currently held by the LiveData map back to the RF88 reader.
      */
     public void apply() {
         executorService.execute(() -> {
@@ -93,20 +105,47 @@ public class ConfigViewModel extends ViewModel {
     }
 
     /**
-     * Perform a factory default reset.
+     * Reset the reader to factory defaults and immediately reload every value so the
+     * UI reflects the new state. Both steps run in a single background task — calling
+     * {@link #load()} from here would queue a separate task and toggle {@link #busy}
+     * twice, causing the progress dialog to flicker.
      */
     public void factoryDefault() {
         executorService.execute(() -> {
             setBusy(true);
             rf88Manager.factoryDefaults();
-            // 재로딩까지 하면 사용자에게 진행상태를 보여줌
-            load();
-            setBusy(false); // load() 내부에서도 setBusy를 조절하므로 중복 가능. 안전을 위해 남겨둠.
+            loadAll();
+            setBusy(false);
         });
     }
 
-    // ... loadConfiguration, applyConfiguration, waits 메서드는 기존과 동일 (생략하지 말고 유지)
-    // (기존 코드 붙여넣기)
+    /**
+     * Allow in-flight SET / GET calls to drain but reject any new submissions. Called
+     * from {@link #onCleared()} so an Activity that finishes mid-apply doesn't leave
+     * the reader in a partially-applied state, while preventing later coroutines from
+     * piling up against a dead ViewModel.
+     */
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        executorService.shutdown();
+    }
+
+    /** Sequentially read every {@link Configuration} from the reader into its LiveData. */
+    private void loadAll() {
+        for (Configuration value : Configuration.values()) {
+            final String currentValue = loadConfiguration(value);
+            setConfiguration(value, currentValue);
+            waits(200L);
+        }
+    }
+
+    /**
+     * Dispatch table — given a {@link Configuration} key, call the matching SDK getter
+     * and return its raw string value. Kept as an explicit switch rather than wired
+     * through the enum so a reader can see, in one place, which SDK call backs each
+     * setting on the screen.
+     */
     private String loadConfiguration(Configuration configuration) {
         switch (configuration) {
             case START_Q:
@@ -156,6 +195,10 @@ public class ConfigViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Counterpart to {@link #loadConfiguration(Configuration)} — given a key and a new
+     * string value, call the matching SDK setter. Same explicit-switch rationale.
+     */
     private String applyConfiguration(Configuration configuration, String newValue) {
         switch (configuration) {
             case START_Q:

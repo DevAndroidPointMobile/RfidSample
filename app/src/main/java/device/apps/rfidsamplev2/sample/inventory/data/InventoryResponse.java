@@ -1,5 +1,23 @@
 package device.apps.rfidsamplev2.sample.inventory.data;
 
+/**
+ * One tag report emitted by the RF88 SDK during an inventory scan, plus the running
+ * read count maintained by {@code InventoryViewModel} as the same EPC is re-discovered.
+ *
+ * <p>Field meanings (all strings since the SDK delivers them in already-formatted form):
+ * <ul>
+ *     <li>{@code readLine} — full hex dump line as the SDK reports it (EPC bits, used
+ *         as the de-dup key and as the Class1-Gen2 Select mask for Mandatory commands).</li>
+ *     <li>{@code ascii} — ASCII rendering of the EPC, when meaningful.</li>
+ *     <li>{@code rssi} — signal strength of the read, in dBm, if reporting was enabled
+ *         in {@code INVENTORY_RESPONSE} configuration; empty otherwise.</li>
+ *     <li>{@code frequency} — channel frequency the read happened on, in MHz; same
+ *         "empty when not configured" rule as RSSI.</li>
+ *     <li>{@code checksum} — checksum word reported by the tag, when configured.</li>
+ *     <li>{@code readCount} — how many times this EPC has been seen during the current
+ *         session; bumped by {@code InventoryViewModel.inventoryProcess}.</li>
+ * </ul>
+ */
 public class InventoryResponse {
     String readLine;
     String ascii;

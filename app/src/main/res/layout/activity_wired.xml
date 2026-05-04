@@ -5,25 +5,33 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="activity"
             type="device.apps.rfidsamplev2.sample.wired.WiredActivity" />
 
         <variable
-            name="state"
+            name="statusTitle"
+            type="String" />
+
+        <variable
+            name="statusSubtitle"
             type="String" />
 
         <variable
             name="isConnected"
             type="Boolean" />
+
+        <variable
+            name="isAutoDetectSupported"
+            type="Boolean" />
     </data>
 
-    <LinearLayout
-        android:id="@+id/main"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F5F5F5"
-        android:orientation="vertical"
         tools:context=".sample.wired.WiredActivity">
 
         <!-- Toolbar -->
@@ -32,78 +40,112 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
-            android:elevation="4dp"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:navigationIcon="@drawable/ic_arrow_back"
             app:title="Wire Connection"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />
 
-        <!-- Connection Status Card -->
+        <!-- Hero status card -->
         <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
+            android:id="@+id/hero_card"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="20dp"
             app:cardElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:strokeWidth="0dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingHorizontal="24dp"
+                android:paddingTop="24dp"
+                android:paddingBottom="20dp">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="Cable Icon"
-                    android:src="@drawable/ic_cable"
-                    app:tint="#5E35B1" />
+                <androidx.cardview.widget.CardView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    app:cardBackgroundColor="@{safeUnbox(isConnected) ? @color/brand_surface : @color/surface_neutral}"
+                    app:cardCornerRadius="40dp"
+                    app:cardElevation="0dp">
 
-                <LinearLayout
-                    android:layout_width="0dp"
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Cable"
+                        android:padding="20dp"
+                        android:src="@drawable/ic_cable"
+                        android:tint="@{safeUnbox(isConnected) ? @color/brand_primary : @color/icon_neutral}"
+                        tools:tint="@color/icon_neutral" />
+                </androidx.cardview.widget.CardView>
+
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:text="@{statusTitle}"
+                    android:textColor="#212121"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    tools:text="Disconnected" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Connection Status"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="@{state}"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="DISCONNECTED" />
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/status_indicator"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
-                    android:background="@drawable/circle_indicator"
-                    app:connectionState="@{isConnected}" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:text="@{statusSubtitle}"
+                    android:textColor="#9E9E9E"
+                    android:textSize="13sp"
+                    tools:text="Connect via the cable below" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Instructions Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
+        <!-- Section header -->
+        <TextView
+            android:id="@+id/section_header"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="12dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="20dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Connection Guide"
+            android:textColor="#212121"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/hero_card" />
+
+        <!-- Guide card -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/guide_card"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="16dp"
+            app:cardBackgroundColor="@android:color/white"
+            app:cardCornerRadius="16dp"
             app:cardElevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/section_header"
             app:strokeWidth="0dp">
 
             <LinearLayout
@@ -112,112 +154,142 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
+                <!-- Step 1 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:contentDescription="Info"
-                        android:src="@drawable/ic_info"
-                        app:tint="#5E35B1" />
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:cardBackgroundColor="@color/brand_surface"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textColor="@color/brand_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </androidx.cardview.widget.CardView>
 
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Connection Guide"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Attach the device to the RF88 RFID sled"
+                        android:textColor="#424242"
+                        android:textSize="14sp" />
                 </LinearLayout>
 
-                <TextView
+                <!-- Step 2 -->
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:lineSpacingExtra="4dp"
-                    android:text="1. Attach the device to the RF88 RFID sled"
-                    android:textColor="#616161"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="14dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="32dp"
+                        android:layout_height="32dp"
+                        app:cardBackgroundColor="@color/brand_surface"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="0dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:fontFamily="sans-serif-medium"
+                            android:gravity="center"
+                            android:text="2"
+                            android:textColor="@color/brand_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+                    </androidx.cardview.widget.CardView>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="14dp"
+                        android:layout_weight="1"
+                        android:lineSpacingExtra="2dp"
+                        android:text="Tap the Connect button below"
+                        android:textColor="#424242"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <!-- Hint shown only on devices without GPIO auto-detect (e.g. PM90) -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
-                    android:lineSpacingExtra="4dp"
-                    android:text="2. Tap the Connect button below"
-                    android:textColor="#616161"
-                    android:textSize="14sp" />
+                    android:layout_marginTop="14dp"
+                    android:text="Note: automatic detection is not available on this device. Please connect manually."
+                    android:textColor="#9E9E9E"
+                    android:textSize="12sp"
+                    android:textStyle="italic"
+                    android:visibility="@{safeUnbox(isAutoDetectSupported) ? View.GONE : View.VISIBLE}"
+                    tools:visibility="visible" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Device Illustration -->
+        <!-- Action bar -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="32dp">
-
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:contentDescription="Cable Connection"
-                android:src="@drawable/ic_cable"
-                app:tint="#BDBDBD" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:fontFamily="sans-serif-medium"
-                android:gravity="center"
-                android:text="@{isConnected ? `Device Connected` : `Ready to Connect`}"
-                android:textColor="#757575"
-                android:textSize="18sp"
-                tools:text="Ready to Connect" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="@{isConnected ? `You can now use RFID features` : `Connect your device via USB cable`}"
-                android:textColor="#9E9E9E"
-                android:textSize="14sp"
-                tools:text="Connect your device via USB cable" />
-        </LinearLayout>
-
-        <!-- Connect Button -->
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/action_bar"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/white"
             android:elevation="8dp"
-            android:padding="16dp">
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
+            <!-- Shown when not connected -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_connection"
+                android:id="@+id/btn_connect"
                 style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:fontFamily="sans-serif-medium"
-                android:onClick="@{activity::onConnection}"
+                android:onClick="@{activity::connect}"
+                android:text="Connect"
                 android:textAllCaps="false"
-                android:textSize="16sp"
-                app:connectState="@{isConnected}"
-                app:cornerRadius="12dp"
+                android:textSize="15sp"
+                android:visibility="@{safeUnbox(isConnected) ? View.GONE : View.VISIBLE}"
+                app:backgroundTint="@color/brand_primary"
+                app:cornerRadius="14dp"
+                app:icon="@drawable/ic_cable"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp" />
+
+            <!-- Shown when connected -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_disconnect"
+                style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:fontFamily="sans-serif-medium"
+                android:onClick="@{activity::disconnect}"
+                android:text="Disconnect"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:visibility="@{safeUnbox(isConnected) ? View.VISIBLE : View.GONE}"
+                app:backgroundTint="@color/action_stop"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_cable"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
-                tools:text="Connect" />
+                tools:visibility="gone" />
         </LinearLayout>
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

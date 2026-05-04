@@ -21,6 +21,7 @@
         android:clickable="true"
         android:focusable="true"
         android:foreground="?android:attr/selectableItemBackground"
+        app:cardBackgroundColor="@android:color/white"
         app:cardCornerRadius="12dp"
         app:cardElevation="2dp"
         app:strokeWidth="0dp">
@@ -44,7 +45,7 @@
                     android:layout_gravity="center"
                     android:contentDescription="Config Icon"
                     android:src="@drawable/ic_tune"
-                    android:tint="#5E35B1" />
+                    android:tint="@color/brand_primary" />
             </FrameLayout>
 
             <!-- Name and Value -->

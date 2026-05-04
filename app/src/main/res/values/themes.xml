@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.RFIDSampleV2" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Brand color override — without this M3 falls back to its baseline purple. -->
+        <item name="colorPrimary">@color/brand_primary</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+
+        <!-- Status bar matches the top of the gradient_toolbar drawable so the seam is invisible. -->
+        <item name="android:statusBarColor">@color/brand_primary_light</item>
     </style>
 
     <style name="Theme.RFIDSampleV2" parent="Base.Theme.RFIDSampleV2" />

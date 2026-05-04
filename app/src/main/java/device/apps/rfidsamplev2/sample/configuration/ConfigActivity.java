@@ -8,6 +8,7 @@ import android.widget.RadioGroup;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,15 +16,47 @@ import com.google.android.material.radiobutton.MaterialRadioButton;
 
 import java.util.List;
 
+import device.apps.rfidsamplev2.R;
+import device.apps.rfidsamplev2.RFIDSampleV2;
+import device.apps.rfidsamplev2.Rf88ConnectionRepository;
 import device.apps.rfidsamplev2.data.ConfigData;
 import device.apps.rfidsamplev2.data.Configuration;
+import device.apps.rfidsamplev2.data.KeyMap;
 import device.apps.rfidsamplev2.databinding.ActivityConfigBinding;
 import device.apps.rfidsamplev2.databinding.DialogInputBinding;
+import device.apps.rfidsamplev2.databinding.DialogKeymapBinding;
 import device.apps.rfidsamplev2.databinding.DialogRadioBinding;
 import device.apps.rfidsamplev2.databinding.DialogSeekbarBinding;
 import device.apps.rfidsamplev2.sample.configuration.callback.OnTileClickListener;
 import device.apps.rfidsamplev2.sample.configuration.ui.ConfigurationAdapter;
+import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
+/**
+ * Configuration screen — lets the user inspect and change every RF88 setting the SDK
+ * exposes. Backed by {@link ConfigViewModel} which loads each value at launch and writes
+ * them back when the user taps Apply.
+ *
+ * <h3>How a single setting is edited</h3>
+ * <ol>
+ *     <li>The list ({@link ConfigurationAdapter}) renders one row per
+ *         {@link Configuration} entry — either a tappable tile or an in-place toggle
+ *         switch.</li>
+ *     <li>Tapping a tile fires {@link #onClickedConfiguration(Configuration)} which
+ *         dispatches to one of four dialog flavours: {@link #showSeekbarDialog} (Q /
+ *         power / suspend), {@link #showRadioDialog} (most enums), {@link #showInputDialog}
+ *         (free-form text — pointer / access password) or {@link #showKeymapDialog}
+ *         (dual-trigger key mapping).</li>
+ *     <li>Each dialog updates the corresponding {@code LiveData<String>} on the
+ *         ViewModel; the row reactively redraws.</li>
+ *     <li>The user taps <b>Apply</b> to flush every value to the SDK in one batch, or
+ *         <b>Factory Reset</b> to revert and reload.</li>
+ * </ol>
+ *
+ * <h3>Lifecycle</h3>
+ * Closes itself if the RF88 link drops (see {@link #observeConnection()}). Long-running
+ * load / apply / factory-default cycles surface a modal progress dialog driven by
+ * {@link ConfigViewModel#getBusy()}.
+ */
 public class ConfigActivity extends AppCompatActivity implements OnTileClickListener {
 
     private ConfigViewModel viewModel;
@@ -35,7 +68,22 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         super.onCreate(savedInstanceState);
         initializationViewModel();
         initializationContentView();
-        setupToolbar();
+        observeConnection();
+    }
+
+    /**
+     * Watches the global RF88 connection state and finishes the screen when it becomes
+     * {@link DeviceConnectionState#DISCONNECTED}. Other non-connected states ({@code SLEEP},
+     * {@code DISCONNECTING}, {@code CONNECTING}, {@code FAILURE}) keep the screen open —
+     * notably {@code SLEEP}, which is a temporary low-power pause that the device
+     * recovers from on its own, so finishing here would lose the user's context.
+     */
+    private void observeConnection() {
+        final Rf88ConnectionRepository connectionRepository = ((RFIDSampleV2) getApplication()).getConnectionRepository();
+        connectionRepository.connectState.observe(this, state -> {
+            if (state == DeviceConnectionState.DISCONNECTED)
+                finish();
+        });
     }
 
     @Override
@@ -65,7 +113,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
                 showRadioDialog(configuration, ConfigData.volume());
                 break;
             case KEY_MAP:
-                showRadioDialog(configuration, ConfigData.keymap());
+                showKeymapDialog(configuration);
                 break;
             case INVENTORY_RESPONSE:
                 showRadioDialog(configuration, ConfigData.inventoryResponse());
@@ -84,6 +132,9 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
                 showInputDialog(configuration);
                 break;
             default:
+                // Switch-style settings (CONTINUOUS, VIBRATE, INCREMENT_Q, DECREMENT_Q,
+                // FIXED_Q) edit themselves in place via ConfigurationAdapter.SwitchViewHolder
+                // and never fire this callback — see OnTileClickListener.
                 break;
         }
     }
@@ -107,13 +158,6 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     }
 
     /**
-     * Setup toolbar with back navigation
-     */
-    private void setupToolbar() {
-        binding.toolbar.setNavigationOnClickListener(v -> finish());
-    }
-
-    /**
      * Initialize the View model
      */
     private void initializationViewModel() {
@@ -127,12 +171,12 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     private void initializationContentView() {
         binding = ActivityConfigBinding.inflate(getLayoutInflater());
         binding.setActivity(this);
+        binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
 
         final ConfigurationAdapter adapter = new ConfigurationAdapter(viewModel, this, this);
         binding.recyclerView.setAdapter(adapter);
 
-        // ViewModel의 busy 상태 관찰
         viewModel.getBusy().observe(this, busy -> {
             if (busy != null && busy) {
                 showProgressDialog();
@@ -143,35 +187,22 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     }
 
     /**
-     * Show modal progress dialog
+     * Show the modal progress dialog while a load / apply / factory-default cycle is
+     * in flight. Inflates {@code dialog_progress.xml} so the look stays consistent with
+     * the other dialogs and there are no hardcoded colors to drift from the theme.
      */
     private void showProgressDialog() {
         if (progressDialog != null && progressDialog.isShowing()) return;
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        final View content = getLayoutInflater().inflate(R.layout.dialog_progress, null);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(false);
+        builder.setView(content);
 
-        android.widget.LinearLayout layout = new android.widget.LinearLayout(this);
-        layout.setOrientation(android.widget.LinearLayout.HORIZONTAL);
-        int padding = (int) (24 * getResources().getDisplayMetrics().density);
-        layout.setPadding(padding, padding, padding, padding);
-        layout.setGravity(android.view.Gravity.CENTER);
-
-        android.widget.ProgressBar progressBar = new android.widget.ProgressBar(this);
-        progressBar.setIndeterminate(true);
-        progressBar.setIndeterminateTintList(ColorStateList.valueOf(Color.parseColor("#5E35B1")));
-
-        android.widget.TextView tv = new android.widget.TextView(this);
-        tv.setText("Processing...");
-        tv.setTextSize(16);
-        tv.setTextColor(Color.parseColor("#212121"));
-        tv.setPadding(padding, 0, 0, 0);
-
-        layout.addView(progressBar);
-        layout.addView(tv);
-
-        builder.setView(layout);
         progressDialog = builder.create();
+        if (progressDialog.getWindow() != null) {
+            progressDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
         progressDialog.show();
     }
 
@@ -194,9 +225,13 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
     private void showSeekbarDialog(Configuration configuration, int maxValue) {
         final DialogSeekbarBinding binding = DialogSeekbarBinding.inflate(getLayoutInflater());
         final LiveData<String> liveData = viewModel.getConfiguration(configuration);
-        final int progress = Integer.parseInt(liveData.getValue());
+        // Defensive clamp — if a firmware variant reports a value outside the UI's
+        // declared range, fall back to the nearest legal slider position instead of
+        // letting the Slider throw IllegalStateException.
+        final int rawValue = Integer.parseInt(liveData.getValue());
+        final int progress = Math.max(0, Math.min(maxValue, rawValue));
 
-        binding.setTitle(configuration.name());
+        binding.setTitle(configuration.displayName());
         binding.setMaxValue(maxValue);
         binding.setProgress(progress);
 
@@ -206,7 +241,6 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         final AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        // Slider 이벤트 리스너
         binding.slider.addOnChangeListener((slider, value, fromUser) -> {
             binding.setProgress((int) value);
         });
@@ -240,7 +274,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
 
         final RadioGroup radioGroup = binding.radioGroup;
 
-        binding.setTitle(configuration.name());
+        binding.setTitle(configuration.displayName());
 
         binding.cancel.setOnClickListener(view -> dialog.dismiss());
         binding.apply.setOnClickListener(view -> {
@@ -250,7 +284,6 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
             viewModel.setConfiguration(configuration, target.value);
         });
 
-        // MaterialRadioButton 사용
         for (int i = 0; i < configData.size(); i++) {
             final ConfigData target = configData.get(i);
             final MaterialRadioButton radioButton = new MaterialRadioButton(this);
@@ -259,13 +292,47 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
             radioButton.setId(i);
             radioButton.setTextColor(Color.parseColor("#212121"));
             radioButton.setTextSize(16);
-            radioButton.setButtonTintList(ColorStateList.valueOf(Color.parseColor("#5E35B1")));
+            radioButton.setButtonTintList(ColorStateList.valueOf(ContextCompat.getColor(this, R.color.brand_primary)));
             radioButton.setPadding(16, 16, 16, 16);
             radioGroup.addView(radioButton);
 
             if (target.value.equals(currentValue))
                 radioButton.setChecked(true);
         }
+
+        dialog.show();
+    }
+
+    /**
+     * Dedicated dialog for the dual-trigger key mapping setting. Each physical trigger
+     * (Top / Bottom) gets its own segmented toggle so the user can independently assign
+     * <b>Inventory</b> or <b>Scanner</b>; the two selections are then composed into the
+     * SDK's two-character format via {@link KeyMap#compose(char, char)}.
+     */
+    private void showKeymapDialog(Configuration configuration) {
+        final LiveData<String> liveData = viewModel.getConfiguration(configuration);
+        final String currentValue = liveData.getValue();
+
+        final DialogKeymapBinding binding = DialogKeymapBinding.inflate(getLayoutInflater());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(binding.getRoot());
+
+        final AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
+        final boolean topIsScanner = KeyMap.top(currentValue) == KeyMap.SCANNER;
+        binding.topGroup.check(topIsScanner ? binding.topScanner.getId() : binding.topInventory.getId());
+
+        final boolean bottomIsScanner = KeyMap.bottom(currentValue) == KeyMap.SCANNER;
+        binding.bottomGroup.check(bottomIsScanner ? binding.bottomScanner.getId() : binding.bottomInventory.getId());
+
+        binding.cancel.setOnClickListener(view -> dialog.dismiss());
+        binding.apply.setOnClickListener(view -> {
+            dialog.dismiss();
+            final char top = (binding.topGroup.getCheckedButtonId() == binding.topScanner.getId()) ? KeyMap.SCANNER : KeyMap.INVENTORY;
+            final char bottom = (binding.bottomGroup.getCheckedButtonId() == binding.bottomScanner.getId()) ? KeyMap.SCANNER : KeyMap.INVENTORY;
+            viewModel.setConfiguration(configuration, KeyMap.compose(top, bottom));
+        });
 
         dialog.show();
     }
@@ -286,7 +353,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         final AlertDialog dialog = builder.create();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
-        binding.setTitle(configuration.name());
+        binding.setTitle(configuration.displayName());
         binding.editText.setText(currentValue);
         binding.cancel.setOnClickListener(view -> dialog.dismiss());
         binding.apply.setOnClickListener(view -> {

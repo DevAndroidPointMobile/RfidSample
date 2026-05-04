@@ -29,56 +29,6 @@
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />
 
-        <!-- Header Card -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:strokeWidth="0dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="Settings Icon"
-                    android:src="@drawable/ic_settings"
-                    android:tint="#5E35B1" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Device Settings"
-                        android:textColor="#757575"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="Configure RFID Reader"
-                        android:textColor="#212121"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </LinearLayout>
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
         <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
@@ -88,7 +38,7 @@
             android:clipToPadding="false"
             android:paddingHorizontal="16dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_config_switch" />
+            tools:listitem="@layout/item_tile" />
 
         <!-- Action Buttons -->
         <LinearLayout
@@ -107,17 +57,19 @@
                 android:layout_marginEnd="8dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
                 android:onClick="@{activity::onFactoryDefault}"
                 android:text="Factory Reset"
                 android:textAllCaps="false"
-                android:textColor="#C62828"
-                android:textSize="16sp"
-                app:cornerRadius="12dp"
+                android:textColor="@color/action_stop"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_restore"
                 app:iconGravity="textStart"
                 app:iconPadding="8dp"
-                app:iconTint="#C62828"
-                app:strokeColor="#C62828"
+                app:iconTint="@color/action_stop"
+                app:strokeColor="@color/action_stop"
                 app:strokeWidth="2dp" />
 
             <com.google.android.material.button.MaterialButton
@@ -128,15 +80,19 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:fontFamily="sans-serif-medium"
+                android:letterSpacing="0.02"
                 android:onClick="@{activity::onApply}"
                 android:text="Apply"
                 android:textAllCaps="false"
-                android:textSize="16sp"
-                app:backgroundTint="#5E35B1"
-                app:cornerRadius="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="@color/brand_primary"
+                app:cornerRadius="14dp"
                 app:icon="@drawable/ic_check"
                 app:iconGravity="textStart"
-                app:iconPadding="8dp" />
+                app:iconPadding="8dp"
+                app:iconTint="@android:color/white" />
 
         </LinearLayout>
 

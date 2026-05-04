@@ -1,106 +1,51 @@
 package device.apps.rfidsamplev2.sample.wired;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
-import android.os.RemoteException;
-
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModel;
 
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import device.sdk.Control;
+import device.apps.rfidsamplev2.Rf88ConnectionRepository;
 import ex.dev.sdk.rf88.Rf88Manager;
 
+/**
+ * State holder for {@link WiredActivity} — exposes the manual Connect / Disconnect
+ * actions for the buttons on the screen.
+ *
+ * <p>The cable-attach broadcast and the GPIO probe live in {@link Rf88ConnectionRepository}
+ * (app-scoped) so they continue to drive {@code connect}/{@code disconnect} no matter
+ * which screen is on top — including no screen at all. This ViewModel only needs to
+ * cover the manual-tap path, which matters chiefly on hardware without GPIO auto-detect
+ * (e.g. PM90).
+ */
 public class WireViewModel extends ViewModel {
 
-    private static final String ATTACH = "1";
-    private static final String DETACH = "0";
-
-    private static final String ACTION_DEVICE_CHANGED = "pm.ex.gpio.changed";
-    private static final String EXTRA_CONNECT_STATE = "acc_det";
-
-    private final ExecutorService _executorService = Executors.newSingleThreadExecutor();
-    private final DetectReceiver _receiver = new DetectReceiver();
-    private final Control _control = Control.getInstance();
-    private final Rf88Manager _controller = Rf88Manager.getInstance();
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
 
     /**
-     * Detect the connection between RF88 and the device, and if connected, attempt to connect.
-     * Note that our PM90 model does not support this feature
-     *
-     * @param context Application context
-     */
-    public void launch(Context context, boolean isConnected) {
-        ContextCompat.registerReceiver(context, _receiver, getIntentFilter(), ContextCompat.RECEIVER_EXPORTED);
-
-        try {
-            if (Build.MODEL.contains("PM90") || isConnected)
-                return;
-
-            final String detected = _control.getExpansionAccDetGpio();
-            if (detected == null)
-                return;
-
-            if (detected.equals("1"))
-                connect();
-
-        } catch (RemoteException exception) {
-            //
-        }
-    }
-
-    /**
-     * Unregister the registered BroadcastReceiver
-     *
-     * @param context Application context
-     */
-    public void dispose(Context context) {
-        context.unregisterReceiver(_receiver);
-    }
-
-    /**
-     * Attempt to connect to the currently attached device
+     * Connect the RF88 SDK over the cable. The SDK call runs on a background thread; the
+     * Activity learns about the result by observing
+     * {@link Rf88ConnectionRepository#connectState}.
      */
     public void connect() {
-        _executorService.execute(_controller::connect);
+        executorService.execute(rf88Manager::connect);
     }
 
     /**
-     * Disconnect from the currently attached device
+     * Disconnect the RF88 SDK from the cabled device.
      */
     public void disconnect() {
-        _executorService.execute(_controller::disconnect);
+        executorService.execute(rf88Manager::disconnect);
     }
 
     /**
-     * Return the Intent filter to be received by the receiver
-     *
-     * @return Intent filter
+     * Shut down the background executor when the ViewModel is finally cleared by the framework
+     * (e.g. when the host Activity finishes for good).
      */
-    private IntentFilter getIntentFilter() {
-        final IntentFilter result = new IntentFilter();
-        result.addAction(ACTION_DEVICE_CHANGED);
-        return result;
-    }
-
-    class DetectReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (intent.getAction() != null || intent.getAction().equals(ACTION_DEVICE_CHANGED)) {
-                final String detected = intent.getStringExtra(EXTRA_CONNECT_STATE);
-                if (Objects.equals(detected, DETACH))
-                    _controller.disconnect();
-
-                if (Objects.equals(detected, ATTACH))
-                    _controller.connect();
-            }
-        }
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        executorService.shutdown();
     }
 }

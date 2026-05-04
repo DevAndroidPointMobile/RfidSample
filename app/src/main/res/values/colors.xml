@@ -2,4 +2,25 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Brand palette. Override these to re-skin the app. -->
+    <color name="brand_primary">#FFB93920</color>
+    <color name="brand_primary_light">#FFD9462A</color>
+    <color name="brand_surface">#FFFBE5E0</color>
+    <color name="brand_ripple">#FFF5D6CC</color>
+
+    <!-- Neutral tones for inactive / disconnected states. -->
+    <color name="surface_neutral">#FFEFEFEF</color>
+    <color name="icon_neutral">#FF9E9E9E</color>
+    <color name="action_neutral">#FF757575</color>
+
+    <!-- Stop / cancel actions (e.g. Stop Discovery). -->
+    <color name="action_stop">#FFC62828</color>
+
+    <!-- Warning palette (e.g. Lock — significant but not destructive). -->
+    <color name="warning_primary">#FFF57C00</color>
+    <color name="warning_surface">#FFFFF3E0</color>
+
+    <!-- Danger palette (e.g. Kill — destructive permanent action). -->
+    <color name="danger_surface">#FFFFEBEE</color>
 </resources>
