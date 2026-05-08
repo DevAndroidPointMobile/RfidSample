@@ -11,6 +11,8 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import device.apps.rfidsamplev2.sample.nread.data.InventoryNreadResponse;
 import ex.dev.sdk.rf88.Rf88Manager;
@@ -35,6 +37,14 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
     private static final String TAG = "InventoryNreadViewModel";
 
     private final Rf88Manager manager = Rf88Manager.getInstance();
+
+    /**
+     * Serializes the {@code inventoryAndRead()} / {@code stop()} SDK calls off the main
+     * thread. Rf88 SDK 3.1.0+ throws if the synchronous variants are invoked on the UI
+     * thread and these two operations have no {@code *Async} counterpart, so we own the
+     * dispatch ourselves. Single-threaded so start/stop ordering matches the user's taps.
+     */
+    private final ExecutorService sdkExecutor = Executors.newSingleThreadExecutor();
     private final MutableLiveData<Integer> _changedIndex = new MutableLiveData<>(-1);
     public final LiveData<Integer> changedIndex = _changedIndex;
 
@@ -64,6 +74,12 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
         manager.setOnHardwareKeyListener(this);
         manager.setOnInventoryResultListener(this);
         manager.setOnActionExecutingListener(this);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        sdkExecutor.shutdown();
     }
 
     /** Invoked when the user presses the Inventory trigger key — start the scan. */
@@ -137,13 +153,13 @@ public class InventoryNreadViewModel extends ViewModel implements OnHardwareKeyL
      * Class1-Gen2 Select mask so the read is limited to a specific tag population.
      */
     private void inventoryStart() {
-        manager.inventoryAndRead(Configuration.MemoryBank.TID, "0", "1");
+        sdkExecutor.execute(() -> manager.inventoryAndRead(Configuration.MemoryBank.TID, "0", "1"));
         // e.g manager.inventoryAndRead(Configuration.MemoryBank.TID, "0", "1", "3400E280117000000210ACEAE0BE");
     }
 
     /** Issue the SDK command to stop the in-flight inventory-and-read scan. */
     private void inventoryStop() {
-        manager.stop();
+        sdkExecutor.execute(manager::stop);
     }
 
     /**

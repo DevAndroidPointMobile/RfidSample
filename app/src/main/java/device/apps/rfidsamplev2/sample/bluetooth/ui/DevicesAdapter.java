@@ -64,7 +64,7 @@ public class DevicesAdapter extends RecyclerView.Adapter<DevicesAdapter.DeviceVi
      */
     @SuppressLint("NotifyDataSetChanged")
     public void updateItems(List<BluetoothDevice> items) {
-        items = items;
+        this.items = items;
         notifyDataSetChanged();
     }
 

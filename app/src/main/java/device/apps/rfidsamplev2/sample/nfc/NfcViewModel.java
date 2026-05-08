@@ -70,7 +70,7 @@ public class NfcViewModel extends ViewModel {
     /**
      * Connect the RF88 SDK to the Bluetooth device at the given address. The SDK call
      * runs on the background executor; the Activity learns about the result by
-     * observing {@code Rf88ConnectionRepository#connectState}.
+     * observing {@code Rf88ConnectionManager#connectState}.
      *
      * @param address Bluetooth MAC address parsed from the NFC tag
      */

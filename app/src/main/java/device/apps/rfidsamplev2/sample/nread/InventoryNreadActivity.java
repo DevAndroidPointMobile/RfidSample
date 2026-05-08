@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.Rf88ConnectionRepository;
+import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.databinding.ActivityInventoryNreadBinding;
 import device.apps.rfidsamplev2.sample.nread.callback.OnInventoryNreadClickListener;
 import device.apps.rfidsamplev2.sample.nread.data.InventoryNreadResponse;
@@ -95,17 +95,15 @@ public class InventoryNreadActivity extends AppCompatActivity implements OnInven
     }
 
     /**
-     * Watches the global RF88 connection state and finishes the screen when it becomes
-     * {@link DeviceConnectionState#DISCONNECTED}. Other non-connected states ({@code SLEEP},
-     * {@code DISCONNECTING}, {@code CONNECTING}, {@code FAILURE}) keep the screen open —
-     * notably {@code SLEEP}, which is a temporary low-power pause that the device
-     * recovers from on its own, so finishing here would lose the user's context.
+     * Finishes the screen when the connection is genuinely lost. Uses
+     * {@link Rf88ConnectionManager#isLost} rather than observing {@code connectState}
+     * directly so that the transient {@code DISCONNECTED} the SDK fires during a SLEEP
+     * round-trip does not close the screen mid-sleep.
      */
     private void observeConnection() {
-        final Rf88ConnectionRepository connectionRepository = ((RFIDSampleV2) getApplication()).getConnectionRepository();
-        connectionRepository.connectState.observe(this, state -> {
-            if (state == DeviceConnectionState.DISCONNECTED)
-                finish();
+        final Rf88ConnectionManager connectionManager = ((RFIDSampleV2) getApplication()).getConnectionManager();
+        connectionManager.isLost.observe(this, lost -> {
+            if (Boolean.TRUE.equals(lost)) finish();
         });
     }
 

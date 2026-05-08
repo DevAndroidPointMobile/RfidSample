@@ -11,17 +11,19 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import device.apps.rfidsamplev2.sample.inventory.data.InventoryResponse;
 import ex.dev.sdk.rf88.Rf88Manager;
 import ex.dev.sdk.rf88.domain.constants.Bridge;
 import ex.dev.sdk.rf88.domain.constants.Configuration;
-import ex.dev.sdk.rf88.domain.constants.Constants;
 import ex.dev.sdk.rf88.domain.enums.LockActionMask;
 import ex.dev.sdk.rf88.domain.enums.LockMemoryMask;
 import ex.dev.sdk.rf88.frameworks.listener.OnActionExecutingListener;
 import ex.dev.sdk.rf88.frameworks.listener.OnHardwareKeyListener;
 import ex.dev.sdk.rf88.frameworks.listener.OnInventoryResultListener;
+import ex.dev.sdk.rf88.frameworks.listener.ResultCallback;
 import ex.dev.sdk.rf88.utils.RfidUtils;
 
 /**
@@ -39,6 +41,14 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     private static final String TAG = "InventoryViewModel";
 
     private final Rf88Manager controller = Rf88Manager.getInstance();
+
+    /**
+     * Serializes the {@code inventory()} / {@code stop()} SDK calls off the main thread.
+     * Rf88 SDK 3.1.0+ throws if the synchronous variants are invoked on the UI thread
+     * and these two operations have no {@code *Async} counterpart, so we own the
+     * dispatch ourselves. Single-threaded so start/stop ordering matches the user's taps.
+     */
+    private final ExecutorService sdkExecutor = Executors.newSingleThreadExecutor();
 
     private final MutableLiveData<Integer> _changedIndex = new MutableLiveData<>(-1);
     public final LiveData<Integer> changedIndex = _changedIndex;
@@ -69,6 +79,12 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
         controller.setOnHardwareKeyListener(this);
         controller.setOnInventoryResultListener(this);
         controller.setOnActionExecutingListener(this);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        sdkExecutor.shutdown();
     }
 
     /** Invoked when the user presses the Inventory trigger key — start the tag scan. */
@@ -128,12 +144,12 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
 
     /** Issue the SDK command to begin continuous inventory. */
     private void inventoryStart() {
-        controller.inventory();
+        sdkExecutor.execute(controller::inventory);
     }
 
     /** Issue the SDK command to stop the in-flight inventory (or any other operation). */
     private void inventoryStop() {
-        controller.stop();
+        sdkExecutor.execute(controller::stop);
     }
 
     /**
@@ -148,12 +164,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
      */
     public void read(InventoryResponse response) {
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final String result = controller.read(Configuration.MemoryBank.RESERVED, "0", "2", selectMask);
-        if (result.contains(Constants.ResultCodes.SUCCESS)) {
-            Log.i(TAG, "read: success, @result = " + result);
-        } else {
-            Log.e(TAG, "read: fail, @result = " + result);
-        }
+        controller.readAsync(Configuration.MemoryBank.RESERVED, "0", "2", selectMask, logResult("read"));
     }
 
     /**
@@ -171,12 +182,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
         final String selectMask = response.getReadLine();   // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String writeData = "11112222333344445555";
         final String pc = RfidUtils.calculatePC(writeData, true, false, false, "00");
-        final String result = controller.write(Configuration.MemoryBank.EPC, "1", pc + writeData, selectMask);
-        if (result.contains(Constants.ResultCodes.SUCCESS)) {
-            Log.i(TAG, "write: success, @result = " + result);
-        } else {
-            Log.e(TAG, "write: fail, @result = " + result);
-        }
+        controller.writeAsync(Configuration.MemoryBank.EPC, "1", pc + writeData, selectMask, logResult("write"));
     }
 
     /**
@@ -188,12 +194,7 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
      */
     public void lock(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
-        final String result = controller.lock(LockMemoryMask.EPC, LockActionMask.LOCK, selectMask);
-        if (result.contains(Constants.ResultCodes.SUCCESS)) {
-            Log.i(TAG, "lock: success, @result = " + result);
-        } else {
-            Log.e(TAG, "lock: fail, @result = " + result);
-        }
+        controller.lockAsync(LockMemoryMask.EPC, LockActionMask.LOCK, selectMask, logResult("lock"));
     }
 
     /**
@@ -209,12 +210,26 @@ public class InventoryViewModel extends ViewModel implements OnHardwareKeyListen
     public void kill(InventoryResponse response) {
         final String selectMask = response.getReadLine();    // Class1-gen2, 6.3.2.7 Selecting Tag populations.
         final String killPassword = "11110000";              // 2 word, 00h ~ 1Fh
-        final String result = controller.kill(killPassword, selectMask);
-        if (result.contains(Constants.ResultCodes.SUCCESS)) {
-            Log.i(TAG, "kill: success, @result = " + result);
-        } else {
-            Log.e(TAG, "kill: fail, @result = " + result);
-        }
+        controller.killAsync(killPassword, selectMask, logResult("kill"));
+    }
+
+    /**
+     * Shared {@link ResultCallback} used by the four Class1-Gen2 mandatory commands.
+     * Logs success/failure in the same shape the previous synchronous code did so the
+     * sample's logcat output stays familiar to integrators reading the source.
+     */
+    private ResultCallback<String> logResult(String operation) {
+        return new ResultCallback<String>() {
+            @Override
+            public void onSuccess(String result) {
+                Log.i(TAG, operation + ": success, @result = " + result);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Log.e(TAG, operation + ": fail", e);
+            }
+        };
     }
 
     /**

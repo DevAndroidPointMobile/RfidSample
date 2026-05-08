@@ -7,7 +7,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.Rf88ConnectionRepository;
+import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.databinding.ActivityMainBinding;
 import device.apps.rfidsamplev2.sample.barcode.BarcodeActivity;
 import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
@@ -24,7 +24,7 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
  * <h3>Responsibilities</h3>
  * <ol>
  *     <li><b>Surface the global RF88 connection state</b> — observes
- *         {@link Rf88ConnectionRepository#connectState} and feeds the result into the
+ *         {@link Rf88ConnectionManager#connectState} and feeds the result into the
  *         header status card and the disabled state of the Features buttons.</li>
  *     <li><b>List every sample screen</b> — the layout exposes one button per sample
  *         under the <i>Connection</i> and <i>Features</i> sections. Each button is wired
@@ -39,7 +39,7 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
  *
  * <h3>Why connection state lives outside this Activity</h3>
  * The RF88 connection itself is owned by the application-scoped
- * {@link Rf88ConnectionRepository} (held by {@link RFIDSampleV2}), not by this Activity.
+ * {@link Rf88ConnectionManager} (held by {@link RFIDSampleV2}), not by this Activity.
  * That means navigating away to a feature screen and returning here does <b>not</b>
  * drop the device — the same connection persists for the lifetime of the application
  * process.
@@ -58,49 +58,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Rf88ConnectionRepository connectionRepository =
-                ((RFIDSampleV2) getApplication()).getConnectionRepository();
+        final Rf88ConnectionManager connectionManager =
+                ((RFIDSampleV2) getApplication()).getConnectionManager();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         binding.setActivity(MainActivity.this);
 
         setContentView(binding.getRoot());
-        connectionRepository.connectState.observe(this, state -> {
-            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
-            binding.setStatusTitle(getStatusTitle(state));
-            binding.setStatusSubtitle(getStatusSubtitle(state));
-        });
-    }
-
-    /**
-     * Map the SDK connection state to the headline shown on the hero card. Surfacing
-     * {@code CONNECTING} explicitly is the whole reason for this method — collapsing
-     * everything except {@code CONNECTED} into "Not Connected" hides the brief connect
-     * transition (especially on auto-connect via the sled) from the user.
-     */
-    private String getStatusTitle(DeviceConnectionState state) {
-        if (state == null) return "Not Connected";
-        switch (state) {
-            case CONNECTED:
-                return "Connected";
-            case CONNECTING:
-                return "Connecting...";
-            default:
-                return "Not Connected";
-        }
-    }
-
-    /** Map the SDK connection state to the helper text shown under the headline. */
-    private String getStatusSubtitle(DeviceConnectionState state) {
-        if (state == null) return "Choose a connection method below";
-        switch (state) {
-            case CONNECTED:
-                return "Your RF88 device is ready to use";
-            case CONNECTING:
-                return "Establishing connection";
-            default:
-                return "Choose a connection method below";
-        }
+        connectionManager.connectState.observe(this, state ->
+                binding.setIsConnected(state == DeviceConnectionState.CONNECTED));
+        connectionManager.statusTitle.observe(this, binding::setStatusTitle);
+        connectionManager.statusSubtitle.observe(this, binding::setStatusSubtitle);
     }
 
     /*

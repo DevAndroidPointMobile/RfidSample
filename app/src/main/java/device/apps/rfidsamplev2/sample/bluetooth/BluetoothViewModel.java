@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import device.apps.rfidsamplev2.Rf88ConnectionRepository;
+import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import ex.dev.sdk.rf88.Rf88Manager;
 
 /**
@@ -30,7 +30,7 @@ import ex.dev.sdk.rf88.Rf88Manager;
  * broadcasts into LiveData updates: discovery start/finish, found devices, ACL disconnects,
  * and adapter on/off.
  *
- * <p>{@code ACTION_ACL_DISCONNECTED} is handled here (not in {@link Rf88ConnectionRepository})
+ * <p>{@code ACTION_ACL_DISCONNECTED} is handled here (not in {@link Rf88ConnectionManager})
  * because detaching the sled also fires the same broadcast as a side effect; treating it
  * app-scope would double-issue {@code disconnect()} on every detach burst and leave the SDK
  * stuck in {@code CONNECTING}. While this screen is open the SDK is in BT mode anyway, so
@@ -119,7 +119,7 @@ public class BluetoothViewModel extends ViewModel {
     /**
      * Connect the RF88 SDK to the given Bluetooth device. The SDK call runs on a background
      * thread; the Activity learns about the result by observing
-     * {@link Rf88ConnectionRepository#connectState}.
+     * {@link Rf88ConnectionManager#connectState}.
      *
      * @param device device picked by the user from the discovery list
      */

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.Rf88ConnectionRepository;
+import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.databinding.ActivityNfcBinding;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
@@ -36,7 +36,7 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
  */
 public class NfcActivity extends AppCompatActivity {
 
-    private Rf88ConnectionRepository connectionRepository;
+    private Rf88ConnectionManager connectionManager;
     private NfcViewModel viewModel;
     private NfcAdapter nfcAdapter;
     private PendingIntent pendingIntent;
@@ -107,10 +107,10 @@ public class NfcActivity extends AppCompatActivity {
     }
 
     /**
-     * Resolve the application-scoped connection repository and create the screen-scoped view model.
+     * Resolve the application-scoped connection manager and create the screen-scoped view model.
      */
     private void initializationViewModel() {
-        connectionRepository = ((RFIDSampleV2) getApplication()).getConnectionRepository();
+        connectionManager = ((RFIDSampleV2) getApplication()).getConnectionManager();
         viewModel = new ViewModelProvider(this).get(NfcViewModel.class);
     }
 
@@ -142,7 +142,7 @@ public class NfcActivity extends AppCompatActivity {
      * Subscribe to the connection state and refresh the hero card on every change.
      */
     private void observeData() {
-        connectionRepository.connectState.observe(this, state -> refreshNfcUi());
+        connectionManager.connectState.observe(this, state -> refreshNfcUi());
     }
 
     /**
@@ -154,39 +154,24 @@ public class NfcActivity extends AppCompatActivity {
     private void refreshNfcUi() {
         final boolean supported = nfcAdapter != null;
         final boolean enabled = supported && nfcAdapter.isEnabled();
-        final DeviceConnectionState state = connectionRepository.connectState.getValue();
+        final DeviceConnectionState state = connectionManager.connectState.getValue();
         final boolean connected = state == DeviceConnectionState.CONNECTED;
 
         binding.setIsHeroActive(supported && enabled);
         binding.setIsConnected(connected);
         binding.setShowOpenNfcSettings(supported && !enabled);
         binding.setShowActionBar((supported && !enabled) || connected);
-        binding.setStatusTitle(getStatusTitle(supported, enabled, state));
-        binding.setStatusSubtitle(getStatusSubtitle(supported, enabled, state));
-    }
-
-    /**
-     * Pick the headline shown on the hero card. NFC-level problems (unsupported, off)
-     * take priority over the SDK connection state because there is no point reporting
-     * "Disconnected" when the radio is not available.
-     */
-    private String getStatusTitle(boolean supported, boolean enabled, DeviceConnectionState state) {
-        if (!supported) return "NFC not supported";
-        if (!enabled) return "NFC is off";
-        if (state == DeviceConnectionState.CONNECTED) return "Connected";
-        if (state == DeviceConnectionState.CONNECTING) return "Connecting...";
-        return "Ready to scan";
-    }
-
-    /**
-     * Pick the helper text shown under the headline.
-     */
-    private String getStatusSubtitle(boolean supported, boolean enabled, DeviceConnectionState state) {
-        if (!supported) return "This device cannot use NFC";
-        if (!enabled) return "Turn on NFC to pair";
-        if (state == DeviceConnectionState.CONNECTED) return "Your RF88 device is ready";
-        if (state == DeviceConnectionState.CONNECTING) return "Establishing connection";
-        return "Hold your device near an NFC tag";
+        if (!supported) {
+            binding.setStatusTitle("NFC not supported");
+            binding.setStatusSubtitle("This device cannot use NFC");
+        } else if (!enabled) {
+            binding.setStatusTitle("NFC is off");
+            binding.setStatusSubtitle("Turn on NFC to pair");
+        } else {
+            // NFC-level checks pass — defer the connection-state copy to the manager.
+            binding.setStatusTitle(connectionManager.statusTitle.getValue());
+            binding.setStatusSubtitle(connectionManager.statusSubtitle.getValue());
+        }
     }
 
     /**

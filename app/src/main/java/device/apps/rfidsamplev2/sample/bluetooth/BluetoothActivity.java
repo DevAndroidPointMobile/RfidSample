@@ -18,7 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import java.util.ArrayList;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.Rf88ConnectionRepository;
+import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.sample.bluetooth.callback.OnDeviceClickListener;
 import device.apps.rfidsamplev2.sample.bluetooth.ui.DevicesAdapter;
 import device.apps.rfidsamplev2.databinding.ActivityBluetoothBinding;
@@ -35,7 +35,7 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
  * </ul>
  *
  * <p>UI state flows in one direction: the {@link BluetoothViewModel} owns the discovery LiveData
- * and the {@link Rf88ConnectionRepository} owns the connection LiveData; this Activity simply
+ * and the {@link Rf88ConnectionManager} owns the connection LiveData; this Activity simply
  * observes both and pushes derived values into the data-bound layout.
  */
 public class BluetoothActivity extends AppCompatActivity implements OnDeviceClickListener {
@@ -45,7 +45,7 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
 
     private DevicesAdapter adapter;
     private ActivityBluetoothBinding binding;
-    private Rf88ConnectionRepository connectionRepository;
+    private Rf88ConnectionManager connectionManager;
     private BluetoothViewModel viewModel;
 
     /** Permissions required by this screen, populated based on the OS version. */
@@ -70,7 +70,7 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
     protected void onDestroy() {
         super.onDestroy();
         viewModel.dispose(this);
-        connectionRepository.connectState.removeObservers(this);
+        connectionManager.connectState.removeObservers(this);
     }
 
     /**
@@ -138,11 +138,11 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
     }
 
     /**
-     * Resolve the application-scoped connection repository and create the screen-scoped view model.
+     * Resolve the application-scoped connection manager and create the screen-scoped view model.
      * Called once during {@link #onCreate}.
      */
     private void initializationViewModel() {
-        connectionRepository = ((RFIDSampleV2) getApplication()).getConnectionRepository();
+        connectionManager = ((RFIDSampleV2) getApplication()).getConnectionManager();
         viewModel = new ViewModelProvider(this).get(BluetoothViewModel.class);
         viewModel.launch(this);
     }
@@ -197,7 +197,7 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
             binding.setDeviceCount(devices.size());
         });
         viewModel.discoveryState.observe(this, isDiscovery -> binding.setIsDiscovery(isDiscovery));
-        connectionRepository.connectState.observe(this, state -> {
+        connectionManager.connectState.observe(this, state -> {
             binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
             refreshStatusLabels();
         });
@@ -206,7 +206,8 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
     /**
      * Update the hero card title/subtitle. Bluetooth-level problems (unsupported, off) take
      * priority over the SDK connection state because there is no point reporting "Disconnected"
-     * when the radio is not even on.
+     * when the radio is not even on. When Bluetooth is healthy, fall back to the centralised
+     * labels exposed by {@link Rf88ConnectionManager}.
      */
     private void refreshStatusLabels() {
         if (!viewModel.isBluetoothSupported()) {
@@ -219,39 +220,8 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
             binding.setStatusSubtitle("Turn on Bluetooth to find devices");
             return;
         }
-        final DeviceConnectionState state = connectionRepository.connectState.getValue();
-        binding.setStatusTitle(getStatusTitle(state));
-        binding.setStatusSubtitle(getStatusSubtitle(state));
-    }
-
-    /**
-     * Map the SDK connection state to the headline shown on the hero card.
-     */
-    private String getStatusTitle(DeviceConnectionState state) {
-        if (state == null) return "Not Connected";
-        switch (state) {
-            case CONNECTED:
-                return "Connected";
-            case CONNECTING:
-                return "Connecting...";
-            default:
-                return "Not Connected";
-        }
-    }
-
-    /**
-     * Map the SDK connection state to the helper text shown under the headline.
-     */
-    private String getStatusSubtitle(DeviceConnectionState state) {
-        if (state == null) return "Pick a device below to connect";
-        switch (state) {
-            case CONNECTED:
-                return "Your RF88 device is ready";
-            case CONNECTING:
-                return "Establishing connection";
-            default:
-                return "Pick a device below to connect";
-        }
+        binding.setStatusTitle(connectionManager.statusTitle.getValue());
+        binding.setStatusSubtitle(connectionManager.statusSubtitle.getValue());
     }
 
     /**

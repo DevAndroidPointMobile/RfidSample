@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.apps.rfidsamplev2.Rf88ConnectionRepository;
+import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.databinding.ActivityWiredBinding;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
@@ -17,12 +17,12 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
  * <p>The screen pairs a hero status card with a short two-step guide and a single
  * sticky action button. The OEM cable-detect broadcast receiver, the GPIO probe, and
  * the {@code connectState} LiveData all live in the app-scoped
- * {@link Rf88ConnectionRepository} so the cable can drive connect/disconnect from any
+ * {@link Rf88ConnectionManager} so the cable can drive connect/disconnect from any
  * screen — including no screen at all. This Activity adds the screen-scoped pieces:
  * <ul>
  *     <li>the manual Connect / Disconnect buttons (delegated to {@link WireViewModel});</li>
- *     <li>a one-shot auto-connect on first entry when the sled is already attached
- *         (see {@link #tryAutoConnect()});</li>
+ *     <li>a one-shot auto-connect on entry when the sled is already attached, kicked
+ *         off from {@code onCreate} via {@link WireViewModel#autoConnectIfAttached()};</li>
  *     <li>the {@code wireScreenActive} flag so ATTACH broadcasts only auto-connect while
  *         this screen is in the foreground.</li>
  * </ul>
@@ -32,16 +32,9 @@ import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
  */
 public class WiredActivity extends AppCompatActivity {
 
-    private Rf88ConnectionRepository connectionRepository;
+    private Rf88ConnectionManager connectionManager;
     private WireViewModel viewModel;
     private ActivityWiredBinding binding;
-
-    /**
-     * Tracks whether the per-instance auto-connect attempt has already been made, so a
-     * task-switch round-trip does not silently reconnect after the user has manually
-     * tapped Disconnect.
-     */
-    private boolean autoConnectAttempted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,45 +42,27 @@ public class WiredActivity extends AppCompatActivity {
         initializationViewModel();
         initializationContentView();
         observeData();
+        viewModel.autoConnectIfAttached();
     }
 
     /**
-     * Tell the repository to honour ATTACH broadcasts as auto-connect triggers while
-     * this screen is in the foreground, and — on the first resume only — kick off a
-     * connect when the sled is already attached so the user does not have to tap
-     * Connect manually after entering with the cable already plugged in.
+     * Open the {@code wireScreenActive} gate so ATTACH broadcasts are honoured as
+     * auto-connect triggers while this screen is in the foreground.
      */
     @Override
     protected void onResume() {
         super.onResume();
-        connectionRepository.setWireScreenActive(true);
-        if (!autoConnectAttempted) {
-            autoConnectAttempted = true;
-            tryAutoConnect();
-        }
+        connectionManager.setWireScreenActive(true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        connectionRepository.setWireScreenActive(false);
+        connectionManager.setWireScreenActive(false);
     }
 
     // No onDestroy override needed — connectState.observe(this, ...) is lifecycle-bound,
     // so the observer is removed automatically when the Activity is destroyed.
-
-    /**
-     * One-shot connect for the "entered Wired screen with sled already attached" case.
-     * Skipped if no sled is attached or the SDK is already connected/connecting.
-     */
-    private void tryAutoConnect() {
-        if (!Boolean.TRUE.equals(connectionRepository.sledAttached.getValue()))
-            return;
-        final DeviceConnectionState state = connectionRepository.connectState.getValue();
-        if (state == DeviceConnectionState.CONNECTED || state == DeviceConnectionState.CONNECTING)
-            return;
-        viewModel.connect();
-    }
 
     /**
      * Initiate a cable connection. Bound from the layout's primary action button.
@@ -108,13 +83,13 @@ public class WiredActivity extends AppCompatActivity {
     }
 
     /**
-     * Resolve the application-scoped connection repository and create the screen-scoped view model.
-     * The cable-attach broadcast and the GPIO probe live in {@link Rf88ConnectionRepository}
+     * Resolve the application-scoped connection manager and create the screen-scoped view model.
+     * The cable-attach broadcast and the GPIO probe live in {@link Rf88ConnectionManager}
      * (started from {@link RFIDSampleV2}), so this screen only needs the ViewModel for the
      * manual button taps.
      */
     private void initializationViewModel() {
-        connectionRepository = ((RFIDSampleV2) getApplication()).getConnectionRepository();
+        connectionManager = ((RFIDSampleV2) getApplication()).getConnectionManager();
         viewModel = new ViewModelProvider(this).get(WireViewModel.class);
     }
 
@@ -136,41 +111,10 @@ public class WiredActivity extends AppCompatActivity {
      * reflects the latest SDK state.
      */
     private void observeData() {
-        binding.setIsAutoDetectSupported(connectionRepository.isAutoDetectSupported());
-        connectionRepository.connectState.observe(this, state -> {
-            binding.setIsConnected(state == DeviceConnectionState.CONNECTED);
-            binding.setStatusTitle(getStatusTitle(state));
-            binding.setStatusSubtitle(getStatusSubtitle(state));
-        });
-    }
-
-    /**
-     * Map the SDK connection state to the headline shown on the hero card.
-     */
-    private String getStatusTitle(DeviceConnectionState state) {
-        if (state == null) return "Disconnected";
-        switch (state) {
-            case CONNECTED:
-                return "Connected";
-            case CONNECTING:
-                return "Connecting...";
-            default:
-                return "Disconnected";
-        }
-    }
-
-    /**
-     * Map the SDK connection state to the helper text shown under the headline.
-     */
-    private String getStatusSubtitle(DeviceConnectionState state) {
-        if (state == null) return "Connect via the cable below";
-        switch (state) {
-            case CONNECTED:
-                return "Your RF88 device is ready";
-            case CONNECTING:
-                return "Establishing connection";
-            default:
-                return "Connect via the cable below";
-        }
+        binding.setIsAutoDetectSupported(connectionManager.isAutoDetectSupported());
+        connectionManager.connectState.observe(this, state ->
+                binding.setIsConnected(state == DeviceConnectionState.CONNECTED));
+        connectionManager.statusTitle.observe(this, binding::setStatusTitle);
+        connectionManager.statusSubtitle.observe(this, binding::setStatusSubtitle);
     }
 }
