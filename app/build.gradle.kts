@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace = "device.apps.rfidsamplev2"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "device.apps.rfidsamplev2"
@@ -35,7 +35,7 @@ android {
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to "device.sdk.jar")))
-    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88_3.1.0.aar")))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88_3.1.1.aar")))
 
     implementation(libs.appcompat)
     implementation(libs.material)
