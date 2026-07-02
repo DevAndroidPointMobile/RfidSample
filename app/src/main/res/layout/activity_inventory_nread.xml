@@ -31,7 +31,8 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
             android:background="@drawable/gradient_toolbar"
             android:elevation="4dp"
             app:navigationIcon="@drawable/ic_arrow_back"
@@ -98,6 +99,7 @@
 
         <!-- Sticky action bar -->
         <LinearLayout
+            android:id="@+id/action_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white"

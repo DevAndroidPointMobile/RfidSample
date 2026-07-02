@@ -5,12 +5,18 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="activity"
             type="device.apps.rfidsamplev2.main.MainActivity" />
 
         <variable
             name="isConnected"
+            type="Boolean" />
+
+        <variable
+            name="deviceSdkAvailable"
             type="Boolean" />
 
         <variable
@@ -28,18 +34,21 @@
         android:background="#F5F5F5"
         android:orientation="vertical">
 
-        <!-- Toolbar -->
+        <!-- Toolbar — height is wrap_content + minHeight so the status-bar inset can be added as
+             top padding (see MainActivity), letting the gradient draw behind the status bar. -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@drawable/gradient_toolbar"
             android:elevation="2dp"
+            android:minHeight="?attr/actionBarSize"
             app:title="@string/app_name"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:titleTextColor="@android:color/white" />
 
         <ScrollView
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
@@ -175,7 +184,7 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- Wired tile -->
+                    <!-- Wired tile — hidden on hardware without the proprietary device.sdk framework -->
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
                         android:layout_height="84dp"
@@ -184,6 +193,7 @@
                         android:clickable="true"
                         android:focusable="true"
                         android:onClick="@{activity::routeWireConnection}"
+                        android:visibility="@{safeUnbox(deviceSdkAvailable) ? View.VISIBLE : View.GONE}"
                         app:cardBackgroundColor="@android:color/white"
                         app:cardCornerRadius="12dp"
                         app:cardElevation="2dp"
@@ -405,6 +415,7 @@
                         android:clickable="@{safeUnbox(isConnected)}"
                         android:focusable="@{safeUnbox(isConnected)}"
                         android:onClick="@{activity::routeBarcodeScan}"
+                        android:visibility="@{safeUnbox(deviceSdkAvailable) ? View.VISIBLE : View.GONE}"
                         app:cardBackgroundColor="@android:color/white"
                         app:cardCornerRadius="16dp"
                         app:cardElevation="2dp"

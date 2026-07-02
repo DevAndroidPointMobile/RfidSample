@@ -16,6 +16,7 @@ android {
     }
 
     buildTypes {
+
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
@@ -35,7 +36,7 @@ android {
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to "device.sdk.jar")))
-    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88_3.1.1.aar")))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88_3.1.2.aar")))
 
     implementation(libs.appcompat)
     implementation(libs.material)

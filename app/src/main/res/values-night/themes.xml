@@ -5,5 +5,10 @@
         <item name="colorOnPrimary">@android:color/white</item>
 
         <item name="android:statusBarColor">@color/brand_primary_light</item>
+
+        <!-- The screens use a light surface even at night, so keep the same icon contrast as day:
+             light status-bar icons over the gradient toolbar, dark nav-bar icons over the surface. -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 </resources>

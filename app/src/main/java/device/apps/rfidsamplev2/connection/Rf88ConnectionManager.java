@@ -1,16 +1,9 @@
 package device.apps.rfidsamplev2.connection;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.RemoteException;
 
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -20,62 +13,55 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
-import device.sdk.Control;
 import ex.dev.sdk.rf88.Rf88Manager;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 import ex.dev.sdk.rf88.frameworks.listener.OnConnectionStateChangedListener;
 
 /**
  * App-scoped owner of the RF88 connection state. Held by {@link RFIDSampleV2} and
- * started once from {@code onCreate()}, so the receivers live for the entire process —
- * sled attach/detach work whether the user is on the Wired/Bluetooth screen, on a
- * different sample, or on no screen at all.
+ * started once from {@code onCreate()}, so the SDK connection-state callback lives for
+ * the entire process — every screen that needs to know "am I connected?" observes the
+ * same stream whether it is on top or not.
  *
- * <h3>Two state sources, one stream</h3>
- * <ul>
- *   <li><b>SDK</b> — {@link OnConnectionStateChangedListener} fires whenever the RF88
- *       SDK transitions state. This is the single source of truth published as
- *       {@link #connectState}; every screen that needs to know "am I connected?"
- *       observes this LiveData.</li>
- *   <li><b>Wire</b> — the OEM {@code pm.ex.gpio.changed} broadcast tells us when the
- *       reader is attached to or detached from the sled. Detach always disconnects so
- *       the SDK matches physical reality. Attach updates {@link #sledAttached} but only
- *       triggers a connect when the Wired screen is in the foreground (see
- *       {@link #setWireScreenActive(boolean)}) — the project rule is "connection happens
- *       inside the connection screen", so attach on Main / Inventory / etc. does
- *       <b>not</b> auto-connect.</li>
- * </ul>
+ * <h3>Universal by design — no proprietary dependency</h3>
+ * <p>This class depends only on the RF88 SDK (bundled in the APK) and Android APIs, so it
+ * runs on any device — including stock Android such as a Galaxy phone. The cabled-sled
+ * flow, which is the app's only connection-scope dependency on the proprietary
+ * {@code device.sdk} framework (the GPIO probe and the {@code pm.ex.gpio.changed}
+ * broadcast), lives in {@link WiredAttachDetector} and is created by {@link RFIDSampleV2}
+ * only when {@link DeviceSdk#isAvailable()}. Keeping that reference out of this class is
+ * what lets the app launch and run Bluetooth / NFC on non-Point-Mobile hardware.
  *
- * <p>Bluetooth-link-loss ({@code ACTION_ACL_DISCONNECTED}) is intentionally NOT handled
- * here: detaching the sled also fires that broadcast as a side effect, and reacting to
- * it in addition to the GPIO broadcast double-issues {@code disconnect()} in the same
- * detach burst, which leaves the SDK stuck in {@code CONNECTING}. The Bluetooth screen
- * handles its own ACL drops while it is open.</p>
- *
- * <p>State updates from the SDK callback are routed through the main looper using
- * {@code setValue} (not {@code postValue}) so every transition is delivered to observers
- * in the order it arrived. {@code postValue} would coalesce rapid back-to-back updates
- * (e.g. CONNECTING immediately followed by CONNECTED), causing transient states to
- * disappear from the UI.
+ * <h3>Single source of truth</h3>
+ * <p>{@link OnConnectionStateChangedListener} fires whenever the RF88 SDK transitions
+ * state; that value is published as {@link #connectState}. State updates from the SDK
+ * callback are routed through the main looper using {@code setValue} (not
+ * {@code postValue}) so every transition is delivered to observers in the order it
+ * arrived. {@code postValue} would coalesce rapid back-to-back updates (e.g. CONNECTING
+ * immediately followed by CONNECTED), causing transient states to disappear from the UI.
  *
  * <h3>Derived hero-card labels</h3>
- * <p>{@link #statusTitle} and {@link #statusSubtitle} are
- * {@link Transformations#map} derivations of {@link #connectState} that publish the
- * canonical hero-card copy for each SDK state ("Connected" / "Connecting..." /
- * "Sleeping" / "Not Connected"). Centralising the label mapping here means every screen
- * with a hero card observes the same strings, so the same SDK state never reads as
- * different copy across the app. Screens with non-SDK preconditions
- * ({@code BluetoothActivity}, {@code NfcActivity}: radio off / unsupported) gate on
- * those preconditions first and only fall through to {@code statusTitle.getValue()}
- * when their gate passes.
+ * <p>{@link #statusTitle} and {@link #statusSubtitle} are {@link Transformations#map}
+ * derivations of {@link #connectState} that publish the canonical hero-card copy for each
+ * SDK state ("Connected" / "Connecting..." / "Sleeping" / "Not Connected"). Centralising
+ * the label mapping here means every screen with a hero card observes the same strings.
+ * Screens with non-SDK preconditions ({@code BluetoothActivity}, {@code NfcActivity}:
+ * radio off / unsupported) gate on those preconditions first and, when their gate passes,
+ * map {@link #connectState}'s current value through
+ * {@link #titleForState(DeviceConnectionState)} /
+ * {@link #subtitleForState(DeviceConnectionState)}. They must NOT read
+ * {@code statusTitle.getValue()}: it is a lazy {@link Transformations#map} that only
+ * recomputes while actively observed, so a pull-based {@code getValue()} returns
+ * {@code null}.
  *
  * <h3>What is NOT here</h3>
- * <p>This class is deliberately UI-free — no {@code Activity}, {@code AlertDialog},
- * or {@link android.app.Application.ActivityLifecycleCallbacks} imports. Two related
- * pieces live in their own files so each has a single responsibility:
+ * <p>This class is deliberately UI-free — no {@code Activity}, {@code AlertDialog}, or
+ * {@link android.app.Application.ActivityLifecycleCallbacks} imports. Related pieces live
+ * in their own files so each has a single responsibility:
  * <ul>
- *     <li>{@link SleepBlockingDialogController} — the app-wide modal shown while the
- *         SDK reports {@link DeviceConnectionState#SLEEP}. Pure consumer of
+ *     <li>{@link WiredAttachDetector} — the proprietary cabled-sled attach/detach flow.</li>
+ *     <li>{@link SleepBlockingDialogController} — the app-wide modal shown while the SDK
+ *         reports {@link DeviceConnectionState#SLEEP}. Pure consumer of
  *         {@link #connectState}, removable in one line from {@link RFIDSampleV2}.</li>
  *     <li>{@code RFIDSampleV2.AppExitDetector} — counts live Activities so
  *         {@link #dispose()} fires once on real app exit (not on configuration change).</li>
@@ -83,25 +69,12 @@ import ex.dev.sdk.rf88.frameworks.listener.OnConnectionStateChangedListener;
  */
 public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
 
-    // ── Wire constants ──────────────────────────────────────────────────────────────
-    /** Value of {@code acc_det} when the cable is currently attached. */
-    private static final String ATTACH = "1";
-    /** Value of {@code acc_det} when the cable is currently detached. */
-    private static final String DETACH = "0";
-    /** OEM broadcast emitted by the platform whenever the expansion accessory state changes. */
-    private static final String ACTION_DEVICE_CHANGED = "pm.ex.gpio.changed";
-    /** String extra on the broadcast — "1" for attached, "0" for detached. */
-    private static final String EXTRA_CONNECT_STATE = "acc_det";
-
     private final MutableLiveData<DeviceConnectionState> mutableConnectState =
             new MutableLiveData<>(DeviceConnectionState.DISCONNECTED);
-    private final MutableLiveData<Boolean> mutableSledAttached = new MutableLiveData<>();
     private final MutableLiveData<Boolean> mutableIsLost = new MutableLiveData<>(false);
     private final Rf88Manager rf88Manager = Rf88Manager.getInstance();
-    private final Control control = Control.getInstance();
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
-    private final BroadcastReceiver receiver = new ConnectionReceiver();
 
     /**
      * Tracks whether the reader entered SLEEP without an intervening CONNECTED. The
@@ -116,15 +89,6 @@ public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
     public final LiveData<DeviceConnectionState> connectState = mutableConnectState;
 
     /**
-     * Whether the reader is currently mounted on the sled. {@code null} means "unknown" —
-     * either the GPIO probe has not completed yet, or the host hardware does not expose
-     * the auto-detect line (see {@link #isAutoDetectSupported()}). Screens that gate UI
-     * on sled state should treat {@code null} as "do not gate" so PM90 users are not
-     * locked out of any connection method.
-     */
-    public final LiveData<Boolean> sledAttached = mutableSledAttached;
-
-    /**
      * Headline string for the hero card on every screen, derived reactively from
      * {@link #connectState} via {@link Transformations#map}. Returns "Connected" /
      * "Connecting..." / "Sleeping" / "Not Connected" matching the current SDK state.
@@ -132,12 +96,14 @@ public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
      * <p>Screens whose hero card is driven purely by SDK state observe this LiveData
      * directly. Screens with their own preconditions
      * (e.g. {@code BluetoothActivity}: Bluetooth off / unsupported,
-     * {@code NfcActivity}: NFC off / unsupported) check their preconditions first and
-     * only read {@code statusTitle.getValue()} when those preconditions pass — the SDK
-     * state should never be reported in copy when the underlying radio is unavailable.
+     * {@code NfcActivity}: NFC off / unsupported) check their preconditions first and,
+     * when those pass, derive the label from {@link #connectState}'s value via
+     * {@link #titleForState(DeviceConnectionState)} rather than reading this lazy
+     * LiveData's {@code getValue()} — the SDK state should never be reported in copy when
+     * the underlying radio is unavailable, and an unobserved {@code map} yields {@code null}.
      */
     public final LiveData<String> statusTitle =
-            Transformations.map(connectState, Rf88ConnectionManager::titleFor);
+            Transformations.map(connectState, Rf88ConnectionManager::titleForState);
 
     /**
      * Helper text shown under {@link #statusTitle}, derived from {@link #connectState}.
@@ -145,7 +111,7 @@ public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
      * {@link #statusTitle}.
      */
     public final LiveData<String> statusSubtitle =
-            Transformations.map(connectState, Rf88ConnectionManager::subtitleFor);
+            Transformations.map(connectState, Rf88ConnectionManager::subtitleForState);
 
     /**
      * "The reader connection is genuinely lost" — the right signal for feature screens
@@ -167,32 +133,11 @@ public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
     public final LiveData<Boolean> isLost = mutableIsLost;
 
     /**
-     * When {@code true}, an ATTACH broadcast triggers an automatic wire connect. Only
-     * the Wired screen flips this on (in {@code onResume}) so connection always happens
-     * "inside the connection screen" — sled attach on Main, Inventory, etc. simply
-     * updates {@link #sledAttached} without forcing a connect. Detach still disconnects
-     * unconditionally so the SDK stays consistent with physical reality.
+     * Wire up the SDK connection-state callback. Call once from
+     * {@link RFIDSampleV2#onCreate()}.
      */
-    private volatile boolean wireScreenActive = false;
-
-    /**
-     * Whether the host device exposes the GPIO line we use to auto-detect the sled cable.
-     * Constant for the lifetime of the app.
-     */
-    public boolean isAutoDetectSupported() {
-        return !Build.MODEL.contains("PM90");
-    }
-
-    /**
-     * Wire up every connection source. Call once from {@link RFIDSampleV2#onCreate()}.
-     *
-     * @param context the {@link android.app.Application} context — used to register the
-     *                broadcast receiver with app-wide lifetime
-     */
-    public void start(Context context) {
+    public void start() {
         rf88Manager.setOnConnectionStateChangedListener(this);
-        ContextCompat.registerReceiver(context, receiver, getIntentFilter(), ContextCompat.RECEIVER_EXPORTED);
-        probeCableOnLaunch();
     }
 
     /**
@@ -230,35 +175,14 @@ public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
     }
 
     /**
-     * Toggle the "auto-connect on sled attach" gate. Call from
-     * {@code WiredActivity#onResume} with {@code true} and {@code onPause} with {@code false}.
+     * Per-state headline copy — the same mapping that backs {@link #statusTitle}, exposed
+     * as a pure function so screens that gate on their own preconditions can read the label
+     * imperatively from {@link #connectState}'s current value instead of observing
+     * {@code statusTitle}. {@code statusTitle} is a {@link Transformations#map} derivation,
+     * which only recomputes while it has an active observer; reading its {@code getValue()}
+     * without observing it returns {@code null}. Pull-based callers must use this function.
      */
-    public void setWireScreenActive(boolean active) {
-        wireScreenActive = active;
-    }
-
-    /**
-     * Probe the GPIO line once at app startup so {@link #sledAttached} starts with the
-     * real value instead of {@code null}. Does NOT trigger an auto-connect — connection
-     * is intentionally left to the Wired screen ({@code WiredActivity}). Skipped on
-     * hardware without the GPIO line — see {@link #isAutoDetectSupported()}.
-     */
-    private void probeCableOnLaunch() {
-        if (!isAutoDetectSupported())
-            return;
-
-        executorService.execute(() -> {
-            try {
-                final String detected = control.getExpansionAccDetGpio();
-                mutableSledAttached.postValue(Objects.equals(detected, ATTACH));
-            } catch (RemoteException exception) {
-                // Probe failed — subsequent broadcasts can still drive the flow.
-            }
-        });
-    }
-
-    /** Per-state headline copy used by {@link #statusTitle}. */
-    private static String titleFor(DeviceConnectionState state) {
+    public static String titleForState(DeviceConnectionState state) {
         if (state == null) return "Not Connected";
         switch (state) {
             case CONNECTED:  return "Connected";
@@ -268,47 +192,17 @@ public class Rf88ConnectionManager implements OnConnectionStateChangedListener {
         }
     }
 
-    /** Per-state subtitle copy used by {@link #statusSubtitle}. */
-    private static String subtitleFor(DeviceConnectionState state) {
+    /**
+     * Per-state subtitle copy — pure-function counterpart to {@link #statusSubtitle}, with
+     * the same pull-based usage contract as {@link #titleForState(DeviceConnectionState)}.
+     */
+    public static String subtitleForState(DeviceConnectionState state) {
         if (state == null) return "Connect your RF88 reader to begin";
         switch (state) {
             case CONNECTED:  return "Your RF88 device is ready";
             case CONNECTING: return "Establishing connection";
             case SLEEP:      return "Press the trigger key to wake the reader";
             default:         return "Connect your RF88 reader to begin";
-        }
-    }
-
-    private IntentFilter getIntentFilter() {
-        final IntentFilter result = new IntentFilter();
-        result.addAction(ACTION_DEVICE_CHANGED);
-        return result;
-    }
-
-    /**
-     * Translates the sled attach/detach broadcast into RF88 SDK calls.
-     *
-     * <p>Broadcast receivers run on the main thread, so SDK calls are dispatched on the
-     * background executor — a slow {@code connect}/{@code disconnect} would otherwise
-     * block the main thread and trigger an ANR.
-     */
-    private class ConnectionReceiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (!ACTION_DEVICE_CHANGED.equals(intent.getAction()))
-                return;
-
-            final String detected = intent.getStringExtra(EXTRA_CONNECT_STATE);
-            if (Objects.equals(detected, ATTACH)) {
-                mutableSledAttached.setValue(true);
-                if (wireScreenActive)
-                    executorService.execute(rf88Manager::connect);
-
-            } else if (Objects.equals(detected, DETACH)) {
-                mutableSledAttached.setValue(false);
-                executorService.execute(rf88Manager::disconnect);
-            }
         }
     }
 }

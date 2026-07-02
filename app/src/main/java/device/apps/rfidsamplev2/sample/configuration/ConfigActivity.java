@@ -29,6 +29,7 @@ import device.apps.rfidsamplev2.databinding.DialogRadioBinding;
 import device.apps.rfidsamplev2.databinding.DialogSeekbarBinding;
 import device.apps.rfidsamplev2.sample.configuration.callback.OnTileClickListener;
 import device.apps.rfidsamplev2.sample.configuration.ui.ConfigurationAdapter;
+import device.apps.rfidsamplev2.util.WindowInsetsUtil;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 /**
@@ -171,6 +172,7 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
         binding.setActivity(this);
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
+        applyWindowInsets();
 
         final ConfigurationAdapter adapter = new ConfigurationAdapter(viewModel, this, this);
         binding.recyclerView.setAdapter(adapter);
@@ -182,6 +184,15 @@ public class ConfigActivity extends AppCompatActivity implements OnTileClickList
                 hideProgressDialog();
             }
         });
+    }
+
+    /**
+     * Pad the toolbar and the bottom action bar so their content clears the status bar
+     * and navigation bar under edge-to-edge (targetSdk 36). Both helpers add to the
+     * existing padding, keeping the designed spacing intact.
+     */
+    private void applyWindowInsets() {
+        WindowInsetsUtil.applyBarInsets(binding.getRoot(), binding.toolbar, binding.actionBar);
     }
 
     /**

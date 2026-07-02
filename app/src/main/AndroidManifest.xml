@@ -23,20 +23,34 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RFIDSampleV2"
         tools:targetApi="31">
+
+        <!--
+            configChanges keeps these connection-stateful screens alive across configuration
+            changes (device rotation, and the keyboard/navigation changes an RF88 sled raises
+            on attach/detach) instead of destroying and recreating the Activity. Recreation
+            re-runs onCreate, which on the Wired screen would re-issue the one-shot auto-connect
+            and churn the SDK connection state; the app-scoped Rf88ConnectionManager already
+            owns the real connection state, so there is nothing to rebuild on a config change.
+        -->
         <activity
             android:name=".sample.nread.InventoryNreadActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false" />
         <activity
             android:name=".sample.inventory.InventoryActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false" />
         <activity
             android:name=".sample.barcode.BarcodeActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false" />
         <activity
             android:name=".sample.configuration.ConfigActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false" />
         <activity
             android:name=".sample.nfc.NfcActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -48,12 +62,15 @@
         </activity>
         <activity
             android:name=".sample.wired.WiredActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false" />
         <activity
             android:name=".sample.bluetooth.BluetoothActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="false" />
         <activity
             android:name=".main.MainActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden|keyboard|navigation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

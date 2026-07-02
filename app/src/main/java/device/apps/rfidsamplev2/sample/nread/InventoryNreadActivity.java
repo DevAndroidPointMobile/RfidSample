@@ -14,6 +14,7 @@ import device.apps.rfidsamplev2.databinding.ActivityInventoryNreadBinding;
 import device.apps.rfidsamplev2.sample.nread.callback.OnInventoryNreadClickListener;
 import device.apps.rfidsamplev2.sample.nread.data.InventoryNreadResponse;
 import device.apps.rfidsamplev2.sample.nread.ui.InventoryNreadAdapter;
+import device.apps.rfidsamplev2.util.WindowInsetsUtil;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 /**
@@ -92,6 +93,15 @@ public class InventoryNreadActivity extends AppCompatActivity implements OnInven
         binding.recyclerView.setAdapter(adapter);
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
+        applyWindowInsets();
+    }
+
+    /**
+     * Pad the top toolbar and bottom action bar clear of the status/navigation bars so the
+     * edge-to-edge window (targetSdk 36) does not draw them under the system bars.
+     */
+    private void applyWindowInsets() {
+        WindowInsetsUtil.applyBarInsets(binding.getRoot(), binding.toolbar, binding.actionBar);
     }
 
     /**

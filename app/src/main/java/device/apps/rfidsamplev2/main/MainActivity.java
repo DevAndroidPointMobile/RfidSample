@@ -7,8 +7,10 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import device.apps.rfidsamplev2.RFIDSampleV2;
+import device.apps.rfidsamplev2.connection.DeviceSdk;
 import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.databinding.ActivityMainBinding;
+import device.apps.rfidsamplev2.util.WindowInsetsUtil;
 import device.apps.rfidsamplev2.sample.barcode.BarcodeActivity;
 import device.apps.rfidsamplev2.sample.bluetooth.BluetoothActivity;
 import device.apps.rfidsamplev2.sample.configuration.ConfigActivity;
@@ -63,12 +65,28 @@ public class MainActivity extends AppCompatActivity {
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         binding.setActivity(MainActivity.this);
+        // Wired and Barcode delegate to the proprietary device.sdk framework, which is
+        // absent on stock Android (a Galaxy phone). Hide those tiles there so users are only
+        // offered the connection methods that actually work — Bluetooth and Tap-to-Pair.
+        binding.setDeviceSdkAvailable(DeviceSdk.isAvailable());
 
         setContentView(binding.getRoot());
+        applyWindowInsets();
         connectionManager.connectState.observe(this, state ->
                 binding.setIsConnected(state == DeviceConnectionState.CONNECTED));
         connectionManager.statusTitle.observe(this, binding::setStatusTitle);
         connectionManager.statusSubtitle.observe(this, binding::setStatusSubtitle);
+    }
+
+    /**
+     * Handle the system-bar insets now that the app draws edge-to-edge (enforced from
+     * targetSdk 35). The gradient toolbar keeps drawing behind the status bar — only its top is
+     * padded so the title clears the status bar — while the scrolling content (this screen has
+     * no bottom button bar) is padded on the bottom and sides so the last tiles clear the
+     * navigation bar and any display cutout.
+     */
+    private void applyWindowInsets() {
+        WindowInsetsUtil.applyBarInsets(binding.getRoot(), binding.toolbar, binding.content);
     }
 
     /*

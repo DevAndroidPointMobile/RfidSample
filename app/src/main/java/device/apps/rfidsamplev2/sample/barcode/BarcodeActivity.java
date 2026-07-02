@@ -16,6 +16,7 @@ import device.apps.rfidsamplev2.R;
 import device.apps.rfidsamplev2.RFIDSampleV2;
 import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.databinding.ActivityBarcodeBinding;
+import device.apps.rfidsamplev2.util.WindowInsetsUtil;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 /**
@@ -92,6 +93,17 @@ public class BarcodeActivity extends AppCompatActivity {
                 ColorStateList.valueOf(ContextCompat.getColor(this, R.color.brand_primary)));
         binding.toolbar.setNavigationOnClickListener(v -> finish());
         setContentView(binding.getRoot());
+        applyWindowInsets();
+    }
+
+    /**
+     * Applies the system-bar insets so the edge-to-edge content is not overlapped by the
+     * status bar or navigation bar. The toolbar receives the top inset, and the root content
+     * container receives the bottom inset so the "How it works" card clears the nav bar.
+     * Both helpers add to the existing padding.
+     */
+    private void applyWindowInsets() {
+        WindowInsetsUtil.applyBarInsets(binding.getRoot(), binding.toolbar, binding.content);
     }
 
     /**

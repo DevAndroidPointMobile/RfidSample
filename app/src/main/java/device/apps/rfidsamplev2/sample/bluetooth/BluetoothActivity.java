@@ -22,6 +22,7 @@ import device.apps.rfidsamplev2.connection.Rf88ConnectionManager;
 import device.apps.rfidsamplev2.sample.bluetooth.callback.OnDeviceClickListener;
 import device.apps.rfidsamplev2.sample.bluetooth.ui.DevicesAdapter;
 import device.apps.rfidsamplev2.databinding.ActivityBluetoothBinding;
+import device.apps.rfidsamplev2.util.WindowInsetsUtil;
 import ex.dev.sdk.rf88.domain.enums.DeviceConnectionState;
 
 /**
@@ -63,7 +64,18 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
         setBluetoothPermissions();
         initializationViewModel();
         initializationContentView();
+        applyWindowInsets();
         observeData();
+    }
+
+    /**
+     * Handle the system-bar insets now that the app draws edge-to-edge (enforced from
+     * targetSdk 35). The gradient toolbar keeps drawing behind the status bar — only its top is
+     * padded so the title clears the status bar — while the bottom action bar is padded on the
+     * bottom and sides so its buttons clear the navigation bar and any display cutout.
+     */
+    private void applyWindowInsets() {
+        WindowInsetsUtil.applyBarInsets(binding.getRoot(), binding.toolbar, binding.actionBar);
     }
 
     @Override
@@ -206,8 +218,13 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
     /**
      * Update the hero card title/subtitle. Bluetooth-level problems (unsupported, off) take
      * priority over the SDK connection state because there is no point reporting "Disconnected"
-     * when the radio is not even on. When Bluetooth is healthy, fall back to the centralised
-     * labels exposed by {@link Rf88ConnectionManager}.
+     * when the radio is not even on. When Bluetooth is healthy, map the current SDK state
+     * through the centralised label functions on {@link Rf88ConnectionManager}.
+     *
+     * <p>Note we map {@link Rf88ConnectionManager#connectState}'s value rather than reading
+     * {@code statusTitle.getValue()}: those are lazy {@code Transformations.map} LiveData that
+     * only recompute while actively observed, and this screen reads them imperatively (it
+     * gates on Bluetooth state first), so a {@code getValue()} would always return {@code null}.
      */
     private void refreshStatusLabels() {
         if (!viewModel.isBluetoothSupported()) {
@@ -220,8 +237,9 @@ public class BluetoothActivity extends AppCompatActivity implements OnDeviceClic
             binding.setStatusSubtitle("Turn on Bluetooth to find devices");
             return;
         }
-        binding.setStatusTitle(connectionManager.statusTitle.getValue());
-        binding.setStatusSubtitle(connectionManager.statusSubtitle.getValue());
+        final DeviceConnectionState state = connectionManager.connectState.getValue();
+        binding.setStatusTitle(Rf88ConnectionManager.titleForState(state));
+        binding.setStatusSubtitle(Rf88ConnectionManager.subtitleForState(state));
     }
 
     /**

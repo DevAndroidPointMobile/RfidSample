@@ -5,8 +5,15 @@
         <item name="colorPrimary">@color/brand_primary</item>
         <item name="colorOnPrimary">@android:color/white</item>
 
-        <!-- Status bar matches the top of the gradient_toolbar drawable so the seam is invisible. -->
+        <!-- Status bar matches the top of the gradient_toolbar drawable so the seam is invisible.
+             Ignored on Android 15+ (edge-to-edge enforced) but still honoured on older devices. -->
         <item name="android:statusBarColor">@color/brand_primary_light</item>
+
+        <!-- Edge-to-edge system-bar icon contrast: the gradient toolbar behind the status bar is
+             a dark brand colour, so status-bar icons must be light; the content behind the
+             navigation bar is a light surface, so nav-bar icons must be dark. -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">true</item>
     </style>
 
     <style name="Theme.RFIDSampleV2" parent="Base.Theme.RFIDSampleV2" />
