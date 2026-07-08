@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace = "device.apps.rfidsamplev2"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "device.apps.rfidsamplev2"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
-        versionName = "1.0.1"
+        versionName = "3.1.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
