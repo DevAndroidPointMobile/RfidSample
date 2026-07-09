@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.3
+
+- Update RF88 SDK to 3.1.3
+- Fix wired connection failure on PM90
+
 ## 3.1.2
 
 - Update RF88 SDK to 3.1.2

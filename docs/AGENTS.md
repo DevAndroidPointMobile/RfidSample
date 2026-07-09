@@ -2,7 +2,7 @@
 
 RfidSample is a customer-facing sample app demonstrating RF88 UHF RFID
 reader integration on Android (Java, View/DataBinding). It targets the
-`ex.dev.sdk.rf88` SDK (aar `ex.dev.sdk.rf88_3.1.2`).
+`ex.dev.sdk.rf88` SDK (aar `ex.dev.sdk.rf88_3.1.3`).
 
 - Full SDK API reference: [SDK-API.md](SDK-API.md)
 - Build & environment details: [../README.md](../README.md)
