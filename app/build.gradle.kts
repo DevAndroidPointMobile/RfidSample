@@ -11,7 +11,7 @@ android {
         minSdk = 26
         targetSdk = 37
         versionCode = 1
-        versionName = "3.1.3"
+        versionName = "3.1.4"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -36,7 +36,7 @@ android {
 
 dependencies {
     compileOnly(fileTree(mapOf("dir" to "libs", "include" to "device.sdk.jar")))
-    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88_3.1.3.aar")))
+    implementation(fileTree(mapOf("dir" to "libs", "include" to "ex.dev.sdk.rf88_3.1.4.aar")))
 
     implementation(libs.appcompat)
     implementation(libs.material)

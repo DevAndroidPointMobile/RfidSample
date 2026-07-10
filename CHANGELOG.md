@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.1.4
+
+- Update RF88 SDK to 3.1.4
+- Fix wakeup source
+
 ## 3.1.3
 
 - Update RF88 SDK to 3.1.3

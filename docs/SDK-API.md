@@ -1,6 +1,6 @@
 # RF88 SDK API Reference
 
-SDK: `ex.dev.sdk.rf88` — aar `ex.dev.sdk.rf88_3.1.3`.
+SDK: `ex.dev.sdk.rf88` — aar `ex.dev.sdk.rf88_3.1.4`.
 Generated Javadoc (secondary, HTML): [../javadoc/index.html](../javadoc/index.html).
 
 **Source of this document:** the aar itself (`javap -p` dump of every public
@@ -15,7 +15,7 @@ all 20 `*Async` variants,
 `DEBUG` field. Conversely, a handful of names the javadoc documents
 (`getConfigurations`, `setConfigurations`, `getInformation`,
 `getScannerOutputMode`, `setScannerOutputMode`) do **not** appear in the
-3.1.3 aar at all and are omitted here as stale/renamed. Every table below is
+3.1.4 aar at all and are omitted here as stale/renamed. Every table below is
 driven off the aar dump; the javadoc is used only as a source of
 descriptions where it documents a matching method. Signatures elide the
 `java.lang.`/`java.util.` package qualification for readability but
